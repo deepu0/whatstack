@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "WhatStack",
+  "version": "1.5.1",
+  "description": "What stack is this site using? React, Next.js, Vue, Angular, and more — fully local detection.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_title": "WhatStack — what's under this page?",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png"
+    }
+  },
+  "background": {
+    "service_worker": "background/service-worker.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content/content-script.js"],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+  "permissions": ["scripting", "tabs", "storage"],
+  "host_permissions": ["http://*/*", "https://*/*"],
+  "web_accessible_resources": []
+}

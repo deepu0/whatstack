@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WhatStack</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="brand">
+        <img class="logo-img" src="../icons/icon48.png" width="28" height="28" alt="WhatStack" />
+        <div>
+          <h1>WhatStack</h1>
+          <p class="tagline">What’s under this page?</p>
+        </div>
+      </div>
+      <button type="button" id="refresh" class="btn ghost" title="Rescan">Rescan</button>
+    </header>
+
+    <p id="page-url" class="page-url" title=""></p>
+    <p id="status" class="status" role="status">Scanning…</p>
+
+    <section id="headline" class="headline" hidden>
+      <p class="headline-label">Core stack</p>
+      <p id="headline-text" class="headline-text"></p>
+    </section>
+
+    <main id="results" class="results" hidden></main>
+
+    <section id="empty" class="empty" hidden>
+      <p>No solid stack signals on this page.</p>
+      <p class="hint">WhatStack only reports <strong>runtime / asset</strong> proof — not words in the page. Try Rescan after load, or open a different site.</p>
+    </section>
+
+    <section id="error" class="error" hidden>
+      <p id="error-msg">Cannot scan this page.</p>
+    </section>
+
+    <footer class="footer">
+      <div class="copy-group">
+        <button type="button" id="copy" class="btn" disabled title="Plain text">Copy</button>
+        <button type="button" id="copy-md" class="btn ghost" disabled title="Markdown table">MD</button>
+        <button type="button" id="copy-json" class="btn ghost" disabled title="JSON">JSON</button>
+      </div>
+      <span class="local-badge" title="Detection runs entirely on your device">Local only</span>
+    </footer>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

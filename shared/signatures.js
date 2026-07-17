@@ -1,0 +1,697 @@
+/**
+ * Local signature pack — patterns match ASSETS / RUNTIME only.
+ * Page copy ("Vue.js jobs") must never be enough to fire a framework hit.
+ */
+
+/** @typedef {'framework'|'architecture'|'build'|'state'|'data'|'ui'|'auth'|'payments'|'observability'|'analytics'|'hosting'} Category */
+/** @typedef {'global'|'dom'|'script'|'cookie'|'css'|'meta'|'inline'} EvidenceType */
+
+/**
+ * @typedef {object} SignatureCheck
+ * @property {EvidenceType} type
+ * @property {string|RegExp} pattern
+ * @property {number} weight
+ * @property {boolean} [strong]
+ * @property {boolean} [runtime] marks true runtime proof (global / structural)
+ */
+
+/**
+ * @typedef {object} SignatureRule
+ * @property {string} id
+ * @property {string} name
+ * @property {Category} category
+ * @property {SignatureCheck[]} checks
+ * @property {string[]} [related]
+ * @property {boolean} [requiresRuntime] framework needs runtime/asset proof (not weak DOM alone)
+ */
+
+/** @type {SignatureRule[]} */
+export const SIGNATURES = [
+  // ── Frameworks ──────────────────────────────────────────────
+  {
+    id: 'nextjs',
+    name: 'Next.js',
+    category: 'framework',
+    related: ['react'],
+    requiresRuntime: true,
+    checks: [
+      { type: 'script', pattern: /\/_next\/static\//i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /\/_next\/image(?:\?|$)/i, weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /\/_next\//i, weight: 4, strong: true, runtime: true },
+      { type: 'dom', pattern: 'script#__NEXT_DATA__', weight: 5, strong: true, runtime: true },
+      { type: 'global', pattern: '__NEXT_DATA__', weight: 5, strong: true, runtime: true },
+      { type: 'global', pattern: '__next_f', weight: 5, strong: true, runtime: true },
+      { type: 'global', pattern: 'webpackChunk_N_E', weight: 4, strong: true, runtime: true },
+      { type: 'global', pattern: 'next', weight: 2, runtime: true },
+      { type: 'dom', pattern: 'next-route-announcer', weight: 4, strong: true, runtime: true },
+      { type: 'dom', pattern: '[data-nextjs-scroll-focus-boundary]', weight: 4, strong: true, runtime: true },
+      { type: 'dom', pattern: '#__next', weight: 2 },
+      { type: 'inline', pattern: /\bself\.__next_f\b|\b__NEXT_DATA__\b|\bwebpackChunk_N_E\b/i, weight: 5, strong: true, runtime: true },
+      { type: 'meta', pattern: /^generator=.*\bnext\.?js\b/i, weight: 3, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'react',
+    name: 'React',
+    category: 'framework',
+    requiresRuntime: true,
+    checks: [
+      // Same criterion as React DevTools: a renderer registered on the hook
+      // (the hook object alone is injected on EVERY page by the RDT extension)
+      { type: 'global', pattern: '__reactRenderer', weight: 5, strong: true, runtime: true },
+      // Fiber/container keys on a host node (React 16+)
+      { type: 'global', pattern: '__reactFiber', weight: 5, strong: true, runtime: true },
+      { type: 'global', pattern: '__reactContainer', weight: 5, strong: true, runtime: true },
+      // UMD globals only if they look like the real library (probe enforces)
+      { type: 'global', pattern: 'React', weight: 4, strong: true, runtime: true },
+      { type: 'global', pattern: 'ReactDOM', weight: 4, strong: true, runtime: true },
+      { type: 'dom', pattern: '[data-reactroot]', weight: 4, strong: true, runtime: true },
+      { type: 'dom', pattern: '[data-reactid]', weight: 3, strong: true, runtime: true },
+      // CDN / path assets only (detect.js never matches prose)
+      { type: 'script', pattern: /(?:unpkg\.com|jsdelivr\.net|cdnjs|esm\.sh)\/.*\breact(?:-dom)?(?:@|\/)/i, weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /\/react(?:-dom)?@[\d.]+/i, weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /react(?:-dom)?\.(?:production|development)(?:\.min)?\.js/i, weight: 4, strong: true, runtime: true },
+      // Never match bare __REACT_DEVTOOLS_GLOBAL_HOOK__ in page scripts (extension injects it)
+      { type: 'inline', pattern: /react(?:-dom)?\.(?:production|development)(?:\.min)?\.js/i, weight: 3, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'vue',
+    name: 'Vue',
+    category: 'framework',
+    requiresRuntime: true,
+    checks: [
+      { type: 'global', pattern: '__VUE__', weight: 4, strong: true, runtime: true },
+      { type: 'global', pattern: 'Vue', weight: 3, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:unpkg\.com|jsdelivr\.net|cdnjs|esm\.sh)\/.*\bvue(?:@|\/)/i, weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /\/vue@[\d.]+/i, weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /vue\.(?:global|runtime|esm-browser|esm-bundler)(?:\.prod)?(?:\.min)?\.js/i, weight: 4, strong: true, runtime: true },
+      // data-v-* alone is NEVER enough (see resolve) — weight 1, not strong
+      { type: 'dom', pattern: '[data-v-]', weight: 1 },
+    ],
+  },
+  {
+    id: 'nuxt',
+    name: 'Nuxt',
+    category: 'framework',
+    related: ['vue'],
+    requiresRuntime: true,
+    checks: [
+      { type: 'global', pattern: '__NUXT__', weight: 5, strong: true, runtime: true },
+      { type: 'dom', pattern: '#__nuxt', weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /\/_nuxt\//i, weight: 4, strong: true, runtime: true },
+      { type: 'meta', pattern: /^generator=.*\bnuxt\b/i, weight: 3, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'angular',
+    name: 'Angular',
+    category: 'framework',
+    requiresRuntime: true,
+    checks: [
+      { type: 'dom', pattern: '[ng-version]', weight: 5, strong: true, runtime: true },
+      { type: 'global', pattern: 'getAllAngularRootElements', weight: 4, strong: true, runtime: true },
+      { type: 'global', pattern: 'ng', weight: 2, runtime: true },
+      { type: 'dom', pattern: '[_ngcontent-],[_nghost-]', weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:^|[\/@])@angular\//i, weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /angular(?:\.min)?\.js(?:[?#]|$)/i, weight: 3, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'svelte',
+    name: 'Svelte',
+    category: 'framework',
+    requiresRuntime: true,
+    checks: [
+      { type: 'global', pattern: '__svelte', weight: 4, strong: true, runtime: true },
+      { type: 'dom', pattern: '.svelte-', weight: 2 },
+      { type: 'script', pattern: /(?:unpkg\.com|jsdelivr\.net|esm\.sh)\/.*\bsvelte(?:@|\/)/i, weight: 3, strong: true, runtime: true },
+      { type: 'script', pattern: /\/svelte@[\d.]+/i, weight: 3, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'sveltekit',
+    name: 'SvelteKit',
+    category: 'framework',
+    related: ['svelte'],
+    requiresRuntime: true,
+    checks: [
+      { type: 'global', pattern: '__sveltekit', weight: 5, strong: true, runtime: true },
+      { type: 'dom', pattern: '[data-sveltekit-hydrate]', weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /\/_app\/immutable\//i, weight: 3, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'solid',
+    name: 'Solid',
+    category: 'framework',
+    requiresRuntime: true,
+    checks: [
+      { type: 'script', pattern: /(?:unpkg\.com|jsdelivr\.net|esm\.sh)\/.*\bsolid-js(?:@|\/)/i, weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /\/solid-js@/i, weight: 4, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'jquery',
+    name: 'jQuery',
+    category: 'framework',
+    requiresRuntime: true,
+    checks: [
+      { type: 'global', pattern: 'jQuery', weight: 4, strong: true, runtime: true },
+      { type: 'global', pattern: '$', weight: 1 },
+      { type: 'script', pattern: /jquery(?:[-.][\d.]+)?(?:\.min)?\.js(?:[?#]|$)/i, weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /code\.jquery\.com\/jquery/i, weight: 4, strong: true, runtime: true },
+    ],
+  },
+
+  // ── State (path-scoped assets) ──────────────────────────────
+  {
+    id: 'redux',
+    name: 'Redux',
+    category: 'state',
+    checks: [
+      { type: 'global', pattern: '__REDUX_DEVTOOLS_EXTENSION__', weight: 4, strong: true, runtime: true },
+      { type: 'global', pattern: '__REDUX_DEVTOOLS_EXTENSION_COMPOSE__', weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:\/|@)redux(?:@|\/|\.min\.js|\.js)/i, weight: 3, strong: true },
+    ],
+  },
+  {
+    id: 'zustand',
+    name: 'Zustand',
+    category: 'state',
+    checks: [
+      { type: 'script', pattern: /(?:\/|@)zustand(?:@|\/|\.js)/i, weight: 3, strong: true },
+    ],
+  },
+  {
+    id: 'pinia',
+    name: 'Pinia',
+    category: 'state',
+    checks: [
+      { type: 'global', pattern: '__PINIA__', weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:\/|@)pinia(?:@|\/|\.js)/i, weight: 3, strong: true },
+    ],
+  },
+  {
+    id: 'mobx',
+    name: 'MobX',
+    category: 'state',
+    checks: [
+      { type: 'global', pattern: '__MOBX__', weight: 3, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:\/|@)mobx(?:@|\/|\.min|\.js)/i, weight: 3, strong: true },
+    ],
+  },
+  {
+    id: 'vuex',
+    name: 'Vuex',
+    category: 'state',
+    checks: [
+      { type: 'script', pattern: /(?:\/|@)vuex(?:@|\/|\.js)/i, weight: 3, strong: true },
+    ],
+  },
+
+  // ── Data ────────────────────────────────────────────────────
+  {
+    id: 'react-query',
+    name: 'TanStack Query',
+    category: 'data',
+    checks: [
+      { type: 'global', pattern: 'ReactQuery', weight: 3, strong: true, runtime: true },
+      { type: 'script', pattern: /@tanstack\/(?:react-)?query/i, weight: 4, strong: true },
+      { type: 'script', pattern: /(?:\/|@)react-query(?:@|\/)/i, weight: 3, strong: true },
+    ],
+  },
+  {
+    id: 'swr',
+    name: 'SWR',
+    category: 'data',
+    checks: [
+      { type: 'script', pattern: /(?:unpkg\.com|jsdelivr\.net|esm\.sh)\/.*\bswr(?:@|\/)/i, weight: 3, strong: true },
+      { type: 'script', pattern: /\/swr@[\d.]+/i, weight: 3, strong: true },
+    ],
+  },
+  {
+    id: 'apollo',
+    name: 'Apollo Client',
+    category: 'data',
+    checks: [
+      { type: 'global', pattern: '__APOLLO_CLIENT__', weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /@apollo\/client|(?:\/|@)apollo-client/i, weight: 4, strong: true },
+    ],
+  },
+  {
+    id: 'urql',
+    name: 'urql',
+    category: 'data',
+    checks: [
+      { type: 'script', pattern: /(?:\/|@)urql(?:@|\/)/i, weight: 3, strong: true },
+    ],
+  },
+  {
+    id: 'graphql',
+    name: 'GraphQL',
+    category: 'data',
+    checks: [
+      { type: 'script', pattern: /(?:\/|@)graphql(?:-tag)?(?:@|\/|\.js)/i, weight: 2 },
+      { type: 'global', pattern: '__GRAPHQL', weight: 2, runtime: true },
+    ],
+  },
+  {
+    id: 'axios',
+    name: 'Axios',
+    category: 'data',
+    checks: [
+      { type: 'global', pattern: 'axios', weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:\/|@)axios(?:@|\/|\.min\.js|\.js)/i, weight: 3, strong: true },
+    ],
+  },
+
+  // ── UI ──────────────────────────────────────────────────────
+  {
+    id: 'tailwind',
+    name: 'Tailwind CSS',
+    category: 'ui',
+    checks: [
+      { type: 'css', pattern: /tailwind(?:css)?(?:\.|\?|\/|@)/i, weight: 4, strong: true },
+      { type: 'script', pattern: /tailwindcss/i, weight: 4, strong: true },
+      // class soup is low only
+      { type: 'dom', pattern: 'tailwind-utilities', weight: 1 },
+    ],
+  },
+  {
+    id: 'bootstrap',
+    name: 'Bootstrap',
+    category: 'ui',
+    checks: [
+      { type: 'css', pattern: /bootstrap(?:\.min)?\.css/i, weight: 4, strong: true },
+      { type: 'script', pattern: /bootstrap(?:\.bundle)?(?:\.min)?\.js/i, weight: 4, strong: true },
+      { type: 'global', pattern: 'bootstrap', weight: 3, strong: true, runtime: true },
+      { type: 'dom', pattern: '.btn-primary', weight: 1 },
+    ],
+  },
+  {
+    id: 'mui',
+    name: 'MUI (Material UI)',
+    category: 'ui',
+    checks: [
+      { type: 'script', pattern: /@mui\/|material-ui/i, weight: 4, strong: true },
+      { type: 'dom', pattern: '[class*="MuiButton-"],[class*="MuiBox-"]', weight: 4, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'chakra',
+    name: 'Chakra UI',
+    category: 'ui',
+    checks: [
+      { type: 'script', pattern: /@chakra-ui|chakra-ui/i, weight: 4, strong: true },
+    ],
+  },
+
+  // ── Analytics ───────────────────────────────────────────────
+  {
+    id: 'google-analytics',
+    name: 'Google Analytics',
+    category: 'analytics',
+    checks: [
+      { type: 'script', pattern: /google-analytics\.com|googletagmanager\.com\/gtag|gtag\/js/i, weight: 4, strong: true },
+      { type: 'global', pattern: 'gtag', weight: 3, strong: true, runtime: true },
+      { type: 'cookie', pattern: /^_ga(?:$|_)/, weight: 2 },
+    ],
+  },
+  {
+    id: 'segment',
+    name: 'Segment',
+    category: 'analytics',
+    checks: [
+      { type: 'script', pattern: /cdn\.segment\.com|analytics\.js\/v1\//i, weight: 4, strong: true },
+    ],
+  },
+  {
+    id: 'mixpanel',
+    name: 'Mixpanel',
+    category: 'analytics',
+    checks: [
+      { type: 'script', pattern: /cdn\.mxpnl\.com|mixpanel-2-latest|mixpanel\.com/i, weight: 4, strong: true },
+      { type: 'global', pattern: 'mixpanel', weight: 4, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'hotjar',
+    name: 'Hotjar',
+    category: 'analytics',
+    checks: [
+      { type: 'script', pattern: /static\.hotjar\.com|hotjar\.com/i, weight: 4, strong: true },
+      { type: 'global', pattern: 'hj', weight: 2, runtime: true },
+    ],
+  },
+
+  // ── Hosting ─────────────────────────────────────────────────
+  {
+    id: 'vercel',
+    name: 'Vercel',
+    category: 'hosting',
+    checks: [
+      { type: 'script', pattern: /vercel\.live|va\.vercel-scripts|_vercel\/insights/i, weight: 4, strong: true },
+      { type: 'cookie', pattern: /^__vercel/, weight: 3, strong: true },
+      // dpl= deploy query is a strong Next-on-Vercel client hint
+      { type: 'script', pattern: /[?&]dpl=dpl_/i, weight: 3, strong: true },
+    ],
+  },
+  {
+    id: 'netlify',
+    name: 'Netlify',
+    category: 'hosting',
+    checks: [
+      { type: 'dom', pattern: '[data-netlify]', weight: 4, strong: true, runtime: true },
+      { type: 'cookie', pattern: /^(?:nf_jwt|netlify)/i, weight: 3, strong: true },
+      { type: 'script', pattern: /netlify(?:\.app|\/|\.com)/i, weight: 2 },
+    ],
+  },
+  {
+    id: 'cloudflare',
+    name: 'Cloudflare',
+    category: 'hosting',
+    checks: [
+      { type: 'script', pattern: /cloudflareinsights|challenge-platform|cdnjs\.cloudflare\.com/i, weight: 3, strong: true },
+      { type: 'cookie', pattern: /^__(?:cf_bm|cfduid)|^(?:cf_clearance)/i, weight: 2 },
+    ],
+  },
+
+  // ── Architecture / microfrontends ─────────────────────────
+  {
+    id: 'module-federation',
+    name: 'Module Federation',
+    category: 'architecture',
+    related: ['microfrontend'],
+    checks: [
+      { type: 'global', pattern: '__FEDERATION__', weight: 5, strong: true, runtime: true },
+      { type: 'global', pattern: '__FEDERATION_DEVTOOLS__', weight: 4, strong: true, runtime: true },
+      { type: 'global', pattern: '__VMOK__', weight: 3, strong: true, runtime: true }, // module-federation evolved name
+      { type: 'script', pattern: /remoteEntry\.(?:js|mjs)(?:[?#]|$)/i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /@module-federation\//i, weight: 4, strong: true, runtime: true },
+      { type: 'inline', pattern: /\b__FEDERATION__\b|remoteEntry\.(?:js|mjs)|module federation/i, weight: 3, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'single-spa',
+    name: 'single-spa',
+    category: 'architecture',
+    related: ['microfrontend'],
+    checks: [
+      { type: 'global', pattern: 'singleSpa', weight: 5, strong: true, runtime: true },
+      { type: 'global', pattern: 'singleSpaNavigate', weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /single-spa(?:[@/.]|$)/i, weight: 4, strong: true, runtime: true },
+      { type: 'dom', pattern: '[data-single-spa]', weight: 3, strong: true, runtime: true },
+      { type: 'inline', pattern: /\bsingleSpa\b|single-spa/i, weight: 3, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'qiankun',
+    name: 'qiankun',
+    category: 'architecture',
+    related: ['microfrontend'],
+    checks: [
+      { type: 'global', pattern: '__POWERED_BY_QIANKUN__', weight: 5, strong: true, runtime: true },
+      { type: 'global', pattern: '__INJECTED_PUBLIC_PATH_BY_QIANKUN__', weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /qiankun/i, weight: 3, strong: true, runtime: true },
+      { type: 'inline', pattern: /__POWERED_BY_QIANKUN__|qiankun/i, weight: 3, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'systemjs',
+    name: 'SystemJS',
+    category: 'architecture',
+    related: ['microfrontend'],
+    checks: [
+      { type: 'global', pattern: 'System', weight: 2, runtime: true }, // probe must validate System.import
+      { type: 'dom', pattern: 'script[type="systemjs-importmap"]', weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /systemjs|system\.(?:min\.)?js/i, weight: 3, strong: true },
+      { type: 'inline', pattern: /System\.(?:import|register)\s*\(/i, weight: 3, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'import-map',
+    name: 'Import Maps',
+    category: 'architecture',
+    related: ['microfrontend'],
+    checks: [
+      { type: 'dom', pattern: 'script[type="importmap"]', weight: 3, strong: true, runtime: true },
+    ],
+  },
+  // Umbrella — mostly synthesized in resolveStack; also catches explicit globals
+  {
+    id: 'microfrontend',
+    name: 'Microfrontend',
+    category: 'architecture',
+    checks: [
+      { type: 'global', pattern: '__MICRO_FRONTEND__', weight: 4, strong: true, runtime: true },
+      { type: 'global', pattern: '__MICROFRONTEND__', weight: 4, strong: true, runtime: true },
+    ],
+  },
+
+  // ── Build tools (asset / runtime only — no prose) ─────────
+  {
+    id: 'webpack',
+    name: 'Webpack',
+    category: 'build',
+    checks: [
+      { type: 'global', pattern: '__webpack_require__', weight: 5, strong: true, runtime: true },
+      { type: 'global', pattern: 'webpackChunk', weight: 4, strong: true, runtime: true }, // probe sets when any webpackChunk* exists
+      { type: 'script', pattern: /\/webpack(?:~|\.|\/|-)/i, weight: 3, strong: true },
+      { type: 'inline', pattern: /\b__webpack_require__\b|\bwebpackJsonp\b/i, weight: 4, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'vite',
+    name: 'Vite',
+    category: 'build',
+    checks: [
+      { type: 'script', pattern: /\/@vite\/client|\/@react-refresh|\/\.vite\//i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:unpkg|jsdelivr|esm\.sh).*\/vite(?:@|\/)/i, weight: 3, strong: true },
+      { type: 'global', pattern: '__vite_plugin_react_preamble_installed__', weight: 4, strong: true, runtime: true },
+      { type: 'inline', pattern: /@vite\/client|__vite_is_modern_browser/i, weight: 4, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'parcel',
+    name: 'Parcel',
+    category: 'build',
+    checks: [
+      { type: 'global', pattern: 'parcelRequire', weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /parcel(?:Require|\.js)/i, weight: 3, strong: true },
+    ],
+  },
+  {
+    id: 'turbopack',
+    name: 'Turbopack',
+    category: 'build',
+    checks: [
+      { type: 'script', pattern: /turbopack/i, weight: 3, strong: true },
+      { type: 'inline', pattern: /\bTURBOPACK\b|__turbopack/i, weight: 4, strong: true, runtime: true },
+      { type: 'global', pattern: '__turbopack', weight: 4, strong: true, runtime: true },
+    ],
+  },
+
+  // ── CSS-in-JS (DOM runtime markers only) ──────────────────
+  {
+    id: 'emotion',
+    name: 'Emotion',
+    category: 'ui',
+    checks: [
+      { type: 'dom', pattern: '[data-emotion]', weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /@emotion\//i, weight: 4, strong: true },
+    ],
+  },
+  {
+    id: 'styled-components',
+    name: 'styled-components',
+    category: 'ui',
+    checks: [
+      { type: 'dom', pattern: '[data-styled]', weight: 4, strong: true, runtime: true },
+      { type: 'dom', pattern: '[sc-]', weight: 2 },
+      { type: 'script', pattern: /styled-components/i, weight: 4, strong: true },
+    ],
+  },
+
+  // ── Auth (CDN / verified globals only) ────────────────────
+  {
+    id: 'auth0',
+    name: 'Auth0',
+    category: 'auth',
+    checks: [
+      { type: 'script', pattern: /cdn\.auth0\.com|auth0-spa-js|auth0\.min\.js/i, weight: 5, strong: true, runtime: true },
+      { type: 'global', pattern: 'auth0', weight: 3, strong: true, runtime: true }, // probe validates
+      { type: 'cookie', pattern: /^auth0\./i, weight: 2 },
+    ],
+  },
+  {
+    id: 'clerk',
+    name: 'Clerk',
+    category: 'auth',
+    checks: [
+      { type: 'script', pattern: /clerk\.(?:browser|js)|clerk\.accounts|@clerk\//i, weight: 5, strong: true, runtime: true },
+      { type: 'global', pattern: 'Clerk', weight: 4, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'firebase',
+    name: 'Firebase',
+    category: 'auth',
+    checks: [
+      { type: 'script', pattern: /www\.gstatic\.com\/firebasejs|firebasejs\/|firebase-app/i, weight: 5, strong: true, runtime: true },
+      { type: 'global', pattern: 'firebase', weight: 4, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'nextauth',
+    name: 'Auth.js / NextAuth',
+    category: 'auth',
+    checks: [
+      { type: 'script', pattern: /\/api\/auth\/session|next-auth/i, weight: 3, strong: true },
+      { type: 'cookie', pattern: /^next-auth\./i, weight: 4, strong: true, runtime: true },
+    ],
+  },
+
+  // ── Payments ──────────────────────────────────────────────
+  {
+    id: 'stripe',
+    name: 'Stripe',
+    category: 'payments',
+    checks: [
+      { type: 'script', pattern: /js\.stripe\.com/i, weight: 5, strong: true, runtime: true },
+      { type: 'global', pattern: 'Stripe', weight: 4, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'razorpay',
+    name: 'Razorpay',
+    category: 'payments',
+    checks: [
+      { type: 'script', pattern: /checkout\.razorpay\.com|razorpay/i, weight: 4, strong: true, runtime: true },
+      { type: 'global', pattern: 'Razorpay', weight: 4, strong: true, runtime: true },
+    ],
+  },
+
+  // ── Observability ─────────────────────────────────────────
+  {
+    id: 'sentry',
+    name: 'Sentry',
+    category: 'observability',
+    checks: [
+      { type: 'script', pattern: /browser\.sentry-cdn\.com|js\.sentry-cdn\.com|@sentry\//i, weight: 5, strong: true, runtime: true },
+      { type: 'global', pattern: 'Sentry', weight: 4, strong: true, runtime: true }, // probe validates
+      { type: 'global', pattern: '__SENTRY__', weight: 5, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'datadog',
+    name: 'Datadog RUM',
+    category: 'observability',
+    checks: [
+      { type: 'script', pattern: /datadoghq\.(?:com|eu)|dd-rum|datadog-rum/i, weight: 5, strong: true, runtime: true },
+      { type: 'global', pattern: 'DD_RUM', weight: 5, strong: true, runtime: true },
+      { type: 'global', pattern: 'DD_LOGS', weight: 4, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'newrelic',
+    name: 'New Relic',
+    category: 'observability',
+    checks: [
+      // Browser agent CDN + beacons (solid — never page prose)
+      { type: 'script', pattern: /js-agent\.newrelic\.com/i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:bam(?:-cell)?\.nr-data\.net|nr-data\.net)/i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:^|\/)nr-\d+(?:[.-][\w.-]+)?\.min\.js(?:[?#]|$)/i, weight: 4, strong: true, runtime: true },
+      // Runtime objects set by the browser agent
+      { type: 'global', pattern: 'NREUM', weight: 5, strong: true, runtime: true },
+      { type: 'global', pattern: 'newrelic', weight: 4, strong: true, runtime: true },
+      { type: 'global', pattern: '__nr_require', weight: 5, strong: true, runtime: true },
+      // Inline snippet: window.NREUM||(NREUM={}) … bam.nr-data.net
+      { type: 'inline', pattern: /\bNREUM\b|\b__nr_require\b|bam(?:-cell)?\.nr-data\.net|js-agent\.newrelic\.com/i, weight: 5, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'logrocket',
+    name: 'LogRocket',
+    category: 'observability',
+    checks: [
+      { type: 'script', pattern: /cdn\.logrocket|logrocket/i, weight: 4, strong: true, runtime: true },
+      { type: 'global', pattern: 'LogRocket', weight: 4, strong: true, runtime: true },
+    ],
+  },
+
+  // ── Feature flags & product ───────────────────────────────
+  {
+    id: 'launchdarkly',
+    name: 'LaunchDarkly',
+    category: 'analytics',
+    checks: [
+      { type: 'script', pattern: /app\.launchdarkly\.com|launchdarkly/i, weight: 4, strong: true, runtime: true },
+      { type: 'global', pattern: 'LDClient', weight: 4, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'intercom',
+    name: 'Intercom',
+    category: 'analytics',
+    checks: [
+      { type: 'script', pattern: /widget\.intercom\.io|js\.intercomcdn\.com/i, weight: 5, strong: true, runtime: true },
+      { type: 'global', pattern: 'Intercom', weight: 4, strong: true, runtime: true },
+      { type: 'global', pattern: 'intercomSettings', weight: 3, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'zendesk',
+    name: 'Zendesk',
+    category: 'analytics',
+    checks: [
+      { type: 'script', pattern: /static\.zdassets\.com|zendesk/i, weight: 4, strong: true, runtime: true },
+      { type: 'global', pattern: 'zE', weight: 3, strong: true, runtime: true },
+    ],
+  },
+];
+
+/** Platforms that imply microfrontend architecture */
+export const MFE_PLATFORM_IDS = [
+  'module-federation',
+  'single-spa',
+  'qiankun',
+  'systemjs',
+];
+
+export const CATEGORY_ORDER = [
+  'framework',
+  'architecture',
+  'build',
+  'state',
+  'data',
+  'ui',
+  'auth',
+  'payments',
+  'observability',
+  'analytics',
+  'hosting',
+];
+
+export const CATEGORY_LABELS = {
+  framework: 'Frameworks',
+  architecture: 'Architecture',
+  build: 'Build',
+  state: 'State',
+  data: 'Data',
+  ui: 'UI / CSS',
+  auth: 'Auth',
+  payments: 'Payments',
+  observability: 'Observability',
+  analytics: 'Analytics & product',
+  hosting: 'Hosting / CDN',
+};
+
+/** Categories shown first in headline (core stack) */
+export const HEADLINE_CATEGORIES = ['framework', 'architecture', 'build'];
+
+/** Meta-frameworks that own the page; competitors need independent runtime proof */
+export const META_FRAMEWORKS = ['nextjs', 'nuxt', 'sveltekit'];
+
+/** Competing SPA frameworks — suppressed when a meta-framework owns the page unless runtime-proof */
+export const COMPETING_FRAMEWORKS = ['vue', 'angular', 'svelte', 'solid', 'jquery', 'react'];
