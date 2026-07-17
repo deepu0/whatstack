@@ -1,0 +1,4 @@
+PUBLIC_PRIVACY_POLICY_URL=https://gist.githubusercontent.com/deepu0/6c31c2c0d5d776bc5272b2752a965854/raw/PRIVACY.md
+PUBLIC_PRIVACY_POLICY_PAGE=https://gist.github.com/deepu0/6c31c2c0d5d776bc5272b2752a965854
+SOURCE_IN_REPO=PRIVACY.md
+HOSTING=public GitHub Gist (reachable without auth)

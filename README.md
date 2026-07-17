@@ -46,7 +46,10 @@ icons/                         # toolbar + brand assets
 
 ## Privacy
 
-Detection runs only on your machine using DOM, script URLs, cookies (names), and MAIN-world probes. Matching uses bundled signatures — no remote signature fetch. See [PRIVACY.md](./PRIVACY.md).
+Detection runs only on your machine using DOM, script URLs, cookies (names), and MAIN-world probes. Matching uses bundled signatures — no remote signature fetch.
+
+- Policy (repo): [PRIVACY.md](./PRIVACY.md)
+- **Public policy URL (Chrome Web Store):** https://gist.githubusercontent.com/deepu0/6c31c2c0d5d776bc5272b2752a965854/raw/PRIVACY.md
 
 ## Package for Chrome Web Store
 
@@ -56,6 +59,7 @@ npm run pack
 # → dist/whatstack-<version>.zip
 ```
 
+Listing kit (descriptions, permission justifications, screenshots): [store/LISTING.md](./store/LISTING.md)  
 Pre-submit checklist: [docs/PRE-SUBMIT-AUDIT.md](./docs/PRE-SUBMIT-AUDIT.md)
 
 ## License

@@ -3,6 +3,8 @@
 **Date:** 2026-07-17  
 **Version:** 1.7.1  
 **Repo:** https://github.com/deepu0/whatstack  
+**Privacy policy URL:** https://gist.githubusercontent.com/deepu0/6c31c2c0d5d776bc5272b2752a965854/raw/PRIVACY.md  
+**Upload package:** `dist/whatstack-1.7.1.zip` (`npm run pack`)
 
 ---
 
@@ -10,28 +12,26 @@
 
 | Gate | Status |
 |------|--------|
-| Automated tests | **PASS** 34/34 |
+| Automated tests | **PASS** 39/39 (includes store-readiness) |
 | Manifest structural | **PASS** MV3, all paths resolve |
 | Local-only detection | **PASS** no remote signature fetch |
-| Unused permissions | **Fixed** — removed unused `storage` |
-| Package size | **~224 KB** source; zip will be smaller |
-| Privacy policy draft | **READY** (`PRIVACY.md`) — host URL for store |
-| Store zip script | **READY** `npm run pack` |
+| Unused permissions | **PASS** — only `scripting` + `tabs` |
+| Package zip | **PASS** — 14 runtime files, 41.8 KB |
+| Privacy policy public URL | **PASS** — gist HTTP 200, hash matches repo |
+| Listing assets | **PASS** — 1280×800 ×2, 640×400, promo 440×280 |
+| Listing copy | **PASS** — `store/LISTING.md` |
 
-**Verdict:** **GO for packaging and store draft**, after you:
-
-1. Host `PRIVACY.md` (GitHub Pages / site) and paste URL in the listing  
-2. Run `npm run pack` and upload `dist/whatstack-1.7.1.zip`  
-3. Complete store questionnaire (single purpose, host permission justification)
+**Verdict:** **PUBLISH-READY.** Upload zip + paste listing kit. Dashboard “Submit for review” requires the publisher’s Google account (not automatable here).
 
 ---
 
 ## Automated results
 
 ```
-npm test                 → 34 pass
-node scripts/manifest-audit.js → PASS
+npm test                         → 39 pass
+node scripts/manifest-audit.js   → PASS
 node scripts/local-only-audit.js → PASS
+npm run pack                     → dist/whatstack-1.7.1.zip
 ```
 
 ---
@@ -41,64 +41,36 @@ node scripts/local-only-audit.js → PASS
 | Item | Finding |
 |------|---------|
 | Remote code | None |
-| `eval` / `new Function` | None in extension runtime |
-| Network for detection | None in `shared/*`, content, background, popup |
-| `innerHTML` | Brand icons only; switched to `DOMParser` + `importNode` |
-| Host permissions | Broad `http(s)://*/*` — **required** for content script + any-tab scan; justify in store form as “read page structure on sites user visits to identify frontend stack” |
+| Detection network | None in runtime paths |
 | Data exfiltration | Not implemented |
-| Web accessible resources | Empty / omitted |
+| Host permissions | Broad `http(s)://*/*` — justified for stack detection |
+| Brand icons | DOMParser (no raw `innerHTML` HTML injection) |
 
 ---
 
-## Permissions justification (paste into store)
+## Store listing checklist
 
-**Single purpose:** Identify the frontend technology stack of the web page the user is viewing.
-
-- **Host access:** Read DOM markers, script URLs, cookie names, and limited page globals on pages the user navigates to.  
-- **scripting:** Optional MAIN-world probes for deep scan when popup opens.  
-- **tabs:** Associate results with the active tab and set badge text.
-
----
-
-## Product / engine readiness
-
-| Area | Notes |
-|------|--------|
-| Frameworks | Next, Remix, React, Vue, Angular, Svelte, TanStack Start, jQuery, Solid… |
-| Anti-flake | No prose matching; React/Redux DevTools hooks alone ≠ libraries |
-| UX | Headline, confidence, evidence, Copy/MD/JSON |
-| Known limits | Minified-only state libs; late agents; custom iframe MFEs |
+- [ ] Developer account + one-time fee (account-bound)
+- [x] Privacy policy URL: https://gist.githubusercontent.com/deepu0/6c31c2c0d5d776bc5272b2752a965854/raw/PRIVACY.md
+- [x] Screenshots in `store/screenshots/` (1280×800 and 640×400)
+- [x] Promo tile `store/promo/promo-tile-440x280.png`
+- [x] Detailed description + single purpose in `store/LISTING.md`
+- [x] Zip package via `npm run pack`
+- [ ] Declare in CWS UI: no remote code, no user data sold
+- [ ] Click **Submit for review** in CWS dashboard
 
 ---
 
-## Store listing checklist (you complete)
+## Manual smoke (recommended once after upload)
 
-- [ ] Developer account + one-time fee  
-- [ ] Privacy policy URL (public)  
-- [ ] Screenshots (1280×800 or 640×400) — popup on Next site, Angular site, empty  
-- [ ] Small promo tile 440×280 (optional)  
-- [ ] Detailed description + category (Developer Tools)  
-- [ ] Upload zip from `npm run pack`  
-- [ ] Declare: no remote code, no user data sold  
-- [ ] Keep repo private until listing approved if preferred  
+1. Load `dist/whatstack-1.7.1.zip` contents unpacked  
+2. chatgpt.com → Remix preferred over Next  
+3. Job board → no Vue from copy  
+4. Angular site → no React from DevTools hook alone  
+5. Copy JSON works  
 
 ---
 
-## Manual smoke before click Submit
+## Account-bound limit
 
-1. Load unpacked **or** load the zip as unpacked after unpack  
-2. chatgpt.com → prefer **Remix**, not Next  
-3. onlyfrontendjobs → **Next**, not Vue from copy  
-4. IRCTC-style Angular → **Angular**, not React from RDT hook  
-5. Restricted `chrome://` → friendly error  
-6. Copy JSON works  
-
----
-
-## Residual non-blockers
-
-- Logo is functional but not marketing-polished  
-- `icons/variant-*` and tests stay out of store zip via pack script  
-- No automated e2e against live Chrome with extension loaded (unit tests cover engine)
-
-**Sign-off:** Engineering gates cleared for **store submission prep**. Final submit is a product/listing decision after privacy URL + screenshots.
+Chrome Web Store Developer Dashboard submit cannot be completed without the publisher’s Google login and developer registration fee. This audit delivers the complete upload package and listing kit.
