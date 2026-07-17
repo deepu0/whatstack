@@ -585,6 +585,17 @@ export function mainWorldProbeSource() {
     }
 
     // State / data / analytics
+    // TanStack (dev / rare runtime markers)
+    for (const name of [
+      '__TANSTACK_QUERY_CLIENT__',
+      '__TANSTACK_ROUTER__',
+      '__TANSTACK_START__',
+      '__TANSTACK__',
+      'ReactQuery',
+    ]) {
+      if (tryGet(name) !== undefined && tryGet(name) !== null) mark(name);
+    }
+
     for (const name of [
       '__PINIA__',
       '__MOBX__',
@@ -593,7 +604,6 @@ export function mainWorldProbeSource() {
       'gtag',
       'mixpanel',
       'bootstrap',
-      'ReactQuery',
     ]) {
       if (tryGet(name) !== undefined && tryGet(name) !== null) mark(name);
     }
@@ -745,6 +755,19 @@ export function extractVersions(signals) {
       };
       const id = map[m[1].toLowerCase()];
       if (id) take(id, m[2]);
+    }
+    // @tanstack/react-query@5.x etc.
+    const ts = url.match(/@tanstack\/([a-z0-9-]+)@([\d.]+)/i);
+    if (ts) {
+      const pkg = ts[1].toLowerCase();
+      const ver = ts[2];
+      if (/query/.test(pkg)) take('tanstack-query', ver);
+      else if (/router/.test(pkg)) take('tanstack-router', ver);
+      else if (/table/.test(pkg)) take('tanstack-table', ver);
+      else if (/form/.test(pkg)) take('tanstack-form', ver);
+      else if (/virtual/.test(pkg)) take('tanstack-virtual', ver);
+      else if (/start/.test(pkg)) take('tanstack-start', ver);
+      take('tanstack', ver);
     }
   }
 
@@ -1111,6 +1134,49 @@ function resolveStack(hits, signals, ruleById) {
   }
 
   // Vercel dpl= often co-occurs with Next — already handled by signature
+
+  // TanStack umbrella: if a specific package hit, ensure family label exists
+  {
+    const tanstackKids = [
+      'tanstack-query',
+      'tanstack-router',
+      'tanstack-table',
+      'tanstack-form',
+      'tanstack-virtual',
+      'tanstack-start',
+    ].filter((id) => byId.has(id));
+    if (tanstackKids.length > 0) {
+      if (!byId.has('tanstack')) {
+        hits.push({
+          id: 'tanstack',
+          name: 'TanStack',
+          category: 'data',
+          confidence: 'high',
+          evidence: [
+            {
+              type: 'dom',
+              snippet: `TanStack packages: ${tanstackKids.map((id) => byId.get(id)?.name || id).join(', ')}`,
+              weight: 4,
+              runtime: true,
+              strong: true,
+            },
+          ],
+          related: tanstackKids,
+        });
+      } else {
+        const t = byId.get('tanstack');
+        t.confidence = t.confidence === 'low' ? 'medium' : t.confidence;
+        t.related = Array.from(new Set([...(t.related || []), ...tanstackKids]));
+      }
+      // Version from CDN if any child URL matched
+      for (const id of tanstackKids) {
+        if (versions[id] && byId.get(id) && !byId.get(id).version) {
+          byId.get(id).version = versions[id];
+        }
+      }
+      refresh();
+    }
+  }
 
   // Microfrontend umbrella: YES when a known MFE platform is present
   {

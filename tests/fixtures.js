@@ -330,6 +330,46 @@ export function richStackFixture() {
   };
 }
 
+/** TanStack Query + Router via scoped package paths */
+export function tanstackFixture() {
+  return {
+    url: 'https://app.example/dashboard',
+    pass: 'deep',
+    scripts: [
+      'https://cdn.jsdelivr.net/npm/@tanstack/react-query@5.56.2/build/modern/index.js',
+      'https://cdn.jsdelivr.net/npm/@tanstack/react-router@1.58.0/dist/esm/index.js',
+      'https://cdn.jsdelivr.net/npm/@tanstack/react-table@8.20.5/build/lib/index.mjs',
+      'https://app.example/assets/main.js',
+    ],
+    stylesheets: [],
+    cookies: [],
+    metas: [],
+    inlineSamples: [],
+    domFlags: [],
+    html: '<div id="root"></div>',
+    globals: {
+      __TANSTACK_QUERY_CLIENT__: { present: true },
+      __reactRenderer: { present: true, count: 1 },
+    },
+  };
+}
+
+/** Mentions TanStack in copy only — must not fire */
+export function tanstackProseOnlyFixture() {
+  return {
+    url: 'https://blog.example/tanstack',
+    pass: 'deep',
+    scripts: ['https://blog.example/static/post.js'],
+    stylesheets: [],
+    cookies: [],
+    metas: ['description=Learn TanStack Query and TanStack Table'],
+    inlineSamples: [],
+    domFlags: [],
+    html: '<p>We love TanStack Query, Router, and Table at work.</p>',
+    globals: {},
+  };
+}
+
 /** New Relic browser agent (NREUM snippet + agent CDN + beacon) */
 export function newRelicFixture() {
   return {

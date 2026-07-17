@@ -65,6 +65,34 @@ export const BRAND_ICONS = {
     bg: '#18222e',
     svg: '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" fill="#FF4154"/><ellipse cx="12" cy="12" rx="9" ry="3.5" stroke="#FF4154" stroke-width="1.3"/><ellipse cx="12" cy="12" rx="9" ry="3.5" stroke="#FF4154" stroke-width="1.3" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="3.5" stroke="#FF4154" stroke-width="1.3" transform="rotate(-60 12 12)"/></svg>',
   },
+  'tanstack-query': {
+    bg: '#18222e',
+    svg: '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" fill="#FF4154"/><ellipse cx="12" cy="12" rx="9" ry="3.5" stroke="#FF4154" stroke-width="1.3"/><ellipse cx="12" cy="12" rx="9" ry="3.5" stroke="#FF4154" stroke-width="1.3" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="3.5" stroke="#FF4154" stroke-width="1.3" transform="rotate(-60 12 12)"/></svg>',
+  },
+  'tanstack-router': {
+    bg: '#0f172a',
+    svg: '<svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#38BDF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  },
+  'tanstack-table': {
+    bg: '#0f172a',
+    svg: '<svg viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="14" rx="1.5" stroke="#A78BFA" stroke-width="1.5"/><path d="M4 10h16M10 5v14" stroke="#A78BFA" stroke-width="1.5"/></svg>',
+  },
+  'tanstack-form': {
+    bg: '#0f172a',
+    svg: '<svg viewBox="0 0 24 24" fill="none"><rect x="5" y="4" width="14" height="16" rx="2" stroke="#34D399" stroke-width="1.5"/><path d="M8 9h8M8 13h8M8 17h5" stroke="#34D399" stroke-width="1.5" stroke-linecap="round"/></svg>',
+  },
+  'tanstack-virtual': {
+    bg: '#0f172a',
+    svg: '<svg viewBox="0 0 24 24" fill="none"><path d="M6 6h12M6 12h12M6 18h8" stroke="#F472B6" stroke-width="1.8" stroke-linecap="round"/><path d="M18 15v6M15 18h6" stroke="#F472B6" stroke-width="1.5" stroke-linecap="round"/></svg>',
+  },
+  'tanstack-start': {
+    bg: '#000',
+    svg: '<svg viewBox="0 0 24 24"><text x="12" y="15.5" text-anchor="middle" font-size="7" font-weight="700" fill="#FF4154" font-family="system-ui">Start</text></svg>',
+  },
+  tanstack: {
+    bg: '#111827',
+    svg: '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#FF4154" stroke-width="1.5"/><path d="M8 14c1.5 2 6.5 2 8 0M9 10h.01M15 10h.01" stroke="#FF4154" stroke-width="1.5" stroke-linecap="round"/></svg>',
+  },
   swr: {
     bg: '#000',
     svg: '<svg viewBox="0 0 24 24"><text x="12" y="15.5" text-anchor="middle" font-size="9" font-weight="700" fill="#fff" font-family="system-ui">SWR</text></svg>',

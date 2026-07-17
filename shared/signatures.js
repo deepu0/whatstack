@@ -212,15 +212,93 @@ export const SIGNATURES = [
     ],
   },
 
-  // ── Data ────────────────────────────────────────────────────
+  // ── Data / TanStack ─────────────────────────────────────────
   {
-    id: 'react-query',
+    id: 'tanstack-query',
     name: 'TanStack Query',
     category: 'data',
+    related: ['tanstack'],
     checks: [
+      // Scoped packages only — never bare "query" in prose
+      { type: 'script', pattern: /@tanstack\/(?:react|vue|solid|svelte|angular)-query(?:@|\/|$)/i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /@tanstack\/query-core(?:@|\/|$)/i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:unpkg\.com|jsdelivr\.net|esm\.sh)\/.*@tanstack\/(?:react|vue|solid)-query/i, weight: 5, strong: true, runtime: true },
+      // Legacy package name (pre-TanStack rebrand)
+      { type: 'script', pattern: /(?:\/|@)react-query(?:@|\/)/i, weight: 4, strong: true, runtime: true },
+      { type: 'global', pattern: '__TANSTACK_QUERY_CLIENT__', weight: 4, strong: true, runtime: true },
       { type: 'global', pattern: 'ReactQuery', weight: 3, strong: true, runtime: true },
-      { type: 'script', pattern: /@tanstack\/(?:react-)?query/i, weight: 4, strong: true },
-      { type: 'script', pattern: /(?:\/|@)react-query(?:@|\/)/i, weight: 3, strong: true },
+    ],
+  },
+  {
+    id: 'tanstack-router',
+    name: 'TanStack Router',
+    category: 'data',
+    related: ['tanstack'],
+    checks: [
+      { type: 'script', pattern: /@tanstack\/(?:react|solid|vue)-router(?:@|\/|$)/i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /@tanstack\/router-core(?:@|\/|$)/i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:unpkg\.com|jsdelivr\.net|esm\.sh)\/.*@tanstack\/(?:react-)?router/i, weight: 5, strong: true, runtime: true },
+      { type: 'global', pattern: '__TANSTACK_ROUTER__', weight: 4, strong: true, runtime: true },
+      { type: 'inline', pattern: /@tanstack\/(?:react-)?router/i, weight: 3, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'tanstack-table',
+    name: 'TanStack Table',
+    category: 'data',
+    related: ['tanstack'],
+    checks: [
+      { type: 'script', pattern: /@tanstack\/(?:react|vue|solid|svelte|angular|lit)-table(?:@|\/|$)/i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /@tanstack\/table-core(?:@|\/|$)/i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:unpkg\.com|jsdelivr\.net|esm\.sh)\/.*@tanstack\/(?:react-)?table/i, weight: 5, strong: true, runtime: true },
+      // Very old name
+      { type: 'script', pattern: /(?:\/|@)react-table(?:@|\/)/i, weight: 3, strong: true },
+    ],
+  },
+  {
+    id: 'tanstack-form',
+    name: 'TanStack Form',
+    category: 'data',
+    related: ['tanstack'],
+    checks: [
+      { type: 'script', pattern: /@tanstack\/(?:react|vue|solid|angular)-form(?:@|\/|$)/i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /@tanstack\/form-core(?:@|\/|$)/i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:unpkg\.com|jsdelivr\.net|esm\.sh)\/.*@tanstack\/(?:react-)?form/i, weight: 5, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'tanstack-virtual',
+    name: 'TanStack Virtual',
+    category: 'data',
+    related: ['tanstack'],
+    checks: [
+      { type: 'script', pattern: /@tanstack\/(?:react|vue|solid|svelte|angular|lit)-virtual(?:@|\/|$)/i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /@tanstack\/virtual-core(?:@|\/|$)/i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:unpkg\.com|jsdelivr\.net|esm\.sh)\/.*@tanstack\/(?:react-)?virtual/i, weight: 5, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'tanstack-start',
+    name: 'TanStack Start',
+    category: 'framework',
+    related: ['tanstack', 'tanstack-router'],
+    requiresRuntime: true,
+    checks: [
+      { type: 'script', pattern: /@tanstack\/(?:react-)?start(?:@|\/|$)/i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:unpkg\.com|jsdelivr\.net|esm\.sh)\/.*@tanstack\/start/i, weight: 5, strong: true, runtime: true },
+      { type: 'inline', pattern: /@tanstack\/(?:react-)?start/i, weight: 4, strong: true, runtime: true },
+      { type: 'global', pattern: '__TANSTACK_START__', weight: 4, strong: true, runtime: true },
+    ],
+  },
+  // Umbrella: any TanStack package path (for headline / “uses TanStack”)
+  {
+    id: 'tanstack',
+    name: 'TanStack',
+    category: 'data',
+    checks: [
+      { type: 'script', pattern: /@tanstack\//i, weight: 3, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:unpkg\.com|jsdelivr\.net|esm\.sh)\/npm\/@tanstack\//i, weight: 3, strong: true, runtime: true },
+      { type: 'global', pattern: '__TANSTACK__', weight: 3, strong: true, runtime: true },
     ],
   },
   {

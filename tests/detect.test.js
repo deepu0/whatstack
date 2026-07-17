@@ -20,6 +20,8 @@ import {
   richStackFixture,
   toolNamesInCopyOnlyFixture,
   newRelicFixture,
+  tanstackFixture,
+  tanstackProseOnlyFixture,
 } from './fixtures.js';
 
 function hasHit(result, id, minConfidence) {
@@ -223,6 +225,30 @@ describe('expanded solid detections (non-flaky)', () => {
       ),
       'expected NR-specific evidence',
     );
+  });
+
+  it('detects TanStack Query, Router, Table (+ umbrella)', () => {
+    const r = detect(tanstackFixture());
+    hasHit(r, 'tanstack-query', 'high');
+    hasHit(r, 'tanstack-router', 'high');
+    hasHit(r, 'tanstack-table', 'high');
+    hasHit(r, 'tanstack', 'high');
+    const q = r.hits.find((h) => h.id === 'tanstack-query');
+    assert.equal(q?.version, '5.56.2');
+  });
+
+  it('does not treat TanStack names in blog copy as packages', () => {
+    const r = detect(tanstackProseOnlyFixture());
+    for (const id of [
+      'tanstack',
+      'tanstack-query',
+      'tanstack-router',
+      'tanstack-table',
+      'tanstack-form',
+      'tanstack-virtual',
+    ]) {
+      assert.equal(r.hits.find((h) => h.id === id), undefined, id);
+    }
   });
 
   it('does not treat bare Redux DevTools extension hook as Redux', () => {
