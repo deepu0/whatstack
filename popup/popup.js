@@ -131,8 +131,17 @@ function renderHit(hit) {
   const mark = document.createElement('span');
   mark.className = 'tech-icon';
   mark.style.background = icon.bg;
-  mark.innerHTML = icon.svg;
   mark.setAttribute('aria-hidden', 'true');
+  // Safer than innerHTML for static bundled SVGs
+  try {
+    const parsed = new DOMParser().parseFromString(icon.svg, 'image/svg+xml');
+    const svg = parsed.documentElement;
+    if (svg && svg.tagName.toLowerCase() === 'svg' && !parsed.querySelector('parsererror')) {
+      mark.appendChild(document.importNode(svg, true));
+    }
+  } catch {
+    /* ignore icon */
+  }
   left.appendChild(mark);
 
   const textWrap = document.createElement('span');

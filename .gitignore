@@ -31,3 +31,6 @@ coverage/
 # Scratch
 tmp/
 temp/
+
+# Packaged extension output
+dist/

@@ -46,8 +46,18 @@ icons/                         # toolbar + brand assets
 
 ## Privacy
 
-Detection runs only on your machine using DOM, script URLs, cookies (names), and MAIN-world probes. Matching uses bundled signatures — no remote signature fetch for detection.
+Detection runs only on your machine using DOM, script URLs, cookies (names), and MAIN-world probes. Matching uses bundled signatures — no remote signature fetch. See [PRIVACY.md](./PRIVACY.md).
+
+## Package for Chrome Web Store
+
+```bash
+npm test
+npm run pack
+# → dist/whatstack-<version>.zip
+```
+
+Pre-submit checklist: [docs/PRE-SUBMIT-AUDIT.md](./docs/PRE-SUBMIT-AUDIT.md)
 
 ## License
 
-Private / unpublished until ready for Chrome Web Store. Add a license file before public release.
+Private until Chrome Web Store listing is published.
