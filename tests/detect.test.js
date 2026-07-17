@@ -317,6 +317,35 @@ describe('microfrontend / architecture detection', () => {
     assert.equal(r.hits.find((h) => h.id === 'module-federation'), undefined);
     assert.equal(r.hits.find((h) => h.id === 'single-spa'), undefined);
   });
+
+  it('Vite-style import map + System.import polyfill is NOT microfrontend/SystemJS', () => {
+    // Reproduces false positives seen on localhost:3000 apps
+    const r = detect({
+      url: 'http://localhost:3000/',
+      pass: 'deep',
+      scripts: [
+        'http://localhost:3000/src/main.tsx',
+        'http://localhost:3000/node_modules/.vite/deps/chunk-ABC.js',
+        'http://localhost:3000/assets/system.js', // must NOT match loose system.js
+      ],
+      stylesheets: [],
+      cookies: [],
+      metas: [],
+      inlineSamples: [],
+      domFlags: ['script[type="importmap"]'],
+      html: '<script type="importmap">{"imports":{"react":"/node_modules/react.js"}}</script><div id="root"></div>',
+      globals: {
+        // es-module-shims style: only System.import, not full SystemJS
+        System: { present: true },
+      },
+    });
+    assert.equal(r.hits.find((h) => h.id === 'microfrontend'), undefined, 'no MFE');
+    assert.equal(r.hits.find((h) => h.id === 'systemjs'), undefined, 'no SystemJS');
+    // import map may appear as low build signal only
+    const im = r.hits.find((h) => h.id === 'import-map');
+    if (im) assert.equal(im.confidence, 'low');
+    assert.equal(r.primary?.id === 'microfrontend', false);
+  });
 });
 
 describe('non-framework categories (local signatures)', () => {

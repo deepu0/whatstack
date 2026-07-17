@@ -553,24 +553,25 @@ export const SIGNATURES = [
     id: 'systemjs',
     name: 'SystemJS',
     category: 'architecture',
-    related: ['microfrontend'],
+    // Loader only — NOT an MFE framework. Tight paths only (no bare system.js).
     checks: [
-      { type: 'global', pattern: 'System', weight: 2, runtime: true }, // probe must validate System.import
-      { type: 'dom', pattern: 'script[type="systemjs-importmap"]', weight: 4, strong: true, runtime: true },
-      { type: 'script', pattern: /systemjs|system\.(?:min\.)?js/i, weight: 3, strong: true },
-      { type: 'inline', pattern: /System\.(?:import|register)\s*\(/i, weight: 3, strong: true, runtime: true },
+      { type: 'dom', pattern: 'script[type="systemjs-importmap"]', weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:^|[\/@])systemjs(?:@|\/|\.js)/i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:unpkg\.com|jsdelivr\.net|esm\.sh|cdnjs).*systemjs/i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /systemjs\.org|systemjs@[\d.]+/i, weight: 5, strong: true, runtime: true },
+      { type: 'global', pattern: '__systemjs', weight: 4, strong: true, runtime: true },
     ],
   },
   {
+    // Native import maps are common (Vite) — build signal, NOT microfrontend
     id: 'import-map',
     name: 'Import Maps',
-    category: 'architecture',
-    related: ['microfrontend'],
+    category: 'build',
     checks: [
-      { type: 'dom', pattern: 'script[type="importmap"]', weight: 3, strong: true, runtime: true },
+      { type: 'dom', pattern: 'script[type="importmap"]', weight: 2, runtime: true },
     ],
   },
-  // Umbrella — mostly synthesized in resolveStack; also catches explicit globals
+  // Umbrella — synthesized only from real MFE platforms
   {
     id: 'microfrontend',
     name: 'Microfrontend',
@@ -784,11 +785,11 @@ export const SIGNATURES = [
 ];
 
 /** Platforms that imply microfrontend architecture */
+/** Real MFE runtimes only — not SystemJS loader or native import maps */
 export const MFE_PLATFORM_IDS = [
   'module-federation',
   'single-spa',
   'qiankun',
-  'systemjs',
 ];
 
 export const CATEGORY_ORDER = [

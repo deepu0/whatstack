@@ -459,14 +459,20 @@ export function mainWorldProbeSource() {
     }
     if (typeof tryGet('singleSpaNavigate') === 'function') mark('singleSpaNavigate');
 
-    // SystemJS — only if it looks like the loader (not random System object)
+    // SystemJS only — NOT native import-map polyfills that merely expose System.import.
+    // Real SystemJS typically has register + (amdResolve || getConfig || constructor.name).
     const System = tryGet('System');
-    if (
-      System &&
-      typeof System === 'object' &&
-      (typeof System.import === 'function' || typeof System.register === 'function')
-    ) {
-      mark('System');
+    if (System && typeof System === 'object') {
+      const looksLikeSystemJS =
+        typeof System.register === 'function' &&
+        (typeof System.amdResolve === 'function' ||
+          typeof System.getConfig === 'function' ||
+          typeof System.resolve === 'function' ||
+          (System.constructor && /SystemJS/i.test(String(System.constructor.name || ''))));
+      // es-module-shims / import-map polyfills often only set System.import — do not mark those
+      if (looksLikeSystemJS) {
+        mark('__systemjs');
+      }
     }
 
     // Build tools
@@ -948,7 +954,8 @@ function evalCheck(signals, rule, check) {
         return pack('script[type=systemjs-importmap]');
       }
     }
-    if (patStr === 'script[type="importmap"]' || patStr.includes('importmap')) {
+    // Native importmap only — must NOT match type="systemjs-importmap"
+    if (patStr === 'script[type="importmap"]') {
       if (
         domFlags.includes('script[type="importmap"]') ||
         /type=["']importmap["']/i.test(html)
@@ -1343,14 +1350,11 @@ function resolveStack(hits, signals, ruleById) {
     }
   }
 
-  // Microfrontend umbrella: YES when a known MFE platform is present
+  // Microfrontend umbrella: ONLY real MFE platforms (federation / single-spa / qiankun).
+  // Never promote from SystemJS or native <script type="importmap"> (Vite/SPAs use those).
   {
     const platforms = MFE_PLATFORM_IDS.filter((id) => byId.has(id));
-    // SystemJS alone is weak (can be used without MFE) unless import map / multi-remote
-    const strongPlatforms = platforms.filter((id) => id !== 'systemjs' || byId.has('import-map'));
-    const systemOnly = platforms.length === 1 && platforms[0] === 'systemjs' && !byId.has('import-map');
-
-    if (strongPlatforms.length > 0 || (platforms.includes('systemjs') && byId.has('import-map'))) {
+    if (platforms.length > 0) {
       const names = platforms.map((id) => byId.get(id)?.name || id);
       if (!byId.has('microfrontend')) {
         hits.push({
@@ -1384,27 +1388,24 @@ function resolveStack(hits, signals, ruleById) {
         }
       }
       refresh();
-    } else if (systemOnly) {
-      // leave SystemJS as architecture signal without claiming full MFE
-    } else if (byId.has('import-map') && !byId.has('microfrontend')) {
-      // bare import map → possible composition, medium only
-      hits.push({
-        id: 'microfrontend',
-        name: 'Microfrontend',
-        category: 'architecture',
-        confidence: 'medium',
-        evidence: [
-          {
-            type: 'dom',
-            snippet: 'import map present (possible multi-bundle composition)',
-            weight: 2,
-            runtime: true,
-          },
-        ],
-        related: ['import-map'],
-      });
-      refresh();
     }
+  }
+
+  // Drop low-value import-map noise from headline path: cap confidence at medium
+  // and never leave it as sole architecture claim when it's the only architecture hit
+  if (byId.has('import-map')) {
+    const im = byId.get('import-map');
+    // Native import maps are ubiquitous (Vite) — keep as build signal only, low unless strong alone...
+    // Already category build; demote to low so it doesn't dominate badge/headline
+    im.confidence = 'low';
+    im.evidence = [
+      ...im.evidence,
+      {
+        type: 'dom',
+        snippet: 'native import map (common in Vite/modern apps — not an MFE)',
+        weight: 1,
+      },
+    ];
   }
 
   // Strip any remaining non-asset "script" evidence (safety net)

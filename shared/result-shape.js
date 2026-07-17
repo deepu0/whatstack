@@ -101,6 +101,8 @@ export function buildHeadline(hits, primary) {
 
   for (const cat of HEADLINE_CATEGORIES) {
     for (const h of usable.filter((x) => x.category === cat)) {
+      // Never headline native import maps or other low-signal build noise
+      if (h.id === 'import-map') continue;
       push(h);
       if (parts.length >= 5) break;
     }
