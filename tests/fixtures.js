@@ -218,8 +218,8 @@ export function fullStackFixture() {
     html: '<div id="__next" class="flex items-center justify-between bg-slate-900"></div><script id="__NEXT_DATA__"></script>',
     globals: {
       __NEXT_DATA__: { present: true },
-      __REACT_DEVTOOLS_GLOBAL_HOOK__: { present: true },
-      __REDUX_DEVTOOLS_EXTENSION__: { present: true },
+      __reactRenderer: { present: true, count: 1 },
+      __reduxStore: { present: true },
       gtag: { present: true },
     },
   };
@@ -349,10 +349,8 @@ export function newRelicFixture() {
     domFlags: [],
     html: '<html><head></head><body><div id="app"></div></body></html>',
     globals: {
-      NREUM: {
-        present: true,
-        // shape mirrors real agent; probe marks NREUM when present in fixtures via global check
-      },
+      // Fixture simulates post-probe globals (NREUM already validated in MAIN world)
+      NREUM: { present: true },
       newrelic: { present: true },
       __nr_require: { present: true },
     },

@@ -170,9 +170,11 @@ export const SIGNATURES = [
     name: 'Redux',
     category: 'state',
     checks: [
-      { type: 'global', pattern: '__REDUX_DEVTOOLS_EXTENSION__', weight: 4, strong: true, runtime: true },
-      { type: 'global', pattern: '__REDUX_DEVTOOLS_EXTENSION_COMPOSE__', weight: 4, strong: true, runtime: true },
+      // Do NOT use bare __REDUX_DEVTOOLS_EXTENSION__ — the RDT-style extension
+      // injects that hook on every page. Probe sets __reduxStore only when a store exists.
+      { type: 'global', pattern: '__reduxStore', weight: 5, strong: true, runtime: true },
       { type: 'script', pattern: /(?:\/|@)redux(?:@|\/|\.min\.js|\.js)/i, weight: 3, strong: true },
+      { type: 'script', pattern: /(?:unpkg|jsdelivr|esm\.sh).*\/redux(?:@|\/)/i, weight: 4, strong: true, runtime: true },
     ],
   },
   {

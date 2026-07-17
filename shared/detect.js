@@ -506,9 +506,17 @@ export function mainWorldProbeSource() {
     const NREUM = tryGet('NREUM');
     if (NREUM && typeof NREUM === 'object') {
       const info = NREUM.info || {};
-      const hasAgent =
-        !!(info.licenseKey || info.applicationID || info.beacon || info.agent || NREUM.init || NREUM.loader_config);
-      if (hasAgent || Object.keys(NREUM).length > 0) {
+      // Require real agent config — empty NREUM={} is not enough
+      const hasAgent = !!(
+        info.licenseKey ||
+        info.applicationID ||
+        info.beacon ||
+        info.errorBeacon ||
+        info.agent ||
+        NREUM.init ||
+        NREUM.loader_config
+      );
+      if (hasAgent) {
         mark('NREUM', info.applicationID ? { applicationID: String(info.applicationID) } : undefined);
       }
     }
@@ -552,10 +560,32 @@ export function mainWorldProbeSource() {
       /* ignore */
     }
 
+    // Redux: extension injects __REDUX_DEVTOOLS_EXTENSION__ on every page.
+    // Only mark when a store is actually connected or library APIs exist.
+    try {
+      const rde = tryGet('__REDUX_DEVTOOLS_EXTENSION__');
+      if (rde && typeof rde === 'function') {
+        // Connected apps often expose lastAction / stores via extension internals;
+        // also accept explicit store on window used by some apps.
+      }
+      const store =
+        tryGet('__REDUX_STORE__') ||
+        tryGet('store') ||
+        tryGet('__store__');
+      if (
+        store &&
+        typeof store === 'object' &&
+        typeof store.dispatch === 'function' &&
+        typeof store.getState === 'function'
+      ) {
+        mark('__reduxStore');
+      }
+    } catch {
+      /* ignore */
+    }
+
     // State / data / analytics
     for (const name of [
-      '__REDUX_DEVTOOLS_EXTENSION__',
-      '__REDUX_DEVTOOLS_EXTENSION_COMPOSE__',
       '__PINIA__',
       '__MOBX__',
       '__APOLLO_CLIENT__',

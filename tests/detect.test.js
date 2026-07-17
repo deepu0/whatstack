@@ -224,6 +224,25 @@ describe('expanded solid detections (non-flaky)', () => {
       'expected NR-specific evidence',
     );
   });
+
+  it('does not treat bare Redux DevTools extension hook as Redux', () => {
+    const r = detect({
+      url: 'https://plain.example/',
+      pass: 'deep',
+      scripts: [],
+      stylesheets: [],
+      cookies: [],
+      metas: [],
+      inlineSamples: [],
+      domFlags: [],
+      html: '<div></div>',
+      globals: {
+        __REDUX_DEVTOOLS_EXTENSION__: { present: true },
+        __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: { present: true },
+      },
+    });
+    assert.equal(r.hits.find((h) => h.id === 'redux'), undefined);
+  });
 });
 
 describe('microfrontend / architecture detection', () => {
