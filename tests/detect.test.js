@@ -22,6 +22,7 @@ import {
   newRelicFixture,
   tanstackFixture,
   tanstackProseOnlyFixture,
+  tanstackStartFixture,
 } from './fixtures.js';
 
 function hasHit(result, id, minConfidence) {
@@ -235,6 +236,15 @@ describe('expanded solid detections (non-flaky)', () => {
     hasHit(r, 'tanstack', 'high');
     const q = r.hits.find((h) => h.id === 'tanstack-query');
     assert.equal(q?.version, '5.56.2');
+  });
+
+  it('detects TanStack Start meta-framework (stack/framework) with Router + React', () => {
+    const r = detect(tanstackStartFixture());
+    hasHit(r, 'tanstack-start', 'high');
+    hasHit(r, 'tanstack-router', 'high');
+    hasHit(r, 'react', 'high');
+    hasHit(r, 'tanstack', 'high');
+    assert.equal(r.primary?.id, 'tanstack-start');
   });
 
   it('does not treat TanStack names in blog copy as packages', () => {

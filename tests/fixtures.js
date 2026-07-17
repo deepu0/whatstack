@@ -330,6 +330,31 @@ export function richStackFixture() {
   };
 }
 
+/** TanStack Start meta-framework (stack/framework: Start + Router) */
+export function tanstackStartFixture() {
+  return {
+    url: 'https://app.example/',
+    pass: 'deep',
+    scripts: [
+      'https://cdn.jsdelivr.net/npm/@tanstack/react-start@1.120.0/dist/esm/client.js',
+      'https://cdn.jsdelivr.net/npm/@tanstack/react-router@1.120.0/dist/esm/index.js',
+      'https://app.example/assets/main-abc.js',
+    ],
+    stylesheets: [],
+    cookies: [],
+    metas: [],
+    inlineSamples: [
+      'import{createServerFn}from"@tanstack/react-start";import{StartClient}from"@tanstack/react-start"',
+    ],
+    domFlags: [],
+    html: '<div id="root"></div>',
+    globals: {
+      __TANSTACK_START__: { present: true },
+      __reactRenderer: { present: true, count: 1 },
+    },
+  };
+}
+
 /** TanStack Query + Router via scoped package paths */
 export function tanstackFixture() {
   return {

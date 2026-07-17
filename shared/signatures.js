@@ -277,17 +277,29 @@ export const SIGNATURES = [
       { type: 'script', pattern: /(?:unpkg\.com|jsdelivr\.net|esm\.sh)\/.*@tanstack\/(?:react-)?virtual/i, weight: 5, strong: true, runtime: true },
     ],
   },
+  /**
+   * TanStack Start — full-stack framework (tanstack.com/stack/framework).
+   * Route model = TanStack Router; server boundary = Start (SSR, server fns).
+   * Distinct from Next.js; OpenAI ChatGPT is generally Next — detect Start only
+   * from real Start/Router package paths and runtime markers.
+   */
   {
     id: 'tanstack-start',
     name: 'TanStack Start',
     category: 'framework',
-    related: ['tanstack', 'tanstack-router'],
+    related: ['tanstack', 'tanstack-router', 'react'],
     requiresRuntime: true,
     checks: [
-      { type: 'script', pattern: /@tanstack\/(?:react-)?start(?:@|\/|$)/i, weight: 5, strong: true, runtime: true },
-      { type: 'script', pattern: /(?:unpkg\.com|jsdelivr\.net|esm\.sh)\/.*@tanstack\/start/i, weight: 5, strong: true, runtime: true },
-      { type: 'inline', pattern: /@tanstack\/(?:react-)?start/i, weight: 4, strong: true, runtime: true },
-      { type: 'global', pattern: '__TANSTACK_START__', weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /@tanstack\/react-start(?:@|\/|$)/i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /@tanstack\/solid-start(?:@|\/|$)/i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /@tanstack\/(?:react-)?start(?:@|\/|\/plugin|\/server)/i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:unpkg\.com|jsdelivr\.net|esm\.sh)\/.*@tanstack\/(?:react-)?start/i, weight: 5, strong: true, runtime: true },
+      // Vite plugin / build fingerprints sometimes appear in chunk URLs
+      { type: 'script', pattern: /tanstack[_-]start|start[_-]client|StartClient/i, weight: 3, strong: true },
+      { type: 'inline', pattern: /@tanstack\/(?:react|solid)-start|createServerFn|StartClient|createStartHandler/i, weight: 5, strong: true, runtime: true },
+      { type: 'global', pattern: '__TANSTACK_START__', weight: 5, strong: true, runtime: true },
+      { type: 'global', pattern: '__TSR_SSR__', weight: 4, strong: true, runtime: true },
+      { type: 'meta', pattern: /^generator=.*tanstack\s*start/i, weight: 3, strong: true, runtime: true },
     ],
   },
   // Umbrella: any TanStack package path (for headline / “uses TanStack”)
@@ -771,7 +783,7 @@ export const CATEGORY_LABELS = {
 export const HEADLINE_CATEGORIES = ['framework', 'architecture', 'build'];
 
 /** Meta-frameworks that own the page; competitors need independent runtime proof */
-export const META_FRAMEWORKS = ['nextjs', 'nuxt', 'sveltekit'];
+export const META_FRAMEWORKS = ['nextjs', 'nuxt', 'sveltekit', 'tanstack-start'];
 
 /** Competing SPA frameworks — suppressed when a meta-framework owns the page unless runtime-proof */
 export const COMPETING_FRAMEWORKS = ['vue', 'angular', 'svelte', 'solid', 'jquery', 'react'];

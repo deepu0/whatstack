@@ -590,6 +590,7 @@ export function mainWorldProbeSource() {
       '__TANSTACK_QUERY_CLIENT__',
       '__TANSTACK_ROUTER__',
       '__TANSTACK_START__',
+      '__TSR_SSR__',
       '__TANSTACK__',
       'ReactQuery',
     ]) {
@@ -1035,12 +1036,13 @@ function resolveStack(hits, signals, ruleById) {
 
   const meta = META_FRAMEWORKS.find((id) => byId.has(id));
 
-  // When Next/Nuxt/SvelteKit owns the page, drop competing frameworks without runtime
+  // When Next/Nuxt/SvelteKit/TanStack Start owns the page, drop competing frameworks
   if (meta) {
     const allowedWithMeta = {
       nextjs: new Set(['react', 'nextjs']),
       nuxt: new Set(['vue', 'nuxt']),
       sveltekit: new Set(['svelte', 'sveltekit']),
+      'tanstack-start': new Set(['react', 'solid', 'tanstack-start', 'tanstack-router', 'tanstack']),
     };
     const allow = allowedWithMeta[meta] || new Set([meta]);
 
@@ -1130,6 +1132,71 @@ function resolveStack(hits, signals, ruleById) {
       evidence: [{ type: 'dom', snippet: 'runtime for SvelteKit', weight: 3, runtime: true, strong: true }],
       related: ['sveltekit'],
     });
+    refresh();
+  }
+
+  // TanStack Start (meta-framework on Router) → Router + React runtime
+  if (byId.has('tanstack-start')) {
+    const s = byId.get('tanstack-start');
+    s.confidence = 'high';
+    if (versions['tanstack-start']) s.version = versions['tanstack-start'];
+
+    if (!byId.has('tanstack-router')) {
+      hits.push({
+        id: 'tanstack-router',
+        name: 'TanStack Router',
+        category: 'data',
+        confidence: 'high',
+        version: versions['tanstack-router'],
+        evidence: [
+          {
+            type: 'dom',
+            snippet: 'routing foundation for TanStack Start',
+            weight: 4,
+            runtime: true,
+            strong: true,
+          },
+        ],
+        related: ['tanstack-start', 'tanstack'],
+      });
+    } else {
+      const r = byId.get('tanstack-router');
+      r.confidence = 'high';
+      r.related = Array.from(new Set([...(r.related || []), 'tanstack-start']));
+    }
+
+    if (!byId.has('react') && !byId.has('solid')) {
+      hits.push({
+        id: 'react',
+        name: 'React',
+        category: 'framework',
+        confidence: 'high',
+        version: versions.react,
+        evidence: [
+          {
+            type: 'dom',
+            snippet: 'runtime for TanStack Start (React path)',
+            weight: 3,
+            runtime: true,
+            strong: true,
+          },
+        ],
+        related: ['tanstack-start'],
+      });
+    } else if (byId.has('react')) {
+      const r = byId.get('react');
+      r.confidence = 'high';
+      r.related = Array.from(new Set([...(r.related || []), 'tanstack-start']));
+      if (!r.evidence.some((e) => /TanStack Start/i.test(e.snippet))) {
+        r.evidence.push({
+          type: 'dom',
+          snippet: 'confirmed via TanStack Start stack',
+          weight: 3,
+          runtime: true,
+          strong: true,
+        });
+      }
+    }
     refresh();
   }
 
@@ -1360,7 +1427,18 @@ export function detect(signals) {
 function pickPrimary(hits) {
   const frameworks = hits.filter((h) => h.category === 'framework' && h.confidence !== 'low');
   if (!frameworks.length) return null;
-  const prefer = ['nextjs', 'nuxt', 'sveltekit', 'angular', 'react', 'vue', 'svelte', 'solid', 'jquery'];
+  const prefer = [
+    'nextjs',
+    'tanstack-start',
+    'nuxt',
+    'sveltekit',
+    'angular',
+    'react',
+    'vue',
+    'svelte',
+    'solid',
+    'jquery',
+  ];
   for (const id of prefer) {
     const hit = frameworks.find((h) => h.id === id);
     if (hit) return { id: hit.id, name: hit.name };
