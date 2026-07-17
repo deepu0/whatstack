@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "WhatStack",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "description": "What stack is this site using? React, Next.js, Vue, Angular, and more — fully local detection.",
   "icons": {
     "16": "icons/icon16.png",

@@ -586,6 +586,26 @@ export function mainWorldProbeSource() {
 
     // State / data / analytics
     // TanStack (dev / rare runtime markers)
+    // Remix / React Router data APIs (ChatGPT web uses Remix lineage)
+    for (const name of [
+      '__remixContext',
+      '__remixManifest',
+      '__remixRouter',
+      '__remixRouteModules',
+      '__reactRouterDataRouter',
+      '__staticRouterHydrationData',
+      '__reactRouterVersion',
+    ]) {
+      if (tryGet(name) !== undefined && tryGet(name) !== null) {
+        const v = tryGet(name);
+        if (name === '__reactRouterVersion' && (typeof v === 'string' || typeof v === 'number')) {
+          mark(name, { version: String(v) });
+        } else {
+          mark(name);
+        }
+      }
+    }
+
     for (const name of [
       '__TANSTACK_QUERY_CLIENT__',
       '__TANSTACK_ROUTER__',
@@ -715,6 +735,11 @@ export function extractVersions(signals) {
   if (g.next && g.next.version) take('nextjs', g.next.version);
   if (g.__NEXT_DATA__ && g.__NEXT_DATA__.version) take('nextjs', g.__NEXT_DATA__.version);
   if (g.__ng_version_attr && g.__ng_version_attr.version) take('angular', g.__ng_version_attr.version);
+  if (g.__reactRouterVersion && g.__reactRouterVersion.version) {
+    take('react-router', g.__reactRouterVersion.version);
+  } else if (typeof g.__reactRouterVersion === 'string') {
+    take('react-router', g.__reactRouterVersion);
+  }
 
   const ngFlag = (signals.domFlags || []).find((d) => d.startsWith('ng-version:'));
   if (ngFlag) take('angular', ngFlag.slice('ng-version:'.length));
@@ -757,6 +782,13 @@ export function extractVersions(signals) {
       const id = map[m[1].toLowerCase()];
       if (id) take(id, m[2]);
     }
+    const remixPkg = url.match(/@remix-run\/[a-z0-9-]+@([\d.]+)/i);
+    if (remixPkg) take('remix', remixPkg[1]);
+    const rrPkg = url.match(/react-router(?:-dom)?@([\d.]+)/i);
+    if (rrPkg) take('react-router', rrPkg[1]);
+    const rrScoped = url.match(/@react-router\/[a-z0-9-]+@([\d.]+)/i);
+    if (rrScoped) take('react-router', rrScoped[1]);
+
     // @tanstack/react-query@5.x etc.
     const ts = url.match(/@tanstack\/([a-z0-9-]+)@([\d.]+)/i);
     if (ts) {
@@ -1043,6 +1075,7 @@ function resolveStack(hits, signals, ruleById) {
       nuxt: new Set(['vue', 'nuxt']),
       sveltekit: new Set(['svelte', 'sveltekit']),
       'tanstack-start': new Set(['react', 'solid', 'tanstack-start', 'tanstack-router', 'tanstack']),
+      remix: new Set(['react', 'remix', 'react-router']),
     };
     const allow = allowedWithMeta[meta] || new Set([meta]);
 
@@ -1132,6 +1165,71 @@ function resolveStack(hits, signals, ruleById) {
       evidence: [{ type: 'dom', snippet: 'runtime for SvelteKit', weight: 3, runtime: true, strong: true }],
       related: ['sveltekit'],
     });
+    refresh();
+  }
+
+  // Remix → React + React Router
+  if (byId.has('remix')) {
+    const rem = byId.get('remix');
+    rem.confidence = 'high';
+    if (versions.remix) rem.version = versions.remix;
+
+    if (!byId.has('react')) {
+      hits.push({
+        id: 'react',
+        name: 'React',
+        category: 'framework',
+        confidence: 'high',
+        version: versions.react,
+        evidence: [
+          {
+            type: 'dom',
+            snippet: 'runtime for Remix',
+            weight: 3,
+            runtime: true,
+            strong: true,
+          },
+        ],
+        related: ['remix'],
+      });
+    } else {
+      const r = byId.get('react');
+      r.confidence = 'high';
+      r.related = Array.from(new Set([...(r.related || []), 'remix']));
+      if (!r.evidence.some((e) => /Remix/i.test(e.snippet))) {
+        r.evidence.push({
+          type: 'dom',
+          snippet: 'confirmed via Remix stack',
+          weight: 3,
+          runtime: true,
+          strong: true,
+        });
+      }
+    }
+
+    if (!byId.has('react-router')) {
+      hits.push({
+        id: 'react-router',
+        name: 'React Router',
+        category: 'data',
+        confidence: 'high',
+        version: versions['react-router'],
+        evidence: [
+          {
+            type: 'dom',
+            snippet: 'routing foundation for Remix',
+            weight: 4,
+            runtime: true,
+            strong: true,
+          },
+        ],
+        related: ['remix'],
+      });
+    } else {
+      const rr = byId.get('react-router');
+      rr.confidence = 'high';
+      rr.related = Array.from(new Set([...(rr.related || []), 'remix']));
+    }
     refresh();
   }
 
@@ -1429,6 +1527,7 @@ function pickPrimary(hits) {
   if (!frameworks.length) return null;
   const prefer = [
     'nextjs',
+    'remix',
     'tanstack-start',
     'nuxt',
     'sveltekit',

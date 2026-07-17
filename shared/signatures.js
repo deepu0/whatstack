@@ -163,6 +163,46 @@ export const SIGNATURES = [
       { type: 'script', pattern: /code\.jquery\.com\/jquery/i, weight: 4, strong: true, runtime: true },
     ],
   },
+  /**
+   * Remix (Remix Run) — full-stack React framework.
+   * ChatGPT web (chatgpt.com) moved Next.js → Remix (widely reported Sep 2024;
+   * confirmed via client fingerprints / community reverse-engineering, e.g.
+   * Ryan Florence "New Remix app just dropped: chatgpt.com"). Not TanStack Start.
+   */
+  {
+    id: 'remix',
+    name: 'Remix',
+    category: 'framework',
+    related: ['react', 'react-router'],
+    requiresRuntime: true,
+    checks: [
+      { type: 'global', pattern: '__remixContext', weight: 5, strong: true, runtime: true },
+      { type: 'global', pattern: '__remixManifest', weight: 5, strong: true, runtime: true },
+      { type: 'global', pattern: '__remixRouter', weight: 5, strong: true, runtime: true },
+      { type: 'global', pattern: '__remixRouteModules', weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /@remix-run\/(?:react|node|cloudflare|deno|serve)(?:@|\/|$)/i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:unpkg\.com|jsdelivr\.net|esm\.sh)\/.*@remix-run\//i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /\/build\/(?:entry\.client|root|routes)/i, weight: 2 },
+      { type: 'inline', pattern: /\b__remixContext\b|\b__remixManifest\b|@remix-run\//i, weight: 5, strong: true, runtime: true },
+      { type: 'meta', pattern: /^generator=.*\bremix\b/i, weight: 3, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'react-router',
+    name: 'React Router',
+    category: 'data',
+    related: ['react'],
+    checks: [
+      // React Router v6.4+ data APIs / Remix-adjacent; v7 merges with Remix lineage
+      { type: 'global', pattern: '__reactRouterDataRouter', weight: 5, strong: true, runtime: true },
+      { type: 'global', pattern: '__staticRouterHydrationData', weight: 4, strong: true, runtime: true },
+      { type: 'global', pattern: '__reactRouterVersion', weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /@react-router\/(?:dom|dev|node|cloudflare)(?:@|\/|$)/i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /react-router(?:-dom)?(?:@|\/)[\d.]+/i, weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:unpkg\.com|jsdelivr\.net|esm\.sh)\/.*react-router(?:-dom)?/i, weight: 4, strong: true, runtime: true },
+      { type: 'inline', pattern: /@react-router\/|react-router-dom/i, weight: 3, strong: true, runtime: true },
+    ],
+  },
 
   // ── State (path-scoped assets) ──────────────────────────────
   {
@@ -783,7 +823,7 @@ export const CATEGORY_LABELS = {
 export const HEADLINE_CATEGORIES = ['framework', 'architecture', 'build'];
 
 /** Meta-frameworks that own the page; competitors need independent runtime proof */
-export const META_FRAMEWORKS = ['nextjs', 'nuxt', 'sveltekit', 'tanstack-start'];
+export const META_FRAMEWORKS = ['nextjs', 'nuxt', 'sveltekit', 'tanstack-start', 'remix'];
 
 /** Competing SPA frameworks — suppressed when a meta-framework owns the page unless runtime-proof */
 export const COMPETING_FRAMEWORKS = ['vue', 'angular', 'svelte', 'solid', 'jquery', 'react'];

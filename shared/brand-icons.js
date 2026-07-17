@@ -93,6 +93,14 @@ export const BRAND_ICONS = {
     bg: '#111827',
     svg: '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#FF4154" stroke-width="1.5"/><path d="M8 14c1.5 2 6.5 2 8 0M9 10h.01M15 10h.01" stroke="#FF4154" stroke-width="1.5" stroke-linecap="round"/></svg>',
   },
+  remix: {
+    bg: '#121212',
+    svg: '<svg viewBox="0 0 24 24"><path d="M5 6h9a4 4 0 0 1 0 8H9v4H5V6zm4 5h4a1.5 1.5 0 0 0 0-3H9v3z" fill="#E8F2FF"/><path d="M14 17c1.2 1.5 2.8 2.5 5 2.5v-2.2c-1.3 0-2.3-.5-3.1-1.4L14 17z" fill="#3992FF"/></svg>',
+  },
+  'react-router': {
+    bg: '#CA4245',
+    svg: '<svg viewBox="0 0 24 24" fill="none"><circle cx="7" cy="7" r="2.5" fill="#fff"/><circle cx="17" cy="12" r="2.5" fill="#fff"/><circle cx="7" cy="17" r="2.5" fill="#fff"/><path d="M9 8.2 14.5 11M9 15.8 14.5 13" stroke="#fff" stroke-width="1.5"/></svg>',
+  },
   swr: {
     bg: '#000',
     svg: '<svg viewBox="0 0 24 24"><text x="12" y="15.5" text-anchor="middle" font-size="9" font-weight="700" fill="#fff" font-family="system-ui">SWR</text></svg>',

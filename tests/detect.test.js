@@ -23,6 +23,7 @@ import {
   tanstackFixture,
   tanstackProseOnlyFixture,
   tanstackStartFixture,
+  remixFixture,
 } from './fixtures.js';
 
 function hasHit(result, id, minConfidence) {
@@ -245,6 +246,16 @@ describe('expanded solid detections (non-flaky)', () => {
     hasHit(r, 'react', 'high');
     hasHit(r, 'tanstack', 'high');
     assert.equal(r.primary?.id, 'tanstack-start');
+  });
+
+  it('detects Remix (ChatGPT-style) with React + React Router', () => {
+    const r = detect(remixFixture());
+    hasHit(r, 'remix', 'high');
+    hasHit(r, 'react', 'high');
+    hasHit(r, 'react-router', 'high');
+    assert.equal(r.primary?.id, 'remix');
+    assert.equal(r.hits.find((h) => h.id === 'nextjs'), undefined);
+    assert.equal(r.hits.find((h) => h.id === 'tanstack-start'), undefined);
   });
 
   it('does not treat TanStack names in blog copy as packages', () => {

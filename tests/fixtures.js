@@ -330,6 +330,31 @@ export function richStackFixture() {
   };
 }
 
+/** Remix (ChatGPT-style stack fingerprints) */
+export function remixFixture() {
+  return {
+    url: 'https://chatgpt.com/',
+    pass: 'deep',
+    scripts: [
+      'https://cdn.jsdelivr.net/npm/@remix-run/react@2.12.0/dist/esm/index.js',
+      'https://chatgpt.com/build/entry.client-ABC123.js',
+      'https://chatgpt.com/build/root-DEF456.js',
+    ],
+    stylesheets: [],
+    cookies: [],
+    metas: [],
+    inlineSamples: ['window.__remixContext=...;window.__remixManifest={routes:'],
+    domFlags: [],
+    html: '<div id="root"></div>',
+    globals: {
+      __remixContext: { present: true },
+      __remixManifest: { present: true },
+      __remixRouter: { present: true },
+      __reactRenderer: { present: true, count: 1 },
+    },
+  };
+}
+
 /** TanStack Start meta-framework (stack/framework: Start + Router) */
 export function tanstackStartFixture() {
   return {
