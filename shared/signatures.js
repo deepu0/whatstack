@@ -828,3 +828,43 @@ export const META_FRAMEWORKS = ['nextjs', 'nuxt', 'sveltekit', 'tanstack-start',
 
 /** Competing SPA frameworks — suppressed when a meta-framework owns the page unless runtime-proof */
 export const COMPETING_FRAMEWORKS = ['vue', 'angular', 'svelte', 'solid', 'jquery', 'react'];
+
+/**
+ * Extract all unique DOM probe selectors and flags from SIGNATURES.
+ * Used by content-script.js for declarative DOM scanning.
+ */
+export function getDomProbeRules() {
+  const rules = [];
+  const seen = new Set();
+
+  for (const sig of SIGNATURES) {
+    if (!sig.checks) continue;
+    for (const check of sig.checks) {
+      if (check.type === 'dom' && typeof check.pattern === 'string') {
+        const selector = check.pattern;
+        if (!seen.has(selector)) {
+          seen.add(selector);
+          rules.push({ selector, flag: selector });
+        }
+      }
+    }
+  }
+
+  // Include structural/utility fallback flags
+  const structural = [
+    { selector: '[data-next-page]', flag: '[data-next-page]' },
+    { selector: '[class*="_ngcontent-"],[class*="_nghost-"]', flag: '[_ngcontent-]' },
+    { selector: '[class*="svelte-"]', flag: '.svelte-' },
+    { selector: '[class*="MuiButton-"],[class*="MuiBox-"]', flag: '[class*="MuiButton-"]' },
+  ];
+
+  for (const item of structural) {
+    if (!seen.has(item.flag)) {
+      seen.add(item.flag);
+      rules.push(item);
+    }
+  }
+
+  return rules;
+}
+

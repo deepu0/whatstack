@@ -15,6 +15,9 @@ import {
   META_FRAMEWORKS,
   MFE_PLATFORM_IDS,
 } from './signatures.js';
+import { scoreConfidence, matchCheck } from './signature-matcher.js';
+import { applyMicrofrontendClassification, calculateBadgeCount } from './architecture-classifier.js';
+
 
 /**
  * @typedef {object} PageSignals
@@ -987,20 +990,8 @@ function evalCheck(signals, rule, check) {
   return null;
 }
 
-/**
- * @param {Evidence[]} evidence
- * @param {boolean} hadStrong
- */
-export function scoreConfidence(evidence, hadStrong) {
-  if (!evidence.length) return 'low';
-  const total = evidence.reduce((a, e) => a + (e.weight || 0), 0);
-  const maxW = Math.max(...evidence.map((e) => e.weight || 0));
-  const hasRuntime = evidence.some((e) => e.runtime);
-  if (hadStrong || hasRuntime && maxW >= 3 || maxW >= 4 || total >= 5) return 'high';
-  if (maxW >= 3 || total >= 3 || (evidence.length >= 2 && total >= 2)) return 'medium';
-  if (total >= 2 || maxW >= 2) return 'medium';
-  return 'low';
-}
+export { scoreConfidence } from './signature-matcher.js';
+
 
 /**
  * True if evidence includes real runtime or strong asset proof.
@@ -1562,9 +1553,9 @@ export function mergeDeepSignals(light, mainGlobals) {
  * @param {ScanResult} result
  */
 export function badgeCount(result) {
-  if (!result || !result.hits) return 0;
-  return result.hits.filter((h) => h.confidence === 'high' || h.confidence === 'medium').length;
+  return calculateBadgeCount(result);
 }
+
 
 /**
  * @param {Hit[]} hits
