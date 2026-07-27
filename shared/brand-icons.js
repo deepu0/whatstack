@@ -272,10 +272,21 @@ const FALLBACK = {
   svg: '<svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="3" fill="#64748b"/><path d="M8 12h8M12 8v8" stroke="#e2e8f0" stroke-width="1.5" stroke-linecap="round"/></svg>',
 };
 
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
 /**
+ * The marks above omit `xmlns` to keep them short. Consumers parse them with
+ * `DOMParser(..., 'image/svg+xml')`, and XML parsing puts the root element in
+ * the NULL namespace when the document declares none — such an element has the
+ * tagName `svg` but is not an SVGElement, so the browser never paints it. The
+ * row then shows only its background colour. Add the namespace at this boundary
+ * so every caller gets a string that actually renders.
+ *
  * @param {string} id
  * @returns {{ bg: string, svg: string }}
  */
 export function getBrandIcon(id) {
-  return BRAND_ICONS[id] || FALLBACK;
+  const icon = BRAND_ICONS[id] || FALLBACK;
+  if (icon.svg.includes('xmlns=')) return icon;
+  return { ...icon, svg: icon.svg.replace('<svg', `<svg xmlns="${SVG_NS}"`) };
 }

@@ -15,14 +15,14 @@ import {
   META_FRAMEWORKS,
   MFE_PLATFORM_IDS,
 } from './signatures.js';
-import { scoreConfidence, matchCheck } from './signature-matcher.js';
-import { applyMicrofrontendClassification, calculateBadgeCount } from './architecture-classifier.js';
+import { scoreConfidence } from './signature-matcher.js';
+import { calculateBadgeCount } from './architecture-classifier.js';
 
 
 /**
  * @typedef {object} PageSignals
  * @property {string} [url]
- * @property {string} [html]
+ * @property {string} [html] accepted for compatibility, IGNORED as evidence — page text must never fire a hit
  * @property {string[]} [scripts]
  * @property {string[]} [stylesheets]
  * @property {string[]} [cookies]
@@ -63,163 +63,9 @@ import { applyMicrofrontendClassification, calculateBadgeCount } from './archite
  * @property {{ id: string, name: string } | null} primary
  */
 
-/** @param {string[]} arr */
-function dedupeStrings(arr) {
-  return [...new Set(arr.filter(Boolean))];
-}
-
-/**
- * @param {Document} doc
- * @param {string} [href]
- * @returns {PageSignals}
- */
-export function collectLightSignals(doc, href = '') {
-  const scripts = [];
-  const inlineSamples = [];
-
-  doc.querySelectorAll('script[src]').forEach((el) => {
-    const src = el.getAttribute('src');
-    if (src) scripts.push(src);
-  });
-
-  doc.querySelectorAll('link[href]').forEach((el) => {
-    const rel = (el.getAttribute('rel') || '').toLowerCase();
-    const as = (el.getAttribute('as') || '').toLowerCase();
-    const hrefAttr = el.getAttribute('href');
-    if (!hrefAttr) return;
-    if (rel.includes('modulepreload') || rel === 'preload' || rel === 'prefetch') {
-      scripts.push(hrefAttr);
-    }
-    if (as === 'script' || as === 'style') scripts.push(hrefAttr);
-  });
-
-  doc.querySelectorAll('script').forEach((el) => {
-    const id = el.getAttribute('id');
-    if (id) scripts.push(`inline:#${id}`);
-    if (!el.getAttribute('src')) {
-      const text = (el.textContent || '').slice(0, 12_000);
-      if (text.trim()) inlineSamples.push(text);
-    }
-  });
-
-  try {
-    const perf =
-      typeof performance !== 'undefined' && performance.getEntriesByType
-        ? performance.getEntriesByType('resource')
-        : [];
-    for (const entry of perf) {
-      if (entry && entry.name) scripts.push(String(entry.name));
-    }
-  } catch {
-    /* ignore */
-  }
-
-  const stylesheets = [];
-  doc.querySelectorAll('link[rel="stylesheet"][href]').forEach((el) => {
-    const hrefAttr = el.getAttribute('href');
-    if (hrefAttr) stylesheets.push(hrefAttr);
-  });
-
-  const metas = [];
-  doc.querySelectorAll('meta[name], meta[property]').forEach((el) => {
-    const name = el.getAttribute('name') || el.getAttribute('property') || '';
-    const content = el.getAttribute('content') || '';
-    if (name) metas.push(`${name}=${content}`);
-  });
-
-  const cookies = [];
-  try {
-    const raw = typeof doc.cookie === 'string' ? doc.cookie : '';
-    raw.split(';').forEach((part) => {
-      const name = part.trim().split('=')[0];
-      if (name) cookies.push(name);
-    });
-  } catch {
-    /* ignore */
-  }
-
-  // Keep HTML for attribute extraction + structural markers only (not prose matching)
-  const html = doc.documentElement ? doc.documentElement.outerHTML.slice(0, 400_000) : '';
-
-  return {
-    url: href || (typeof doc.location !== 'undefined' ? String(doc.location.href || '') : ''),
-    html,
-    scripts: dedupeStrings(scripts),
-    stylesheets: dedupeStrings(stylesheets),
-    cookies,
-    metas,
-    inlineSamples,
-    domFlags: probeDomFlags(doc),
-    globals: {},
-    pass: 'light',
-  };
-}
-
-/**
- * @param {Document} doc
- * @returns {string[]}
- */
-export function probeDomFlags(doc) {
-  const flags = [];
-  const checks = [
-    ['script#__NEXT_DATA__', 'script#__NEXT_DATA__'],
-    ['#__next', '#__next'],
-    ['next-route-announcer', 'next-route-announcer'],
-    ['[data-nextjs-scroll-focus-boundary]', '[data-nextjs-scroll-focus-boundary]'],
-    ['[data-next-page]', '[data-next-page]'],
-    ['[data-reactroot]', '[data-reactroot]'],
-    ['[data-reactid]', '[data-reactid]'],
-    ['[ng-version]', '[ng-version]'],
-    ['[class*="_ngcontent-"],[class*="_nghost-"]', '[_ngcontent-]'],
-    ['#__nuxt', '#__nuxt'],
-    ['[data-sveltekit-hydrate]', '[data-sveltekit-hydrate]'],
-    ['[data-v-]', '[data-v-]'],
-    ['[class*="svelte-"]', '.svelte-'],
-    ['[class*="MuiButton-"],[class*="MuiBox-"]', '[class*="MuiButton-"]'],
-    ['[data-netlify]', '[data-netlify]'],
-    ['.btn-primary, .modal-dialog, .container-fluid', '.btn-primary'],
-    ['[data-single-spa]', '[data-single-spa]'],
-    ['script[type="systemjs-importmap"]', 'script[type="systemjs-importmap"]'],
-    ['script[type="importmap"]', 'script[type="importmap"]'],
-    ['[data-emotion]', '[data-emotion]'],
-    ['[data-styled]', '[data-styled]'],
-  ];
-
-  for (const [selector, flag] of checks) {
-    try {
-      if (doc.querySelector(selector)) flags.push(flag);
-    } catch {
-      /* ignore */
-    }
-  }
-
-  try {
-    const ng = doc.querySelector('[ng-version]');
-    if (ng) {
-      const v = ng.getAttribute('ng-version');
-      if (v) flags.push(`ng-version:${v}`);
-    }
-  } catch {
-    /* ignore */
-  }
-
-  // Tailwind: require multiple utility classes across elements (still low-weight)
-  try {
-    const all = doc.querySelectorAll('[class]');
-    const utilRe =
-      /\b(?:flex|grid|items-center|justify-between|bg-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-\d{2,3}|text-(?:xs|sm|base|lg|xl)|p-\d|px-\d|py-\d|m-\d|rounded(?:-\w+)?|shadow(?:-\w+)?)\b/;
-    let hits = 0;
-    const limit = Math.min(all.length, 100);
-    for (let i = 0; i < limit; i++) {
-      if (utilRe.test(all[i].getAttribute('class') || '')) hits++;
-    }
-    if (hits >= 12) flags.push('tailwind-utilities');
-  } catch {
-    /* ignore */
-  }
-
-  return flags;
-}
+// Light signals (DOM flags, scripts, metas, cookies) are collected by
+// content/content-script.js — a classic script in the page. Edit it there; this
+// module only consumes the signals.
 
 /**
  * MAIN-world probe — serialized into the page via chrome.scripting.
@@ -307,13 +153,16 @@ export function mainWorldProbeSource() {
       }
 
       if (rendererCount > 0) {
+        // Only __reactRenderer — do NOT also mark 'React' from the hook. The
+        // version comes off the registered renderer, not off a window.React
+        // that a bundled app does not have, and marking it produced evidence
+        // reading "window.React v18.3.1" for a global that was never there.
         mark(
           '__reactRenderer',
           reactVersion
             ? { version: reactVersion, count: rendererCount }
             : { count: rendererCount },
         );
-        if (reactVersion) mark('React', { version: reactVersion });
       }
 
       // UMD globals — only if they look like real React (createElement / version)
@@ -560,14 +409,7 @@ export function mainWorldProbeSource() {
     if (typeof tryGet('Intercom') === 'function') mark('Intercom');
     if (tryGet('intercomSettings')) mark('intercomSettings');
     if (typeof tryGet('zE') === 'function') mark('zE');
-    if (tryGet('LDClient') || (tryGet('LDClient') === undefined && tryGet('launchDarkly'))) {
-      /* LD often on window as LDClient after init */
-    }
-    try {
-      if (g.LDClient) mark('LDClient');
-    } catch {
-      /* ignore */
-    }
+    if (tryGet('LDClient')) mark('LDClient');
 
     // Redux: extension injects __REDUX_DEVTOOLS_EXTENSION__ on every page.
     // Only mark when a store is actually connected or library APIs exist.
@@ -645,6 +487,31 @@ export function mainWorldProbeSource() {
       /* ignore */
     }
 
+    // Vue 3 production apps expose NO window.Vue and no __VUE__ (devtools-only).
+    // The reliable runtime fingerprint is the mount container: app.mount(el)
+    // sets el.__vue_app__ (with .version) and stamps data-v-app on it.
+    try {
+      const candidates = [
+        document.querySelector('[data-v-app]'),
+        document.querySelector('#app'),
+        document.querySelector('#__nuxt'),
+      ].filter(Boolean);
+      if (!candidates.length && document.body) {
+        const kids = document.body.children;
+        const limit = Math.min(kids.length, 12);
+        for (let i = 0; i < limit; i++) candidates.push(kids[i]);
+      }
+      for (const el of candidates) {
+        const app = el && el.__vue_app__;
+        if (app && typeof app === 'object') {
+          mark('__vue_app__', app.version ? { version: String(app.version) } : undefined);
+          break;
+        }
+      }
+    } catch {
+      /* ignore */
+    }
+
     return present;
   };
 }
@@ -675,28 +542,23 @@ export function isAssetLike(s) {
 }
 
 /**
- * @param {string} html
- * @returns {string[]}
- */
-export function extractAttrAssets(html) {
-  if (!html) return [];
-  const out = [];
-  const re = /\b(?:src|href)=["']([^"']+)["']/gi;
-  let m;
-  while ((m = re.exec(html))) {
-    if (m[1]) out.push(m[1]);
-  }
-  return out;
-}
-
-/**
+ * Asset evidence pool: collected script/preload/resource URLs + stylesheets.
+ *
+ * Deliberately NOT scraped from signals.html. An earlier version regexed
+ * src/href attributes out of the raw HTML string — but quotes are not
+ * entity-escaped in text nodes, so a docs page displaying
+ * `<script src="https://unpkg.com/react@18.2.0/...">` inside a <pre> matched
+ * as though the script were loaded (high-confidence React + version), and a
+ * plain `<a href="https://hotjar.com">` link fired vendor hits. The content
+ * script already collects every real asset: script[src], preload links,
+ * stylesheets, and performance resource entries (everything actually fetched).
+ *
  * @param {PageSignals} signals
  */
 export function assetCandidates(signals) {
   const fromSignals = (signals.scripts || []).filter(isAssetLike);
-  const fromHtml = extractAttrAssets(signals.html || '').filter(isAssetLike);
   const fromCss = (signals.stylesheets || []).filter(isAssetLike);
-  return [...new Set([...fromSignals, ...fromHtml, ...fromCss])];
+  return [...new Set([...fromSignals, ...fromCss])];
 }
 
 function clip(s, n = 120) {
@@ -738,8 +600,10 @@ export function extractVersions(signals) {
 
   if (g.jQuery && g.jQuery.version) take('jquery', g.jQuery.version);
   else if (g.$ && g.$.version) take('jquery', g.$.version);
+  if (g.__reactRenderer && g.__reactRenderer.version) take('react', g.__reactRenderer.version);
   if (g.React && g.React.version) take('react', g.React.version);
   if (g.ReactDOM && g.ReactDOM.version) take('react', g.ReactDOM.version);
+  if (g.__vue_app__ && g.__vue_app__.version) take('vue', g.__vue_app__.version);
   if (g.Vue && g.Vue.version) take('vue', g.Vue.version);
   if (g.next && g.next.version) take('nextjs', g.next.version);
   if (g.__NEXT_DATA__ && g.__NEXT_DATA__.version) take('nextjs', g.__NEXT_DATA__.version);
@@ -825,19 +689,16 @@ export function extractVersions(signals) {
 
 /**
  * @param {PageSignals} signals
- * @param {import('./signatures.js').SignatureRule} rule
  * @param {import('./signatures.js').SignatureCheck} check
  * @returns {Evidence|null}
  */
-function evalCheck(signals, rule, check) {
+function evalCheck(signals, check) {
   const { type, pattern, weight, strong, runtime } = check;
   const cookies = signals.cookies || [];
   const metas = signals.metas || [];
   const domFlags = signals.domFlags || [];
   const globals = signals.globals || {};
-  const html = signals.html || '';
   const inlineSamples = signals.inlineSamples || [];
-  const stylesheets = signals.stylesheets || [];
 
   const pack = (snippet) => ({
     type,
@@ -862,8 +723,9 @@ function evalCheck(signals, rule, check) {
   }
 
   if (type === 'css') {
-    const cssPool = [...stylesheets, ...extractAttrAssets(html)].filter(isAssetLike);
-    for (const s of cssPool) {
+    // Perf resource entries land in scripts[] and include CSS fetches, so the
+    // full asset pool covers more than link[rel=stylesheet] alone.
+    for (const s of assetCandidates(signals)) {
       if (textMatches(pattern, s)) return { ...pack(s), type: 'css' };
     }
     return null;
@@ -887,7 +749,9 @@ function evalCheck(signals, rule, check) {
     const key = typeof pattern === 'string' ? pattern : null;
     if (key && Object.prototype.hasOwnProperty.call(globals, key)) {
       const val = globals[key];
-      if (val && (val === true || val.present || typeof val === 'object')) {
+      // A probe reporting absence as `{ present: false }` must not score as a
+      // hit, so require an explicit positive marker rather than any object.
+      if (val === true || (val && typeof val === 'object' && val.present !== false)) {
         const version =
           val && typeof val === 'object' && val.version ? ` v${val.version}` : '';
         return pack(`window.${key}${version}`);
@@ -902,89 +766,13 @@ function evalCheck(signals, rule, check) {
   if (type === 'dom') {
     const patStr = typeof pattern === 'string' ? pattern : String(pattern);
 
-    // Direct flag match
-    for (const f of domFlags) {
-      if (f === patStr || f === pattern) return pack(f);
-      if (patStr === 'tailwind-utilities' && f === 'tailwind-utilities') return pack(f);
-      if (patStr === '[data-v-]' && (f === '[data-v-]' || f.startsWith('[data-v'))) return pack(f);
-      if (patStr === '.svelte-' && f === '.svelte-') return pack(f);
-      if (patStr === '.btn-primary' && f === '.btn-primary') return pack(f);
-      if (patStr.includes('MuiButton') && f.includes('Mui')) return pack(f);
-    }
-
-    // Structural markers — allow HTML only for known safe tokens (not free-text names)
-    const structural = [
-      ['script#__NEXT_DATA__', /id=["']__NEXT_DATA__["']/, 'script#__NEXT_DATA__'],
-      ['#__next', /id=["']__next["']/, '#__next'],
-      ['next-route-announcer', /next-route-announcer/i, 'next-route-announcer'],
-      ['[data-nextjs-scroll-focus-boundary]', /data-nextjs-scroll-focus-boundary/, 'data-nextjs-scroll-focus-boundary'],
-      ['[data-reactroot]', /data-reactroot/, '[data-reactroot]'],
-      ['[ng-version]', /ng-version=/, null],
-      ['[_ngcontent-],[_nghost-]', /_ngcontent-|_nghost-/, 'Angular host attrs'],
-      ['#__nuxt', /id=["']__nuxt["']/, '#__nuxt'],
-      ['[data-sveltekit-hydrate]', /data-sveltekit-hydrate/, '[data-sveltekit-hydrate]'],
-      ['[data-netlify]', /data-netlify/, '[data-netlify]'],
-    ];
-
-    for (const [id, re, label] of structural) {
-      if (patStr === id || patStr.startsWith(id.split(',')[0])) {
-        if (domFlags.some((f) => f === id || f.startsWith(id.replace(/[\[\]]/g, '').slice(0, 8)) || (id === '[ng-version]' && f.startsWith('ng-version')))) {
-          const flag = domFlags.find((f) => f.startsWith('ng-version:')) || label || id;
-          return pack(flag);
-        }
-        if (html && re.test(html)) return pack(label || id);
-      }
-    }
-
-    if (patStr === '[ng-version]') {
-      const flag = domFlags.find((d) => d.startsWith('ng-version:'));
-      if (flag) return pack(flag);
-      if (/ng-version=["'][\d.]+/.test(html)) {
-        const m = html.match(/ng-version=["']([\d.]+)["']/);
-        return pack(m ? `ng-version:${m[1]}` : '[ng-version]');
-      }
-    }
-
-    if (patStr.includes('MuiButton') && /MuiButton-|MuiBox-/.test(html)) {
-      return pack('MUI class markers');
-    }
-
-    if (patStr === 'script[type="systemjs-importmap"]' || patStr.includes('systemjs-importmap')) {
-      if (
-        domFlags.includes('script[type="systemjs-importmap"]') ||
-        /type=["']systemjs-importmap["']/i.test(html)
-      ) {
-        return pack('script[type=systemjs-importmap]');
-      }
-    }
-    // Native importmap only — must NOT match type="systemjs-importmap"
-    if (patStr === 'script[type="importmap"]') {
-      if (
-        domFlags.includes('script[type="importmap"]') ||
-        /type=["']importmap["']/i.test(html)
-      ) {
-        return pack('script[type=importmap]');
-      }
-    }
-    if (patStr === '[data-single-spa]' && (domFlags.includes('[data-single-spa]') || /data-single-spa/i.test(html))) {
-      return pack('[data-single-spa]');
-    }
-    if (patStr === '[data-emotion]' && (domFlags.includes('[data-emotion]') || /data-emotion=/i.test(html))) {
-      return pack('[data-emotion]');
-    }
-    if (patStr === '[data-styled]' && (domFlags.includes('[data-styled]') || /data-styled=/i.test(html))) {
-      return pack('[data-styled]');
-    }
-    if (patStr === '[sc-]' && /\bsc-[a-zA-Z0-9]/i.test(html)) {
-      return pack('styled-components sc- class');
-    }
-
-    if (rule.id === 'tailwind' && (patStr === 'tailwind-utilities' || domFlags.includes('tailwind-utilities'))) {
-      if (domFlags.includes('tailwind-utilities')) return pack('utility class density');
-    }
-
-    // NEVER match free-text DOM patterns against HTML body for framework names
-    return null;
+    // DOM evidence resolves from probed flags ONLY — never by regex over
+    // signals.html. `html` is documentElement.outerHTML, which carries page
+    // *text* as well as structure, so a tutorial rendering `<div data-reactroot>`
+    // inside a <pre> used to score as a real React hit. The content script does
+    // the querySelector probing and reports results in domFlags; every dom
+    // pattern in signatures.js is one of those flag names.
+    return domFlags.includes(patStr) ? pack(patStr) : null;
   }
 
   return null;
@@ -1449,7 +1237,7 @@ export function detect(signals) {
     let hadStrong = false;
 
     for (const check of rule.checks) {
-      const ev = evalCheck(signals, rule, check);
+      const ev = evalCheck(signals, check);
       if (ev) {
         if (!evidence.some((e) => e.type === ev.type && e.snippet === ev.snippet)) {
           evidence.push(ev);

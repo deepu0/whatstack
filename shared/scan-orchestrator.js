@@ -23,6 +23,29 @@ export class ScanOrchestrator {
     this.chrome = chromeApi;
     /** @type {Map<number, { url: string, result: import('./detect.js').ScanResult, signals?: object }>} */
     this.tabCache = new Map();
+    /**
+     * Entries are normally dropped by tabs.onRemoved, but that event is missed
+     * whenever the MV3 worker is asleep, so the map would otherwise only ever
+     * grow. Each entry holds a full signal set, so cap it and evict
+     * oldest-first.
+     */
+    this.maxCachedTabs = 25;
+  }
+
+  /**
+   * Store a scan result, evicting the oldest entry past the cap.
+   * @param {number} tabId
+   * @param {{ url: string, result: import('./detect.js').ScanResult, signals?: object }} entry
+   */
+  cacheResult(tabId, entry) {
+    // Re-insert so Map iteration order tracks recency.
+    this.tabCache.delete(tabId);
+    this.tabCache.set(tabId, entry);
+    while (this.tabCache.size > this.maxCachedTabs) {
+      const oldest = this.tabCache.keys().next();
+      if (oldest.done) break;
+      this.tabCache.delete(oldest.value);
+    }
   }
 
   /**
@@ -126,7 +149,7 @@ export class ScanOrchestrator {
     const merged = mergeDeepSignals(light, globals);
     merged.url = url;
     const result = detect(merged);
-    this.tabCache.set(tabId, { url, result, signals: light });
+    this.cacheResult(tabId, { url, result, signals: light });
     await this.applyBadge(tabId, result);
     return result;
   }
@@ -141,7 +164,7 @@ export class ScanOrchestrator {
     if (isRestrictedUrl(url)) return null;
     const withPass = { ...signals, pass: 'light' };
     const result = detect(withPass);
-    this.tabCache.set(tabId, { url, result, signals: withPass });
+    this.cacheResult(tabId, { url, result, signals: withPass });
     await this.applyBadge(tabId, result);
     return result;
   }

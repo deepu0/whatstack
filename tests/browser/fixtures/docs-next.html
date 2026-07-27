@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Fixture — docs page that only shows Next.js markup</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/_shared.css">
+</head>
+<body>
+<main>
+  <h1>How to spot a Next.js page</h1>
+  <p>A Next.js page serialises its props into a script tag and mounts into a root div:</p>
+  <pre><code>&lt;script id="__NEXT_DATA__" type="application/json"&gt;{"props":{}}&lt;/script&gt;
+&lt;div id="__next"&gt;
+  &lt;next-route-announcer&gt;&lt;/next-route-announcer&gt;
+&lt;/div&gt;</code></pre>
+  <p>You may also see <code>&lt;div data-reactroot&gt;</code> on older React builds,
+     and chunk URLs under <code>/_next/static/chunks/</code>.</p>
+  <p>Loading React from a CDN looks like this — shown as text, with quotes intact:</p>
+  <pre><code>&lt;script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"&gt;&lt;/script&gt;</code></pre>
+  <p>Further reading: <a href="https://www.hotjar.com/pricing">Hotjar pricing</a>
+     and the <a href="https://company.zendesk.com/hc">Zendesk help center</a>.</p>
+  <p>Everything above is page <em>text</em>. This site is plain HTML.</p>
+</main>
+<script src="/site.js"></script>
+</body>
+</html>

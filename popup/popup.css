@@ -318,6 +318,17 @@ h1 {
   background: transparent;
 }
 
+/* Set apart from the exports — it leaves the popup instead of copying. */
+.btn.report {
+  color: var(--muted);
+  margin-left: 2px;
+}
+
+.btn.report:hover:not(:disabled) {
+  color: var(--text);
+  border-color: #f59e0b;
+}
+
 .local-badge {
   font-size: 10px;
   color: var(--muted);

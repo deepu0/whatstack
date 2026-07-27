@@ -5,6 +5,12 @@
 (function () {
   'use strict';
 
+  // Declared in the manifest AND re-injected by ScanOrchestrator when
+  // sendMessage finds no receiver — both can land on a slow page. Without this
+  // guard we register a second onMessage listener and double the scan timers.
+  if (window.__whatstackContentScriptLoaded) return;
+  window.__whatstackContentScriptLoaded = true;
+
   function probeDomFlags(doc) {
     const flags = [];
     const pairs = [
@@ -19,7 +25,8 @@
       ['[class*="_ngcontent-"],[class*="_nghost-"]', '[_ngcontent-]'],
       ['#__nuxt', '#__nuxt'],
       ['[data-sveltekit-hydrate]', '[data-sveltekit-hydrate]'],
-      ['[data-v-]', '[data-v-]'],
+      // Vue 3 stamps data-v-app on the container it mounts into
+      ['[data-v-app]', '[data-v-app]'],
       ['[class*="svelte-"]', '.svelte-'],
       ['[class*="MuiButton-"],[class*="MuiBox-"]', '[class*="MuiButton-"]'],
       ['[data-netlify]', '[data-netlify]'],
@@ -42,6 +49,40 @@
       if (ng) {
         const v = ng.getAttribute('ng-version');
         if (v) flags.push('ng-version:' + v);
+      }
+    } catch (_) {
+      /* ignore */
+    }
+    // Vue scoped-style attributes are data-v-<hash> — an attribute-name PREFIX,
+    // which no CSS selector can express ([data-v-] matches a literal attribute
+    // named "data-v-", i.e. nothing). Scan a bounded sample of elements for a
+    // real data-v-* attribute instead.
+    try {
+      const els = doc.querySelectorAll('body *');
+      const vLimit = Math.min(els.length, 300);
+      outer: for (let i = 0; i < vLimit; i++) {
+        const attrs = els[i].attributes;
+        for (let j = 0; j < attrs.length; j++) {
+          if (attrs[j].name.length > 7 && attrs[j].name.indexOf('data-v-') === 0) {
+            flags.push('[data-v-]');
+            break outer;
+          }
+        }
+      }
+    } catch (_) {
+      /* ignore */
+    }
+    // styled-components `sc-<hash>` classes. Match the whole class token, not a
+    // substring, so names like "desc-body" or "misc-panel" don't qualify.
+    try {
+      const scCandidates = doc.querySelectorAll('[class*="sc-"]');
+      const scLimit = Math.min(scCandidates.length, 200);
+      for (let i = 0; i < scLimit; i++) {
+        const tokens = (scCandidates[i].getAttribute('class') || '').split(/\s+/);
+        if (tokens.some(function (t) { return /^sc-[a-zA-Z0-9]/.test(t); })) {
+          flags.push('[sc-]');
+          break;
+        }
       }
     } catch (_) {
       /* ignore */
@@ -91,7 +132,9 @@
     doc.querySelectorAll('script').forEach(function (el) {
       const id = el.getAttribute('id');
       if (id) scripts.push('inline:#' + id);
-      if (!el.getAttribute('src')) {
+      // Cap count as well as size — a page with hundreds of inline scripts
+      // must not turn one scan message into megabytes.
+      if (!el.getAttribute('src') && inlineSamples.length < 40) {
         const text = (el.textContent || '').slice(0, 8000);
         if (text.trim()) inlineSamples.push(text);
       }
@@ -134,13 +177,11 @@
       /* ignore */
     }
 
-    const html = doc.documentElement
-      ? doc.documentElement.outerHTML.slice(0, 500000)
-      : '';
-
+    // No `html` field: the engine takes evidence from probed flags and
+    // collected asset URLs only, never from the page's HTML as text — and
+    // shipping 500 KB of outerHTML per scan bought nothing but memory use.
     return {
       url: location.href,
-      html: html,
       scripts: dedupe(scripts),
       stylesheets: dedupe(stylesheets),
       cookies: cookies,
@@ -155,7 +196,11 @@
   function postLight() {
     const signals = collectLightSignals();
     try {
-      chrome.runtime.sendMessage({ type: 'LIGHT_SCAN', signals: signals });
+      // MV3 sendMessage returns a promise that rejects when the worker is
+      // asleep or the context was invalidated. try/catch can't see that, so it
+      // would surface as an unhandled rejection in the page console.
+      const p = chrome.runtime.sendMessage({ type: 'LIGHT_SCAN', signals: signals });
+      if (p && typeof p.catch === 'function') p.catch(function () {});
     } catch (_) {
       /* extension context invalidated */
     }
@@ -178,24 +223,15 @@
   // Late resources (Next chunks) often appear after idle — rescan once
   setTimeout(postLight, 1500);
 
+  // SPA route changes. Do NOT patch history.pushState/replaceState here — this
+  // is an isolated world, so the page's own calls never hit our wrapper.
+  // chrome.tabs.onUpdated covers history navigations from the service worker;
+  // popstate does reach the isolated world, so it stays.
   let lastUrl = location.href;
-  const notifyIfUrlChanged = function () {
+  window.addEventListener('popstate', function () {
     if (location.href !== lastUrl) {
       lastUrl = location.href;
       postLight();
     }
-  };
-  const origPush = history.pushState;
-  const origReplace = history.replaceState;
-  history.pushState = function () {
-    const r = origPush.apply(this, arguments);
-    queueMicrotask(notifyIfUrlChanged);
-    return r;
-  };
-  history.replaceState = function () {
-    const r = origReplace.apply(this, arguments);
-    queueMicrotask(notifyIfUrlChanged);
-    return r;
-  };
-  window.addEventListener('popstate', notifyIfUrlChanged);
+  });
 })();

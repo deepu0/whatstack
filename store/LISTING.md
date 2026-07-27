@@ -1,56 +1,63 @@
 # Chrome Web Store listing kit — WhatStack
 
-**Version:** 1.7.1  
+**Version:** 1.7.2  
 **Privacy policy URL (public):** https://gist.githubusercontent.com/deepu0/6c31c2c0d5d776bc5272b2752a965854/raw/PRIVACY.md  
-**Privacy policy page:** https://gist.github.com/deepu0/6c31c2c0d5d776bc5272b2752a965854  
-**Upload package:** `dist/whatstack-1.7.1.zip` (rebuild: `npm run pack`)
+**Privacy policy page (prefer this in CWS UI):** https://gist.github.com/deepu0/6c31c2c0d5d776bc5272b2752a965854  
+**Upload package:** `dist/whatstack-1.7.2.zip` (rebuild: `npm run pack`)
 
 ---
 
 ## Short description (max 132 characters)
 
 ```
-See what a site is built with — React, Next, Remix, Vue, Angular, TanStack & more. Fully local stack detection.
+See what any website is built with — frameworks, tools, and libraries. Instant, private stack detection.
 ```
 
-Character count: 111
+Character count: 105
 
 ---
 
 ## Detailed description (paste into store)
 
 ```
-WhatStack shows the frontend tech stack of the page you’re viewing — frameworks, microfrontends, build tools, state/data libraries, UI kits, auth, payments, observability, analytics, and hosting hints.
+WhatStack tells you what a website is built with — instantly, on the page you’re already viewing.
 
-HOW IT WORKS
-• Light scan as you browse (toolbar badge)
-• Deep scan when you open the popup (includes MAIN-world probes)
-• Results grouped by category with confidence (high / medium / low)
-• Expand any hit to see evidence (script URL, global, DOM marker, etc.)
-• Copy results as plain text, Markdown, or JSON
+Open any site, click the toolbar icon, and get a clear breakdown of its frontend stack: frameworks, UI libraries, data tools, auth and payments, analytics, and more. No DevTools digging. No guesswork from the marketing page. No account.
 
-WHAT WE DETECT (examples)
+WHY INSTALL IT
+• Research competitors and products — learn real stacks, not job-post fluff
+• Speed up technical interviews, sales calls, and client discovery
+• Learn by example — see how production sites actually ship
+• Share findings with your team as text, Markdown, or JSON
+• Stay private — detection runs only on your device; nothing is uploaded for scanning
+
+WHAT YOU GET
+• A one-line headline of the core stack (e.g. Next.js + React + Tailwind)
+• Categories with confidence (high / medium / low) so weak signals don’t look like facts
+• Expandable evidence for every hit — why WhatStack thinks that library is present
+• A badge on the toolbar as you browse, with a deeper scan when you open the popup
+
+WHAT IT DETECTS (examples)
 • Frameworks: React, Next.js, Remix, Vue, Nuxt, Angular, Svelte/SvelteKit, TanStack Start, jQuery, Solid
 • Architecture: Module Federation, single-spa, qiankun, SystemJS
 • Build: Webpack, Vite, Parcel, Turbopack
 • Data: TanStack Query/Router/Table/Form/Virtual, Apollo, SWR, Axios
 • UI: Tailwind, Bootstrap, MUI, Emotion, styled-components
-• Auth / payments: Auth0, Clerk, Firebase, Stripe, Razorpay
+• Auth & payments: Auth0, Clerk, Firebase, Stripe, Razorpay
 • Observability: Sentry, Datadog, New Relic, LogRocket
-• Analytics & hosting: GA, Segment, Vercel, Cloudflare, and more
+• Analytics & hosting: Google Analytics, Segment, Vercel, Cloudflare, and more
 
-PRIVACY-FIRST
-Detection runs entirely on your device. WhatStack does not upload page content or stack results to any server. Matching uses bundled signatures only — no remote signature service and no ads.
+BUILT FOR TRUST
+WhatStack analyzes publicly visible page signals on your machine only. It does not upload page content or stack results, does not sell data, and has no ads. If a result looks wrong, “Wrong?” opens a draft GitHub issue you review and submit yourself — site origin only, never the full URL.
 
-ACCURACY
-We prefer solid signals (runtime globals, asset URLs, structural DOM markers). Marketing copy that only *mentions* a technology (e.g. job listings) is ignored. Some minified production libraries leave no fingerprints — absence of a hit does not always mean absence of the library.
+Note: some minified production apps leave no fingerprints. A miss does not always mean the library is absent; a mention in marketing copy alone is not treated as a real install.
 
 HOW TO USE
-1. Install the extension
-2. Open any http(s) website
-3. Click the WhatStack icon in the toolbar
-4. Review the core stack headline and categories
-5. Optional: Copy / MD / JSON to share findings
+1. Install WhatStack
+2. Visit any website
+3. Click the WhatStack icon
+4. Read the headline and categories
+5. Optional: copy results or report a miss
 
 Single purpose: identify the frontend technology stack of the web page you are viewing.
 ```
@@ -97,7 +104,7 @@ Used to identify the active tab, associate scan results with that tab, and updat
 
 | Question | Answer |
 |----------|--------|
-| Does the extension collect user data? | No (no remote collection) |
+| Does the extension collect user data? | No (no remote collection). The “Wrong?” button opens a prefilled GitHub issue in a new tab containing the site origin and the detection result; the extension transmits nothing itself and the user submits it. |
 | Personally identifiable information? | No |
 | Health / financial / authentication data? | No |
 | Personal communications? | No |
@@ -123,10 +130,10 @@ Used to identify the active tab, associate scan results with that tab, and updat
 ## Submit steps (human account — cannot be automated)
 
 1. Chrome Web Store Developer Dashboard → New item  
-2. Upload `dist/whatstack-1.7.1.zip`  
+2. Upload `dist/whatstack-1.7.2.zip`  
 3. Paste short + detailed description from this file  
 4. Upload screenshots + promo tile  
-5. Set privacy policy URL above  
+5. Set privacy policy URL (prefer the HTML gist page above; re-publish gist first so it matches `PRIVACY.md`)  
 6. Complete single purpose + permission justifications  
 7. Submit for review  
 

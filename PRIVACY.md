@@ -24,6 +24,16 @@ When you open a page (or the extension popup), WhatStack may read, **only on you
 
 Detection matching uses **bundled rules** shipped with the extension. Results stay in memory (and optionally in-session tab cache) and are not sent off-device by WhatStack.
 
+## Reporting a wrong detection
+
+The popup has a **“Wrong?”** button for telling us a detection is incorrect. WhatStack sends nothing itself. The button opens a new tab on the project's public GitHub issue tracker with a **draft** report prefilled, containing:
+
+- the **site origin only** (for example `https://example.com`) — never the full URL, path, or query string
+- what the extension reported, and the evidence it used
+- the extension version and your browser's major version
+
+Nothing is submitted until you read that draft and press GitHub's own submit button, and you can edit or delete any part of it first — including the site name. If you never press the button, no report is ever created. Reports become public issues on the project repository, so please don't include anything private.
+
 ## Permissions
 
 | Permission | Why |

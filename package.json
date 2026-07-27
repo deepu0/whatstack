@@ -1,6 +1,6 @@
 {
   "name": "whatstack",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "private": true,
   "description": "WhatStack — local Chrome extension that reports a site's frontend tech stack",
   "type": "module",
@@ -8,6 +8,11 @@
     "test": "node --test tests/*.test.js",
     "audit:manifest": "node scripts/manifest-audit.js",
     "audit:local": "node scripts/local-only-audit.js",
-    "pack": "node scripts/package-extension.js"
+    "pack": "node scripts/package-extension.js",
+    "assets": "node scripts/make-store-assets.mjs",
+    "test:browser": "node tests/browser/run.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.56.0"
   }
 }

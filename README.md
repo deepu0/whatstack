@@ -23,10 +23,20 @@ Fully **local** detection — frameworks, architecture (microfrontends), build t
 ## Develop / test
 
 ```bash
-npm test
-node scripts/manifest-audit.js
-node scripts/local-only-audit.js
+npm test                 # unit + integration suites (node:test, no deps)
+npm run test:browser     # loads the real unpacked extension into Chrome
+npm run audit:manifest
+npm run audit:local
 ```
+
+`npm run test:browser` needs `npm install` (Playwright) and a Chrome/Chromium
+build; point `CHROME_PATH` at one if you don't have the `chrome` channel
+installed. It serves `tests/browser/fixtures/` over localhost and checks that
+pages which merely *display* framework markup produce no detections, while pages
+that really use the framework still do.
+
+Detection evidence comes from real `querySelector` probes only — never from the
+page's HTML as text. `tests/dom-evidence.test.js` is the guard for that.
 
 ## Layout
 
@@ -39,10 +49,26 @@ shared/detect.js               # pure detection engine
 shared/signatures.js           # local rule pack
 shared/result-shape.js         # popup shaping + exports
 shared/brand-icons.js          # tech marks (local SVG)
-tests/                         # node:test fixtures
-scripts/                       # structural / local-only audits
+tests/                         # node:test suites + fixtures
+tests/browser/                 # real-Chrome end-to-end suite
+scripts/                       # audits, packaging, store assets
 icons/                         # toolbar + brand assets
+store/                         # listing copy, screenshots, promo tile
 ```
+
+## Reporting a wrong detection
+
+The popup's **Wrong?** button opens a prefilled issue on this repo — site origin
+only, plus what was reported and the evidence behind it. The extension makes no
+outbound request of its own; you review the draft and submit it, which is what
+keeps the "Local only" badge honest. `buildReportUrl()` in
+[shared/result-shape.js](shared/result-shape.js) builds it, and
+[tests/report.test.js](tests/report.test.js) asserts the full URL, path and query
+never make it in.
+
+Incoming reports are the feedback loop for signature accuracy: a false positive
+means a rule is too loose, a miss means a signature is absent or the library
+leaves no fingerprint.
 
 ## Privacy
 
@@ -55,9 +81,14 @@ Detection runs only on your machine using DOM, script URLs, cookies (names), and
 
 ```bash
 npm test
+npm run test:browser
+npm run assets   # regenerate store screenshots from the current engine
 npm run pack
 # → dist/whatstack-<version>.zip
 ```
+
+`npm run assets` renders the real popup against real `detect()` output, so the
+listing screenshots always match what the shipped engine reports.
 
 Listing kit (descriptions, permission justifications, screenshots): [store/LISTING.md](./store/LISTING.md)  
 Pre-submit checklist: [docs/PRE-SUBMIT-AUDIT.md](./docs/PRE-SUBMIT-AUDIT.md)

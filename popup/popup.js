@@ -7,6 +7,7 @@ import {
   formatStackSummary,
   formatStackMarkdown,
   formatStackJson,
+  buildReportUrl,
 } from '../shared/result-shape.js';
 import { getBrandIcon } from '../shared/brand-icons.js';
 
@@ -24,6 +25,7 @@ const els = {
   copy: $('copy'),
   copyMd: $('copy-md'),
   copyJson: $('copy-json'),
+  report: $('report'),
   refresh: $('refresh'),
 };
 
@@ -40,6 +42,12 @@ function setCopyEnabled(on) {
   els.copyJson.disabled = !on;
 }
 
+// Tracked separately from the exports: "you missed something" is a valid report
+// on a page where nothing was detected, and that is the most useful kind.
+function setReportEnabled(on) {
+  els.report.disabled = !on;
+}
+
 function showError(message) {
   els.results.hidden = true;
   els.empty.hidden = true;
@@ -47,6 +55,7 @@ function showError(message) {
   els.error.hidden = false;
   els.errorMsg.textContent = message;
   setCopyEnabled(false);
+  setReportEnabled(false);
   setStatus('');
 }
 
@@ -64,6 +73,7 @@ function render(shaped) {
     els.headline.hidden = true;
     els.empty.hidden = false;
     setCopyEnabled(false);
+    setReportEnabled(true);
     setStatus(shaped.pass === 'deep' ? 'Deep scan complete' : 'Light scan');
     return;
   }
@@ -72,6 +82,7 @@ function render(shaped) {
   els.results.hidden = false;
   els.results.replaceChildren();
   setCopyEnabled(true);
+  setReportEnabled(true);
 
   if (shaped.headline) {
     els.headline.hidden = false;
@@ -280,6 +291,24 @@ els.copyMd.addEventListener('click', () => {
 els.copyJson.addEventListener('click', () => {
   if (!lastShaped) return;
   copyText(formatStackJson(lastShaped), 'Copied JSON');
+});
+
+/** Chrome major version, for reproducing a report. Nothing finer-grained. */
+function browserLabel() {
+  const m = /Chrom(?:e|ium)\/(\d+)/.exec(navigator.userAgent || '');
+  return m ? `Chrome ${m[1]}` : '';
+}
+
+els.report.addEventListener('click', () => {
+  if (!lastShaped) return;
+  // Opens GitHub's issue form prefilled. The extension sends nothing itself —
+  // the user reads the draft and submits it, so "Local only" still holds.
+  const url = buildReportUrl(lastShaped, {
+    version: chrome.runtime.getManifest().version,
+    browser: browserLabel(),
+  });
+  chrome.tabs.create({ url });
+  setStatus('Opened a report — review it, then submit');
 });
 
 load(true);

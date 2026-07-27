@@ -81,8 +81,12 @@ export const SIGNATURES = [
     category: 'framework',
     requiresRuntime: true,
     checks: [
+      // Mounted Vue 3 app on its container — the only reliable prod fingerprint
+      { type: 'global', pattern: '__vue_app__', weight: 5, strong: true, runtime: true },
       { type: 'global', pattern: '__VUE__', weight: 4, strong: true, runtime: true },
       { type: 'global', pattern: 'Vue', weight: 3, strong: true, runtime: true },
+      // Vue 3 stamps this on the mount container at hydration/mount
+      { type: 'dom', pattern: '[data-v-app]', weight: 4, strong: true, runtime: true },
       { type: 'script', pattern: /(?:unpkg\.com|jsdelivr\.net|cdnjs|esm\.sh)\/.*\bvue(?:@|\/)/i, weight: 4, strong: true, runtime: true },
       { type: 'script', pattern: /\/vue@[\d.]+/i, weight: 4, strong: true, runtime: true },
       { type: 'script', pattern: /vue\.(?:global|runtime|esm-browser|esm-bundler)(?:\.prod)?(?:\.min)?\.js/i, weight: 4, strong: true, runtime: true },
@@ -112,7 +116,8 @@ export const SIGNATURES = [
       { type: 'dom', pattern: '[ng-version]', weight: 5, strong: true, runtime: true },
       { type: 'global', pattern: 'getAllAngularRootElements', weight: 4, strong: true, runtime: true },
       { type: 'global', pattern: 'ng', weight: 2, runtime: true },
-      { type: 'dom', pattern: '[_ngcontent-],[_nghost-]', weight: 4, strong: true, runtime: true },
+      // Flag token emitted by the content-script probe (which ORs _ngcontent/_nghost)
+      { type: 'dom', pattern: '[_ngcontent-]', weight: 4, strong: true, runtime: true },
       { type: 'script', pattern: /(?:^|[\/@])@angular\//i, weight: 4, strong: true, runtime: true },
       { type: 'script', pattern: /angular(?:\.min)?\.js(?:[?#]|$)/i, weight: 3, strong: true, runtime: true },
     ],
@@ -427,7 +432,8 @@ export const SIGNATURES = [
     category: 'ui',
     checks: [
       { type: 'script', pattern: /@mui\/|material-ui/i, weight: 4, strong: true },
-      { type: 'dom', pattern: '[class*="MuiButton-"],[class*="MuiBox-"]', weight: 4, strong: true, runtime: true },
+      // Flag token emitted by the content-script probe (which ORs MuiButton/MuiBox)
+      { type: 'dom', pattern: '[class*="MuiButton-"]', weight: 4, strong: true, runtime: true },
     ],
   },
   {
@@ -680,7 +686,10 @@ export const SIGNATURES = [
     name: 'Auth.js / NextAuth',
     category: 'auth',
     checks: [
-      { type: 'script', pattern: /\/api\/auth\/session|next-auth/i, weight: 3, strong: true },
+      // /api/auth/session is NextAuth's canonical route but not unique to it —
+      // plenty of hand-rolled auth uses the same path. Corroborating signal
+      // only; the cookie prefix below is the strong proof.
+      { type: 'script', pattern: /\/api\/auth\/session|next-auth/i, weight: 2 },
       { type: 'cookie', pattern: /^next-auth\./i, weight: 4, strong: true, runtime: true },
     ],
   },
@@ -828,43 +837,3 @@ export const META_FRAMEWORKS = ['nextjs', 'nuxt', 'sveltekit', 'tanstack-start',
 
 /** Competing SPA frameworks — suppressed when a meta-framework owns the page unless runtime-proof */
 export const COMPETING_FRAMEWORKS = ['vue', 'angular', 'svelte', 'solid', 'jquery', 'react'];
-
-/**
- * Extract all unique DOM probe selectors and flags from SIGNATURES.
- * Used by content-script.js for declarative DOM scanning.
- */
-export function getDomProbeRules() {
-  const rules = [];
-  const seen = new Set();
-
-  for (const sig of SIGNATURES) {
-    if (!sig.checks) continue;
-    for (const check of sig.checks) {
-      if (check.type === 'dom' && typeof check.pattern === 'string') {
-        const selector = check.pattern;
-        if (!seen.has(selector)) {
-          seen.add(selector);
-          rules.push({ selector, flag: selector });
-        }
-      }
-    }
-  }
-
-  // Include structural/utility fallback flags
-  const structural = [
-    { selector: '[data-next-page]', flag: '[data-next-page]' },
-    { selector: '[class*="_ngcontent-"],[class*="_nghost-"]', flag: '[_ngcontent-]' },
-    { selector: '[class*="svelte-"]', flag: '.svelte-' },
-    { selector: '[class*="MuiButton-"],[class*="MuiBox-"]', flag: '[class*="MuiButton-"]' },
-  ];
-
-  for (const item of structural) {
-    if (!seen.has(item.flag)) {
-      seen.add(item.flag);
-      rules.push(item);
-    }
-  }
-
-  return rules;
-}
-

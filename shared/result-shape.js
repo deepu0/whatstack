@@ -187,6 +187,127 @@ export function formatStackMarkdown(shaped) {
   return lines.join('\n');
 }
 
+/** Where "Report wrong" reports land. */
+export const REPORT_REPO = 'https://github.com/deepu0/whatstack';
+
+/** GitHub rejects issue URLs past roughly 8k; stay well inside it. */
+const MAX_REPORT_URL = 6000;
+
+/**
+ * Reduce a scanned URL to its origin.
+ *
+ * Reports carry the origin ONLY. A full URL can hold a session token in a query
+ * string, an internal hostname path, or the title of a private document, and a
+ * detection bug is a property of the site rather than the route — so the extra
+ * precision buys nothing worth that risk.
+ *
+ * @param {string} url
+ * @returns {string} origin, or '' when there isn't a usable one
+ */
+export function reportOrigin(url) {
+  if (!url) return '';
+  try {
+    const u = new URL(url);
+    if (u.protocol !== 'http:' && u.protocol !== 'https:') return '';
+    return u.origin;
+  } catch {
+    return '';
+  }
+}
+
+/**
+ * Markdown body for a wrong-detection report.
+ *
+ * The user is the one who submits this — GitHub's issue form opens prefilled and
+ * fully editable, so nothing is sent until they read it and press the button.
+ *
+ * @param {ReturnType<typeof shapeForPopup>} shaped
+ * @param {{ version?: string, browser?: string }} [meta]
+ */
+export function formatReportBody(shaped, meta = {}) {
+  const origin = reportOrigin(shaped?.url || '');
+  const lines = [
+    '<!-- Everything below is editable. Remove anything you would rather not share. -->',
+    '',
+    '### What is wrong?',
+    '',
+    '- [ ] Reported something the site does not use (false positive)',
+    '- [ ] Missed something the site does use',
+    '- [ ] Wrong version',
+    '- [ ] Wrong primary / core stack',
+    '',
+    'What should it have said?',
+    '',
+    '',
+    '---',
+    '',
+    `**Site:** ${origin || '_not shared_'}`,
+    `**Scan:** ${shaped?.pass || 'deep'}`,
+    `**Core stack:** ${shaped?.headline || '_none_'}`,
+    '',
+  ];
+
+  if (shaped && !shaped.empty) {
+    lines.push('| Tech | Category | Confidence | Version | Evidence |');
+    lines.push('| --- | --- | --- | --- | --- |');
+    for (const sec of shaped.sections) {
+      for (const h of [...sec.hits, ...sec.lowHits]) {
+        // Evidence is the whole point of the report — it says WHY the engine
+        // believed this, which is what makes a bad call diagnosable.
+        const ev = (h.evidence || [])
+          .slice(0, 4)
+          .map((e) => `\`${String(e.snippet).replace(/\|/g, '\\|').slice(0, 80)}\``)
+          .join(', ');
+        lines.push(
+          `| ${h.name} | ${sec.label} | ${h.confidence} | ${h.version || '—'} | ${ev || '—'} |`,
+        );
+      }
+    }
+  } else {
+    lines.push('_Nothing was detected on this page._');
+  }
+
+  lines.push('');
+  lines.push(`**WhatStack:** ${meta.version || 'unknown'}`);
+  if (meta.browser) lines.push(`**Browser:** ${meta.browser}`);
+  return lines.join('\n');
+}
+
+/**
+ * Prefilled GitHub issue URL for a wrong detection.
+ *
+ * Deliberately a link the user opens, not a request the extension sends: no
+ * outbound network from the extension itself, no new permissions, and the
+ * "Local only" promise stays literally true.
+ *
+ * @param {ReturnType<typeof shapeForPopup>} shaped
+ * @param {{ version?: string, browser?: string, repo?: string }} [meta]
+ * @returns {string}
+ */
+export function buildReportUrl(shaped, meta = {}) {
+  const origin = reportOrigin(shaped?.url || '');
+  const site = origin ? origin.replace(/^https?:\/\//, '') : 'a page';
+  const stack = shaped?.headline || 'nothing detected';
+  const title = `Wrong detection on ${site}: ${stack}`.slice(0, 120);
+  const base = `${meta.repo || REPORT_REPO}/issues/new`;
+
+  const build = (body) => {
+    const q = new URLSearchParams({ labels: 'detection', title, body });
+    return `${base}?${q.toString()}`;
+  };
+
+  let body = formatReportBody(shaped, meta);
+  let url = build(body);
+  if (url.length <= MAX_REPORT_URL) return url;
+
+  // Too long to prefill — keep the checklist and the header, drop the table and
+  // say so, rather than handing GitHub a URL it will reject.
+  const head = body.split('---')[0];
+  body = `${head}---\n\n**Site:** ${origin || '_not shared_'}\n**Core stack:** ${stack}\n\n_The evidence table was too large to prefill. Use the popup's JSON export and paste it here._\n\n**WhatStack:** ${meta.version || 'unknown'}`;
+  url = build(body);
+  return url.length <= MAX_REPORT_URL ? url : base;
+}
+
 /**
  * Structured JSON export (for tickets / tooling).
  * @param {ReturnType<typeof shapeForPopup>} shaped

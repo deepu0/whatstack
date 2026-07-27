@@ -29,7 +29,9 @@ fs.mkdirSync(outDir, { recursive: true });
 if (fs.existsSync(zipPath)) fs.unlinkSync(zipPath);
 
 // Prefer system zip
-const args = ['-r', zipPath, ...include, '-x', '*/.DS_Store', 'icons/variant-*', 'icons/logo-512.png'];
+// -X strips macOS extended-attribute extra fields (com.apple.provenance etc.)
+// from zip entries — the CWS validator has rejected zips carrying them.
+const args = ['-r', '-X', zipPath, ...include, '-x', '*/.DS_Store', 'icons/variant-*', 'icons/logo-512.png'];
 try {
   execFileSync('zip', args, { cwd: root, stdio: 'inherit' });
 } catch {
