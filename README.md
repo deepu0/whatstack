@@ -74,8 +74,7 @@ leaves no fingerprint.
 
 Detection runs only on your machine using DOM, script URLs, cookies (names), and MAIN-world probes. Matching uses bundled signatures — no remote signature fetch.
 
-- Policy (repo): [PRIVACY.md](./PRIVACY.md)
-- **Public policy URL (Chrome Web Store):** https://gist.githubusercontent.com/deepu0/6c31c2c0d5d776bc5272b2752a965854/raw/PRIVACY.md
+The canonical policy lives in this repo: [PRIVACY.md](./PRIVACY.md). A [read-only gist mirror](https://gist.github.com/deepu0/6c31c2c0d5d776bc5272b2752a965854) exists only because the Chrome Web Store requires a publicly reachable policy URL; if the two ever differ, the repo version wins.
 
 ## Package for Chrome Web Store
 
@@ -93,6 +92,10 @@ listing screenshots always match what the shipped engine reports.
 Listing kit (descriptions, permission justifications, screenshots): [store/LISTING.md](./store/LISTING.md)  
 Pre-submit checklist: [docs/PRE-SUBMIT-AUDIT.md](./docs/PRE-SUBMIT-AUDIT.md)
 
+## Status
+
+Live on the [Chrome Web Store](https://chromewebstore.google.com/detail/whatstack/kpmbanlddakoocgimdenfeppfaidmcgk) — 5 users as of Sep 19, 2026.
+
 ## License
 
-Private until Chrome Web Store listing is published.
+No LICENSE file yet — all rights reserved until one is added.
