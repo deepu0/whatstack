@@ -1,9 +1,9 @@
 # Chrome Web Store listing kit — WhatStack
 
-**Version:** 1.7.2  
+**Version:** 1.8.1  
 **Privacy policy URL (public):** https://gist.githubusercontent.com/deepu0/6c31c2c0d5d776bc5272b2752a965854/raw/PRIVACY.md  
 **Privacy policy page (prefer this in CWS UI):** https://gist.github.com/deepu0/6c31c2c0d5d776bc5272b2752a965854  
-**Upload package:** `dist/whatstack-1.7.2.zip` (rebuild: `npm run pack`)
+**Upload package:** `dist/whatstack-1.8.1.zip` (rebuild: `npm run pack`)
 
 ---
 
@@ -19,46 +19,43 @@ Character count: 105
 
 ## Detailed description (paste into store)
 
+Chrome Web Store policy rejects long lists of technology names as keyword spam
+(1.8.1 was rejected for the old "WHAT IT DETECTS" lists, violation "Yellow
+Argon"). Describe categories in prose; name at most one example stack.
+`tests/store-readiness.test.js` enforces this.
+
 ```
 WhatStack tells you what a website is built with — instantly, on the page you’re already viewing.
 
-Open any site, click the toolbar icon, and get a clear breakdown of its frontend stack: frameworks, UI libraries, data tools, auth and payments, analytics, and more. No DevTools digging. No guesswork from the marketing page. No account.
+Open any site, click the toolbar icon, and get a clear breakdown of its frontend stack. No DevTools digging, no guesswork from the marketing page, no account.
 
 WHY INSTALL IT
 • Research competitors and products — learn real stacks, not job-post fluff
 • Speed up technical interviews, sales calls, and client discovery
 • Learn by example — see how production sites actually ship
 • Share findings with your team as text, Markdown, or JSON
-• Stay private — detection runs only on your device; nothing is uploaded for scanning
+• Stay private — detection runs only on your device; nothing is uploaded
 
 WHAT YOU GET
-• A one-line headline of the core stack (e.g. Next.js + React + Tailwind)
-• Categories with confidence (high / medium / low) so weak signals don’t look like facts
-• Expandable evidence for every hit — why WhatStack thinks that library is present
-• A badge on the toolbar as you browse, with a deeper scan when you open the popup
+• A one-line summary of the core stack, for example “Next.js · React · Webpack”
+• Results grouped by category, each with a confidence level (high, medium or low), so weak signals never look like facts
+• The evidence behind every result — expand a row to see exactly what was matched on the page
+• A toolbar badge that shows how many technologies were found as you browse
 
-WHAT IT DETECTS (examples)
-• Frameworks: React, Next.js, Remix, Vue, Nuxt, Angular, Svelte/SvelteKit, Astro, Gatsby, Qwik, Preact, Lit, Polymer, Ember, TanStack Start, Alpine.js, htmx, jQuery, Solid
-• CMS & site builders: WordPress, Shopify, Webflow, Framer
-• Architecture: Module Federation, single-spa, qiankun, SystemJS
-• Build: Webpack, Vite, Parcel, Turbopack
-• Data: TanStack Query/Router/Table/Form/Virtual (including production builds with no package names), Apollo, Redux, SWR, Axios
-• UI: Tailwind, Bootstrap, MUI, Emotion, styled-components
-• Auth & payments: Auth0, Clerk, Firebase, Stripe, Razorpay
-• Observability: Sentry, Datadog, New Relic, LogRocket
-• Analytics & hosting: Google Analytics, Segment, PostHog, Plausible, Fathom, Amplitude, Vercel, Cloudflare, and more
+WHAT IT RECOGNIZES
+More than 80 technologies across twelve categories: frameworks, CMS and site builders, micro-frontend architecture, build tools, state management, data fetching and routing, UI and CSS libraries, authentication, payments, error monitoring, analytics, and hosting.
+
+WhatStack only counts real evidence — scripts the page actually loads, objects running on the page, and markers in its structure. Words on the page, file names and search terms never count. Some heavily minified sites leave no fingerprints, so a missing result does not always mean a tool is absent.
 
 BUILT FOR TRUST
-WhatStack analyzes publicly visible page signals on your machine only. It does not upload page content or stack results, does not sell data, and has no ads. If a result looks wrong, “Wrong?” opens a draft GitHub issue you review and submit yourself — site origin only, never the full URL.
-
-Note: some minified production apps leave no fingerprints. A miss does not always mean the library is absent; a mention in marketing copy alone is not treated as a real install.
+Everything runs on your machine. WhatStack does not upload page content or results, does not sell data, and has no ads. If a result looks wrong, the “Wrong?” button opens a draft GitHub issue that you review and submit yourself — it includes the site’s origin only, never the full URL.
 
 HOW TO USE
 1. Install WhatStack
 2. Visit any website
 3. Click the WhatStack icon
-4. Read the headline and categories
-5. Optional: copy results or report a miss
+4. Read the summary and the categories
+5. Optional: copy the results or report a miss
 
 Single purpose: identify the frontend technology stack of the web page you are viewing.
 ```
@@ -90,7 +87,7 @@ Required to run a content script on pages the user visits so WhatStack can inspe
 ### `scripting`
 
 ```
-Used to run optional MAIN-world probes when the user opens the popup (deep scan) and to inject the content script if it was not already present. Probes only read framework-related globals; they do not modify page behavior for tracking.
+Used to run a read-only, on-device probe in the page after it loads and when the user opens the popup, and to inject the content script into already-open tabs after install or update. The probe only reads framework-related objects; it does not modify the page or track the user.
 ```
 
 ### `tabs`
@@ -131,7 +128,7 @@ Used to identify the active tab, associate scan results with that tab, and updat
 ## Submit steps (human account — cannot be automated)
 
 1. Chrome Web Store Developer Dashboard → New item  
-2. Upload `dist/whatstack-1.7.2.zip`  
+2. Upload `dist/whatstack-1.8.1.zip`  
 3. Paste short + detailed description from this file  
 4. Upload screenshots + promo tile  
 5. Set privacy policy URL (prefer the HTML gist page above; re-publish gist first so it matches `PRIVACY.md`)  

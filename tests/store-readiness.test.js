@@ -115,6 +115,23 @@ describe('store publish readiness', () => {
     fs.rmSync(extractDir, { recursive: true, force: true });
   });
 
+  it('store copy has no keyword lists (CWS "Keyword Spam", rejected 1.8.1)', async () => {
+    const { SIGNATURES } = await import('../shared/signatures.js');
+    const listing = fs.readFileSync(path.join(root, 'store/LISTING.md'), 'utf8');
+    const detailed = listing.split('## Detailed description')[1].split('```')[1];
+    const short = listing.split('## Short description')[1].split('```')[1];
+    const manifest = readJson('manifest.json').description;
+    const names = SIGNATURES.flatMap((r) => [r.name, r.name.split(/[ (/]/)[0]]).filter((n) => n.length > 2);
+    const count = (text) => new Set(names.filter((n) => new RegExp(`(?<![\\w.])${n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\w])`).test(text))).size;
+    for (const [label, text, max] of [['detailed description', detailed, 4], ['short description', short, 0], ['manifest description', manifest, 0]]) {
+      const n = count(text);
+      assert.ok(n <= max, `${label} names ${n} technologies (max ${max}) — describe categories instead`);
+    }
+    for (const line of detailed.split('\n')) {
+      assert.ok(count(line) <= 3, `listing line names too many technologies: ${line.slice(0, 80)}`);
+    }
+  });
+
   it('toolbar and store icons are the sizes the manifest claims', () => {
     const m = readJson('manifest.json');
     for (const [size, rel] of [...Object.entries(m.icons), ...Object.entries(m.action.default_icon)]) {
