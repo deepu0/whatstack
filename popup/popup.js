@@ -10,6 +10,7 @@ import {
   buildReportUrl,
 } from '../shared/result-shape.js';
 import { getBrandIcon } from '../shared/brand-icons.js';
+import { isRestrictedUrl } from '../shared/url-policy.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -64,7 +65,11 @@ function render(shaped) {
   els.error.hidden = true;
 
   if (shaped.error === 'restricted') {
-    showError('This page cannot be scanned (browser internal URL).');
+    showError('Chrome doesn’t let extensions read this page (browser pages, the Web Store, local files).');
+    return;
+  }
+  if (shaped.error === 'unreachable') {
+    showError('This page couldn’t be read. Reload it, then try Rescan.');
     return;
   }
 
@@ -209,7 +214,25 @@ async function getActiveTab() {
   return tabs[0];
 }
 
+/** Increments per load(); a slower, older scan must never render over a newer one. */
+let loadSeq = 0;
+
 async function load(forceDeep = true) {
+  const seq = ++loadSeq;
+  const current = () => seq === loadSeq;
+  els.refresh.disabled = true;
+  try {
+    await runLoad(forceDeep, current);
+  } finally {
+    if (current()) els.refresh.disabled = false;
+  }
+}
+
+/**
+ * @param {boolean} forceDeep
+ * @param {() => boolean} current
+ */
+async function runLoad(forceDeep, current) {
   setStatus('Scanning…');
   els.error.hidden = true;
   els.empty.hidden = true;
@@ -221,9 +244,10 @@ async function load(forceDeep = true) {
   try {
     tab = await getActiveTab();
   } catch {
-    showError('Could not read active tab.');
+    if (current()) showError('Could not read the active tab.');
     return;
   }
+  if (!current()) return;
 
   if (!tab || tab.id == null) {
     showError('No active tab.');
@@ -234,7 +258,7 @@ async function load(forceDeep = true) {
   els.pageUrl.textContent = url;
   els.pageUrl.title = url;
 
-  if (/^(chrome|chrome-extension|edge|about|devtools):/i.test(url)) {
+  if (isRestrictedUrl(url)) {
     const shaped = shapeForPopup({
       url,
       pass: 'deep',
@@ -253,20 +277,22 @@ async function load(forceDeep = true) {
       url,
       forceDeep,
     });
+    if (!current()) return;
     if (!response || !response.ok) {
       showError('Scan failed. Try Rescan or reload the page.');
       return;
     }
     const result = response.result;
-    if (result && result.error === 'restricted') {
-      const shaped = shapeForPopup(result);
-      shaped.error = 'restricted';
-      render(shaped);
-      return;
+    if (result && result.url && result.url !== url) {
+      // The tab navigated while the popup opened; show the page that answered.
+      els.pageUrl.textContent = result.url;
+      els.pageUrl.title = result.url;
     }
-    render(shapeForPopup(result));
-  } catch (e) {
-    showError(e && e.message ? e.message : 'Scan failed.');
+    const shaped = shapeForPopup(result);
+    if (result && (result.error === 'restricted' || result.error === 'unreachable')) shaped.error = result.error;
+    render(shaped);
+  } catch {
+    if (current()) showError('Scan failed. Try Rescan or reload the page.');
   }
 }
 
