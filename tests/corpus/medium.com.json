@@ -1,0 +1,41 @@
+{
+ "host": "medium.com",
+ "capturedAt": "2026-09-26",
+ "whatstack": "1.7.2",
+ "chromium": "151.0.7922.34",
+ "expect": {
+  "mustNotSolid": [
+   "tailwind"
+  ]
+ },
+ "snapshot": [
+  "cloudflare:high",
+  "tailwind:medium"
+ ],
+ "signals": {
+  "url": "https://medium.com/",
+  "scripts": [
+   "/cdn-cgi/challenge-platform/scripts/precursor/main.js",
+   "https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495",
+   "https://medium.com/cdn-cgi/styles/cf.errors.css",
+   "https://medium.com/cdn-cgi/challenge-platform/scripts/precursor/main.js",
+   "https://medium.com/cdn-cgi/images/browser-bar.png",
+   "https://medium.com/cdn-cgi/images/cf-no-screenshot-error.png",
+   "https://medium.com/cdn-cgi/challenge-platform/h/b/precursor/d76008a69eab/0.7182440836012771:1790409786:uv-jagL0f8Eh1xleDq_jUmMgjpfYzTz4YXTcODmmAsA/a411116e7edf0143",
+   "https://medium.com/cdn-cgi/rum",
+   "https://medium.com/favicon.ico"
+  ],
+  "stylesheets": [
+   "/cdn-cgi/styles/cf.errors.css"
+  ],
+  "cookies": [],
+  "metas": [],
+  "inlineSamples": [],
+  "domFlags": [
+   "tailwind-syntax"
+  ],
+  "globals": {},
+  "pass": "light"
+ },
+ "globals": {}
+}

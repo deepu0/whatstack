@@ -1,0 +1,52 @@
+{
+ "host": "en.wikipedia.org",
+ "capturedAt": "2026-09-26",
+ "whatstack": "1.7.2",
+ "chromium": "151.0.7922.34",
+ "expect": {
+  "must": [
+   "jquery"
+  ]
+ },
+ "snapshot": [
+  "jquery:high@3.7.1"
+ ],
+ "signals": {
+  "url": "https://en.wikipedia.org/wiki/Main_Page",
+  "scripts": [
+   "/w/load.php",
+   "https://en.wikipedia.org/w/load.php",
+   "https://en.wikipedia.org/static/images/mobile/copyright/wikipedia-wordmark-en-25.svg",
+   "https://en.wikipedia.org/static/images/icons/enwiki-25.svg",
+   "https://en.wikipedia.org/static/images/mobile/copyright/wikipedia-tagline-en-25.svg",
+   "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/07/Uyen_Ninh%2C_2023_%28cropped%29.jpg/250px-Uyen_Ninh%2C_2023_%28cropped%29.jpg",
+   "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bb/Leopardus_tilcayo_%285x3_cropped%29.jpg/250px-Leopardus_tilcayo_%285x3_cropped%29.jpg",
+   "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2b/Yves_Rossi_mg_4616.jpg/250px-Yves_Rossi_mg_4616.jpg",
+   "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ce/FRE-OCE-10-French_Oceania-50_centimes_%281943%29.jpg/500px-FRE-OCE-10-French_Oceania-50_centimes_%281943%29.jpg",
+   "https://en.wikipedia.org/ins-502b/v2/events",
+   "https://en.wikipedia.org/wiki/Special:CentralAutoLogin/start",
+   "https://en.wikipedia.org/static/favicon/wikipedia.ico"
+  ],
+  "stylesheets": [
+   "/w/load.php"
+  ],
+  "cookies": [
+   "GeoIP",
+   "NetworkProbeLimit",
+   "enwikimwuser-sessionId"
+  ],
+  "metas": [
+   "generator=MediaWiki 1.47.0-wmf.21"
+  ],
+  "inlineSamples": [],
+  "domFlags": [],
+  "globals": {},
+  "pass": "light"
+ },
+ "globals": {
+  "jQuery": {
+   "present": true,
+   "version": "3.7.1"
+  }
+ }
+}

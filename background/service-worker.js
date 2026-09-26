@@ -38,7 +38,12 @@ async function handle(msg, sender) {
   // Tooling only (corpus capture, browser suite): raw signals + probe output.
   // Extension pages only — never a content script.
   if (msg.type === 'CAPTURE_SIGNALS') {
-    if (sender.tab || sender.id !== chrome.runtime.id) return { ok: false, error: 'forbidden' };
+    // Content scripts report the page's URL as sender.url; extension pages
+    // report a chrome-extension://<our id>/ URL.
+    const own = chrome.runtime.getURL('');
+    if (sender.id !== chrome.runtime.id || !String(sender.url || '').startsWith(own)) {
+      return { ok: false, error: 'forbidden' };
+    }
     return { ok: true, ...(await orchestrator.capture(msg.tabId)) };
   }
 

@@ -1,0 +1,133 @@
+{
+ "host": "stackoverflow.com",
+ "capturedAt": "2026-09-26",
+ "whatstack": "1.7.2",
+ "chromium": "151.0.7922.34",
+ "expect": {
+  "must": [
+   "jquery",
+   "svelte"
+  ],
+  "mustNotSolid": [
+   "tailwind"
+  ]
+ },
+ "snapshot": [
+  "cloudflare:high",
+  "google-analytics:high",
+  "jquery:high@3.7.1",
+  "svelte:high@5",
+  "webpack:high"
+ ],
+ "signals": {
+  "url": "https://stackoverflow.com/questions",
+  "scripts": [
+   "https://cdn.cookielaw.org/scripttemplates/gpp.stub.js",
+   "https://cdn.cookielaw.org/scripttemplates/otSDKStub.js",
+   "https://stackoverflow.com/Content/Js/google-analytics.en.js",
+   "https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js",
+   "https://stackoverflow.com/Content/Js/third-party/npm/@stackoverflow/stacks/dist/js/stacks.min.js",
+   "https://stackoverflow.com/Content/Js/stub.en.js",
+   "https://stackoverflow.com/Content/Js/webpack-chunks/5102.en.js",
+   "https://stackoverflow.com/Content/Js/questions/list.en.js",
+   "https://stackoverflow.com/Content/Js/sprinkles/cookie-consent.en.js",
+   "/px.js",
+   "/cdn-cgi/challenge-platform/scripts/precursor/main.js",
+   "https://cdn.cookielaw.org/scripttemplates/202604.2.0/otBannerSdk.js",
+   "https://accounts.google.com/gsi/client",
+   "https://stackoverflow.com/Content/Js/full-anon.en.js",
+   "https://cdn.cookielaw.org/scripttemplates/202604.2.0/otGPP.js",
+   "https://stackoverflow.com/Content/Js/webpack-chunks/svelte.en.js",
+   "https://stackoverflow.com/Content/Js/webpack-chunks/svelte-floating-ui.en.js",
+   "https://stackoverflow.com/Content/Js/webpack-chunks/stacks-svelte.en.js",
+   "https://stackoverflow.com/Content/Js/webpack-chunks/9366.en.js",
+   "https://stackoverflow.com/Content/Js/islands/signup-modal.en.js",
+   "https://stackoverflow.com/Content/Js/islands/one-tap.en.js",
+   "https://stackoverflow.com/Content/Js/sprinkles/left-nav-events.en.js",
+   "https://stackoverflow.com/Content/Js/webpack-chunks/stacks-svelte-labs.en.js",
+   "https://stackoverflow.com/Content/Js/webpack-chunks/8339.en.js",
+   "https://stackoverflow.com/Content/Js/webpack-chunks/7663.en.js",
+   "https://stackoverflow.com/Content/Js/webpack-chunks/3696.en.js",
+   "https://stackoverflow.com/Content/Js/webpack-chunks/2458.en.js",
+   "https://stackoverflow.com/Content/Js/webpack-chunks/620.en.js",
+   "https://stackoverflow.com/Content/Js/webpack-chunks/7612.en.js",
+   "https://stackoverflow.com/Content/Js/islands/homepage-wizard.en.js",
+   "https://stackoverflow.com/Content/Js/questions/userQuestionList.en.js",
+   "https://stackoverflow.com/Content/Js/sidebar/stackoverflow-for-agents-sidebar-promo.en.js",
+   "https://www.googletagmanager.com/gtag/js",
+   "inline:#webpack-public-path",
+   "https://stackoverflow.com/Content/Shared/stacks.css",
+   "https://stackoverflow.com/Content/Sites/stackoverflow/primary.css",
+   "https://stackoverflow.com/Content/Shared/Channels/channels.css",
+   "https://stackoverflow.com/px.js",
+   "https://www.gravatar.com/avatar/c9a85968522ba6401b944122f9943e2c",
+   "https://i.sstatic.net/6jafZ.jpg",
+   "https://www.gravatar.com/avatar/2d213b3e850bf555be1a6c723a18ae98",
+   "https://lh3.googleusercontent.com/a-/AAuE7mAvb64APmP2K_dnKcc7axyud-jPGeQHQFrwBb27sg=k-s32",
+   "https://www.gravatar.com/avatar/1b092e83bef3286023a1d8a0f827aeb4",
+   "https://lh4.googleusercontent.com/-ieRUhkTxGQ0/AAAAAAAAAAI/AAAAAAAAB9s/SUMgVP9skpc/s32-rj/photo.jpg",
+   "https://i.sstatic.net/fcMqH.jpg",
+   "https://www.gravatar.com/avatar/eead3a6ab011b880ca6ec354ca00f0b3",
+   "https://www.gravatar.com/avatar/47c7b3daffb64a7d706d3d317cea6996",
+   "https://www.gravatar.com/avatar/329c57d1826a98139d26746d26dba7cf",
+   "https://www.gravatar.com/avatar/b25379d9ed76c06b46f7d9a1868914c9",
+   "https://i.sstatic.net/tGDEi.jpg",
+   "https://www.gravatar.com/avatar/515956a4f6087a06b7686cdbf759cc0c",
+   "https://www.gravatar.com/avatar/3bde328a25b7c2fa1d0dce09b6e60bf8",
+   "https://www.gravatar.com/avatar/af1820bf71a9ea4a8529fd765eaa726d",
+   "https://cdn.cookielaw.org/consent/c3d9f1e3-55f3-4eba-b268-46cee4c6789c/c3d9f1e3-55f3-4eba-b268-46cee4c6789c.json",
+   "https://geolocation.onetrust.com/cookieconsentpub/v1/geo/location",
+   "https://stackoverflow.com/cdn-cgi/challenge-platform/scripts/precursor/main.js",
+   "https://stackoverflow.com/Content/Sites/stackoverflow/Img/subcommunities/aws.svg",
+   "https://stackoverflow.com/Content/Sites/stackoverflow/Img/subcommunities/mobile-dev.svg",
+   "https://stackoverflow.com/Content/Img/favicons-sprite16.png",
+   "https://stackoverflow.com/Content/Sites/stackoverflow/Img/subcommunities/azure.svg",
+   "https://stackoverflow.com/Content/Sites/stackoverflow/Img/subcommunities/ci-cd.svg",
+   "https://stackoverflow.com/Content/Sites/stackoverflow/Img/subcommunities/openai.svg",
+   "https://stackoverflow.com/Content/Sites/stackoverflow/Img/icon-48.png",
+   "https://stackoverflow.com/cdn-cgi/challenge-platform/h/b/precursor/d76008a69eab/0.7182440836012771:1790409786:uv-jagL0f8Eh1xleDq_jUmMgjpfYzTz4YXTcODmmAsA/a411111cdd5ff6c0",
+   "https://cdn.cookielaw.org/consent/c3d9f1e3-55f3-4eba-b268-46cee4c6789c/019f1e88-de48-7993-9d44-02a6149fe258/en.json",
+   "https://www.google-analytics.com/g/collect",
+   "https://www.googletagmanager.com/a",
+   "https://cdn.cookielaw.org/scripttemplates/202604.2.0/assets/otFloatingRoundedCorner.json",
+   "https://cdn.cookielaw.org/scripttemplates/202604.2.0/assets/otCommonStyles.css",
+   "https://accounts.google.com/gsi/style",
+   "https://stackoverflow.com/Content/Sites/stackoverflow/Img/favicon.svg",
+   "https://cdn.cookielaw.org/logos/static/ot_close.svg"
+  ],
+  "stylesheets": [
+   "https://stackoverflow.com/Content/Shared/stacks.css",
+   "https://stackoverflow.com/Content/Sites/stackoverflow/primary.css",
+   "https://stackoverflow.com/Content/Shared/Channels/channels.css",
+   "https://accounts.google.com/gsi/style"
+  ],
+  "cookies": [
+   "OTGPPConsent",
+   "g_state",
+   "OptanonConsent"
+  ],
+  "metas": [],
+  "inlineSamples": [],
+  "domFlags": [
+   ".svelte-"
+  ],
+  "globals": {},
+  "pass": "light"
+ },
+ "globals": {
+  "__svelte": {
+   "present": true,
+   "version": "5"
+  },
+  "gtag": {
+   "present": true
+  },
+  "jQuery": {
+   "present": true,
+   "version": "3.7.1"
+  },
+  "webpackChunk": {
+   "present": true
+  }
+ }
+}

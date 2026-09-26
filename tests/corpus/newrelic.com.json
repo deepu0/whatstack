@@ -1,0 +1,153 @@
+{
+ "host": "newrelic.com",
+ "capturedAt": "2026-09-26",
+ "whatstack": "1.7.2",
+ "chromium": "151.0.7922.34",
+ "expect": {
+  "must": [
+   "newrelic"
+  ]
+ },
+ "snapshot": [
+  "bootstrap:low",
+  "jquery:high@4.0.0",
+  "lit:high@2.8.0",
+  "newrelic:high",
+  "tailwind:high",
+  "webpack:high"
+ ],
+ "signals": {
+  "url": "https://newrelic.com/",
+  "scripts": [
+   "https://cmp.osano.com/AzZVWOTJtg1WY32RK/cd381ba3-ebca-488c-a528-376a86764609/osano.js",
+   "https://cdn.intellimize.co/snippet/117712186.js",
+   "/sites/default/files/js/js_lKZifxj7qOFRgwgJb3jZJr_nw_oRk-cazq3ZFL54gvs.js",
+   "/libraries/erno/js/nr-utilities.js",
+   "/modules/custom/nr_personalization/js/nr_personalization.personalization.js",
+   "/sites/default/files/js/js__jaw7JiK1klR2oALBY5IJLl8d5NTFqeLpdGiWKWcqLo.js",
+   "/libraries/erno/templates/components/header/header/header.js",
+   "/libraries/erno/js/nr-utm-cookie.js",
+   "/libraries/erno/js/analytics.js",
+   "/libraries/erno/js/nr-analytics.js",
+   "/sites/default/files/js/js_lCKRYH4WzQB9PB5-mFEnKpMoR1mXvefuM80-hUFK02g.js",
+   "/core/assets/vendor/jquery/jquery.min.js",
+   "/sites/default/files/js/js_C1yHZnOSQSWjXUpzUVbaWp8JbV-qY9xA3TCW6QmQAuA.js",
+   "/modules/contrib/ckeditor_accordion/js/accordion.frontend.min.js",
+   "/sites/default/files/js/js_3JydwblcgzSm35Y7Ph90hgjGPHw8-TI1zYCe4TQhYeM.js",
+   "https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js",
+   "/sites/default/files/js/js_vd0D1ZW1k8q0s-l32xIignbH0-AHMQD9XVs2ty4EVb0.js",
+   "/themes/custom/erno/assets/fonts/mona-sans/MonaSansVF[wdth,wght,opsz].woff2",
+   "/themes/custom/erno/assets/fonts/inter/Inter-Variable.woff2",
+   "/themes/custom/erno/assets/fonts/geist-mono/geist-mono-400.woff2",
+   "https://newrelic.com/themes/custom/erno/assets/fonts/mona-sans/MonaSansVF[wdth,wght,opsz].woff2",
+   "https://newrelic.com/themes/custom/erno/assets/fonts/inter/Inter-Variable.woff2",
+   "https://newrelic.com/themes/custom/erno/assets/fonts/geist-mono/geist-mono-400.woff2",
+   "https://newrelic.com/sites/default/files/css/css_pjrE0zpK-JYbE_tjaUziLWgnGOvv184C1iOyPFuxJ4M.css",
+   "https://newrelic.com/sites/default/files/js/js_lKZifxj7qOFRgwgJb3jZJr_nw_oRk-cazq3ZFL54gvs.js",
+   "https://newrelic.com/sites/default/files/css/css_FaVoq6vZqmyXEWmbjdqp0p9LuBsQn1H1A937LoJFw_U.css",
+   "https://newrelic.com/libraries/erno/js/nr-utilities.js",
+   "https://newrelic.com/modules/custom/nr_personalization/js/nr_personalization.personalization.js",
+   "https://newrelic.com/sites/default/files/js/js__jaw7JiK1klR2oALBY5IJLl8d5NTFqeLpdGiWKWcqLo.js",
+   "https://newrelic.com/libraries/erno/templates/components/header/header/header.js",
+   "https://newrelic.com/libraries/erno/js/nr-utm-cookie.js",
+   "https://newrelic.com/libraries/erno/js/analytics.js",
+   "https://newrelic.com/libraries/erno/js/nr-analytics.js",
+   "https://newrelic.com/sites/default/files/js/js_lCKRYH4WzQB9PB5-mFEnKpMoR1mXvefuM80-hUFK02g.js",
+   "https://newrelic.com/sites/default/files/styles/800w/public/2026-02/platform.jpg",
+   "https://newrelic.com/sites/default/files/2026-02/logo_dominos.svg",
+   "https://newrelic.com/sites/default/files/2026-02/logo_shutterstock%20%282%29.svg",
+   "https://newrelic.com/sites/default/files/2025-03/bangkokbank.svg",
+   "https://newrelic.com/sites/default/files/2026-02/logo_atlassian%20%281%29.svg",
+   "https://newrelic.com/sites/default/files/2022-05/logo_verizon.svg",
+   "https://newrelic.com/sites/default/files/2023-02/toyota2.svg",
+   "https://newrelic.com/sites/default/files/2026-02/Button_0.svg",
+   "https://newrelic.com/sites/default/files/2026-02/Button.svg",
+   "https://newrelic.com/sites/default/files/styles/1920w/public/2026-03/IO%20A.webp",
+   "https://newrelic.com/sites/default/files/styles/1920w/public/2026-03/IO%20B.webp",
+   "https://newrelic.com/sites/default/files/2026-02/Button_1.svg",
+   "https://newrelic.com/sites/default/files/2026-02/Frame_2.svg",
+   "https://newrelic.com/sites/default/files/2026-02/Frame_0.svg",
+   "https://newrelic.com/sites/default/files/2026-02/Frame_1.svg",
+   "https://newrelic.com/sites/default/files/2026-02/Frame_5.svg",
+   "https://newrelic.com/core/assets/vendor/jquery/jquery.min.js",
+   "https://newrelic.com/sites/default/files/js/js_C1yHZnOSQSWjXUpzUVbaWp8JbV-qY9xA3TCW6QmQAuA.js",
+   "https://newrelic.com/sites/default/files/2026-02/Frame_3.svg",
+   "https://newrelic.com/themes/custom/erno/assets/images/icons/misc/ccpa.svg",
+   "https://newrelic.com/sites/default/files/2026-02/Frame_4.svg",
+   "https://newrelic.com/modules/contrib/ckeditor_accordion/js/accordion.frontend.min.js",
+   "https://newrelic.com/sites/default/files/js/js_3JydwblcgzSm35Y7Ph90hgjGPHw8-TI1zYCe4TQhYeM.js",
+   "https://newrelic.com/sites/default/files/js/js_vd0D1ZW1k8q0s-l32xIignbH0-AHMQD9XVs2ty4EVb0.js",
+   "https://newrelic.com/themes/custom/erno/assets/fonts/geist-mono/geist-mono-500.woff2",
+   "https://fonts.googleapis.com/css2",
+   "https://newrelic.com/themes/custom/erno/manifest.json",
+   "https://newrelic.com/themes/custom/erno/assets/images/icons/misc/quad-symbol.svg",
+   "https://newrelic.com/themes/custom/erno/assets/images/icons/divider/green.svg",
+   "https://newrelic.com/themes/custom/erno/assets/images/icons/divider/blue.svg",
+   "https://newrelic.com/themes/custom/erno/assets/images/layout/section/bg-graph-paper-dark-full-optimized.webp",
+   "https://newrelic.com/sites/default/files/2026-02/background-bottom.png",
+   "https://newrelic.com/sites/default/files/2026-02/platform-menu.png",
+   "https://newrelic.com/sites/default/files/styles/800w/public/2026-03/SRE%20Agent.png",
+   "https://newrelic.com/sites/default/files/styles/800w/public/2026-03/Session%20Replay.png",
+   "https://newrelic.com/sites/default/files/styles/800w/public/2026-03/Cloud%20Costs.png",
+   "https://newrelic.com/sites/default/files/2026-02/solutions-menu.png",
+   "https://newrelic.com/sites/default/files/2026-02/customers-menu.png",
+   "https://newrelic.com/sites/default/files/2026-02/Resources-menu.png",
+   "https://newrelic.com/themes/custom/erno/assets/images/icons/interaction/user-icon.svg",
+   "https://newrelic.com/sites/default/files/styles/800w/public/2026-02/pricing-menu.png",
+   "https://cmp.osano.com/",
+   "https://consent.api.osano.com/record",
+   "https://api.intellimize.co/prediction/117712186",
+   "https://js-agent.newrelic.com/nr-full-1.322.0.min.js",
+   "https://log.intellimize.co/logger",
+   "https://newrelic.com/themes/custom/erno/assets/images/metadata/favicon.ico",
+   "https://bam.nr-data.net/1/NRBR-044cd27ea2168d4c185",
+   "https://bam.nr-data.net/events/1/NRBR-044cd27ea2168d4c185",
+   "https://bam.nr-data.net/jserrors/1/NRBR-044cd27ea2168d4c185",
+   "https://log.intellimize.co/clientlogger",
+   "https://newrelic.com/sites/default/files/styles/800w/public/2026-03/AI%20Agent%20Monitor.png",
+   "https://api.intellimize.co/context-v2/117712186"
+  ],
+  "stylesheets": [
+   "/sites/default/files/css/css_pjrE0zpK-JYbE_tjaUziLWgnGOvv184C1iOyPFuxJ4M.css",
+   "/sites/default/files/css/css_FaVoq6vZqmyXEWmbjdqp0p9LuBsQn1H1A937LoJFw_U.css",
+   "https://fonts.googleapis.com/css2"
+  ],
+  "cookies": [
+   "nr_lang",
+   "osano_consentmanager_uuid",
+   "osano_consentmanager",
+   "nr_pn_visited"
+  ],
+  "metas": [
+   "Generator=Drupal 11 (https://www.drupal.org)"
+  ],
+  "inlineSamples": [
+   "(window.NREUM||(NREUM={})).init={privacy:{cookies_enabled:true},ajax:{deny_list:[\"bam.nr-data.net\"]}};(window.NREUM||(NREUM={})).load",
+   "window.NREUM||(NREUM={});NREUM.info={\"beacon\":\"bam.nr-data.net\",\"licenseKey\":\"NRBR-044cd27ea2168d4c185\",\"applicationID\":\"707464402\","
+  ],
+  "domFlags": [
+   ".btn-primary",
+   "tailwind-syntax",
+   "tailwind-utilities",
+   "tailwind-vars"
+  ],
+  "globals": {},
+  "pass": "light"
+ },
+ "globals": {
+  "NREUM": {
+   "present": true
+  },
+  "jQuery": {
+   "present": true,
+   "version": "4.0.0"
+  },
+  "litVersions": {
+   "present": true,
+   "version": "2.8.0"
+  },
+  "webpackChunk": {
+   "present": true
+  }
+ }
+}

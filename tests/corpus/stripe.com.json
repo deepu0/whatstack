@@ -1,0 +1,183 @@
+{
+ "host": "stripe.com",
+ "capturedAt": "2026-09-26",
+ "whatstack": "1.7.2",
+ "chromium": "151.0.7922.34",
+ "expect": {
+  "must": [
+   "nextjs",
+   "react",
+   "webpack",
+   "sentry"
+  ]
+ },
+ "snapshot": [
+  "google-analytics:medium",
+  "nextjs:high@14.2.32",
+  "react:high",
+  "sentry:high",
+  "webpack:high"
+ ],
+ "signals": {
+  "url": "https://stripe.com/",
+  "scripts": [
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/polyfills-42372ed130431b0a.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/22074.bd02a94640605868.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/49450.ba8bdeacb2ae3f4e.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/99791.a7f741b779b23047.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/60864.f462ab64ab99a6d2.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/41056.391e5aa5bf17b4e4.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/33429.ebf4f50cc61d4859.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/7205.b1fa6a14487cf1a1.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/29658.230298d5fcee0081.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/51092.558bf86d4d6d35cc.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/72252.cdfab8a8c6c7e3e4.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/55556.c120acaca1226a50.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/8653.b1423805849013a7.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/66084.2df5c58fcbb72480.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/27355.903cdaadb9326fc2.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/54252.b109314146e3cf30.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/93051.1cc9f5f6e52dff0a.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/70191.75cd9e3319850053.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/98762.cbc5581c9806ac88.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/92661.79b136b3bed60df6.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/65142.01bbe82aafd86a0d.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/92255.dd3bd24a9bb2e3ab.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/17383.e316d8044c50c73d.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/87381.4df6f4eaab05993c.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/11744.123cee29712c3808.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/77966.390e7bdff0da09d9.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/91774.2c27c7c1e7babb15.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/42850.e2d829a9dc4349d0.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/71378.e90398e8f260e180.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/34507.6c1a77fb757fbdcc.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/58519.e65e69443cb8c16b.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/28129.12e84712f6d5fccf.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/67680.9cf78fa8c0374f08.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/44936.21d9b59e8d7bdccb.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/52787.b7b3c2967693c51d.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/96236.ce2e477d1a10900b.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/17250.f68ff3bb5be98918.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/52564.388449dd0b7cccb0.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/99498.012a085d63fca20f.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/10613.33284403173d5b91.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/39452.4e5b9a526cff20a7.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/42322.4ab8445c63ef4103.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/10269.d3a19280ab0502eb.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/webpack-f85e96e588c53278.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/framework-bfbcaa5a2903bc7d.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/main-64c21da41e256517.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/pages/_app-290c624855ed8887.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/3dfade9e-4ca93d92ac876e62.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/c67c952e-5362035f70172687.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/55369f66-92e84f6aba0a73a8.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/99336-0abc93bde9d0d0c5.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/12267-692ae55ed1c1ab04.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/96834-82a933ea266ee7fa.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/68067-3e3eb3988bc7ce5f.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/66968-98e361718b3406c9.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/77313-5e75a7f657f904e9.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/65355-6cf6a168299c7d96.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/97990-a1dcc9be8ef14915.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/71072-3c8d72488796c7fd.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/30365-78f863b9f8f98678.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/12142-a5c1e2ae95f0a4e8.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/1107-fd8421e8dc3ea178.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/61060-b388c6469ee70008.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/63009-bcbc64478132a3e7.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/36813-0173b495df2670c3.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/88866-8ac0b8721444ee25.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/14480-a1975ff402c15b41.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/7654-f43590ca6653f95a.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/47923-21c9929c3318d6b3.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/35098-243fc0a07848d090.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/89735-639c225e70f38b39.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/68654-87f869e363ee7738.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/38639-daa7928f0481123e.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/64353-12f385c311452872.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/97642-ae5caa1c5fb462f6.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/pages/index-0ec84d9a8f311874.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/XlqzWn%2BbwX%2Bk1%2Brv0mOAn9MnYBF%2BjLwQ/89H39d/nmg%3D/_buildManifest.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/XlqzWn%2BbwX%2Bk1%2Brv0mOAn9MnYBF%2BjLwQ/89H39d/nmg%3D/_ssgManifest.js",
+   "/source-attribution/imt.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/media/Sohne.cb178166.woff2",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/media/SourceCodePro-Medium.f5ba3e6a.woff2",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/media/wave-fallback-desktop-2x.f0521908.webp",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/media/wave-fallback-tablet-2x.96d6cae7.webp",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/media/wave-fallback-mobile-2x.3638535c.webp",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/media/palette-light.3c0e6604.webp",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/css/5f8c822d1f0f2d3e.css",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/css/bb75c7a58537bcfc.css",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/css/e5be0f41b7fa7f3f.css",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/css/986b2e4562aa9061.css",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/css/c3ca6e08b62a6ac3.css",
+   "inline:#__NEXT_DATA__",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/media/wave-fallback-desktop-1x.fba6fa88.webp",
+   "https://images.stripeassets.com/fzn2n1nzq965/vYmk6v8n7oDAwbDpwhjV6/846f9b3e214549b8f14e2b8c8cfe9343/payment-bento-background.jpg",
+   "https://b.stripecdn.com/stripethirdparty-srv/assets/v33.1/PrivacyCompliance.html",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/98932.192b84a46be184c5.js",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/media/map-dots.0f396e3d.png",
+   "https://stripe.com/cookie-settings/enforcement-mode",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/36322.1afe8adb9afbca38.js",
+   "https://stripe.com/notifications",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/40414.d4517af1bd2d7917.js",
+   "https://stripe.com/_workers/_next/static/chunks/dotGeneration.worker.bf20e833.js",
+   "https://stripe.com/_workers/_next/static/chunks/waveGeometry.worker.07101200.js",
+   "https://r.stripe.com/0",
+   "https://q.stripe.com/",
+   "https://ext.stripe.com/universal-chat/agent-availability",
+   "https://images.stripeassets.com/fzn2n1nzq965/6BTjJGdjfGVA8brPwj7p3M/fcf084ff85142366e118fe85ee78b632/payments-electric-kettle.jpg",
+   "https://images.stripeassets.com/fzn2n1nzq965/1Vf8oT9Fm6dEwpnEx5PgK1/055956f38d7fd8b0cc7419692ef29778/bento-terminal.png",
+   "https://b.stripecdn.com/stripethirdparty-srv/assets/v33.1/GoogleTagManager.html",
+   "https://assets.stripeassets.com/fzn2n1nzq965/nu0iR4KqmkdJ52fgRts09/c3a10df318e7ffb1f516073daadea625/favicon.ico",
+   "https://stripe.com/source-attribution/imt.js"
+  ],
+  "stylesheets": [
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/css/5f8c822d1f0f2d3e.css",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/css/bb75c7a58537bcfc.css",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/css/e5be0f41b7fa7f3f.css",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/css/986b2e4562aa9061.css",
+   "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/css/c3ca6e08b62a6ac3.css"
+  ],
+  "cookies": [
+   "cid",
+   "__Secure-sid",
+   "_ga"
+  ],
+  "metas": [
+   "next-head-count=132"
+  ],
+  "inlineSamples": [],
+  "domFlags": [
+   "script#__NEXT_DATA__",
+   "#__next",
+   "next-route-announcer"
+  ],
+  "globals": {},
+  "pass": "light"
+ },
+ "globals": {
+  "__NEXT_DATA__": {
+   "present": true
+  },
+  "__SENTRY__": {
+   "present": true
+  },
+  "__reactContainer": {
+   "present": true
+  },
+  "__reactListening": {
+   "present": true
+  },
+  "next": {
+   "present": true,
+   "version": "14.2.32"
+  },
+  "webpackChunk": {
+   "present": true
+  },
+  "webpackChunk_N_E": {
+   "present": true
+  }
+ }
+}
