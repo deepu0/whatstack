@@ -121,6 +121,8 @@ Used to identify the active tab, associate scan results with that tab, and updat
 | `store/screenshots/screenshot-2-1280x800.png` | Second feature mock 1280×800 |
 | `store/screenshots/screenshot-3-640x400.png` | Compact 640×400 |
 | `store/promo/promo-tile-440x280.png` | Small promo tile |
+| `store/film/1…5-*-1280x800.png` | Five screenshots cut from the [launch film](../launch-video/) (real captures): browse, core stack, confidence, evidence, export. Use these instead of screenshots 1–3 if you like |
+| `store/film/promo-marquee-1400x560.png` | Marquee promo tile (end card of the film) |
 | `icons/icon128.png` | Store icon (from package) |
 
 ---

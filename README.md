@@ -20,6 +20,14 @@ Fully **local** detection of 82 technologies — frameworks, CMS / site builders
 
 Every frame is a real capture of the extension scanning real sites (Stripe, Notion, Netflix, Airbnb and more), rendered from code. See [`launch-video/`](launch-video/).
 
+## Screenshots
+
+| Reads the stack while you browse | One click, the whole stack |
+|---|---|
+| ![Reads the stack while you browse](store/film/1-reads-while-you-browse-1280x800.png) | ![One click, the whole stack](store/film/2-one-click-whole-stack-1280x800.png) |
+| **Confidence, not guesses** | **See why it matched** |
+| ![Confidence, not guesses](store/film/3-confidence-not-guesses-1280x800.png) | ![See why it matched](store/film/4-see-why-it-matched-1280x800.png) |
+
 ## What’s new in 1.8.1
 
 **TanStack in production.** Real TanStack Start, Router and Query apps ship hashed chunks and no package names, so 1.8.0 missed them — even on tanstack.com. 1.8.1 reads the globals production builds actually expose (`__TSR_ROUTER__`, `__TSS_START_OPTIONS__`) and walks the React tree (bounded: 6,000 fibers / 25 ms) for provider clients that have no global at all: **TanStack Query, TanStack Router, React Router data routers, Redux and Apollo**. Now detected on tanstack.com, railway.com, bolt.new, spotify.com and onlyfrontendjobs.com. Details: [docs/RELEASE-1.8.1.md](docs/RELEASE-1.8.1.md).
@@ -153,7 +161,7 @@ Pre-submit checklist: [docs/PRE-SUBMIT-AUDIT.md](./docs/PRE-SUBMIT-AUDIT.md)
 
 ## Status
 
-Live on the [Chrome Web Store](https://chromewebstore.google.com/detail/whatstack/kpmbanlddakoocgimdenfeppfaidmcgk). The repository is at **1.8.0**; the store listing updates once that build is submitted and approved.
+Live on the [Chrome Web Store](https://chromewebstore.google.com/detail/whatstack/kpmbanlddakoocgimdenfeppfaidmcgk). The repository is at **1.8.1**; the store listing updates once that build is approved.
 
 ## License
 
