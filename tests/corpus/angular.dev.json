@@ -1,7 +1,7 @@
 {
  "host": "angular.dev",
  "capturedAt": "2026-09-26",
- "whatstack": "1.8.0",
+ "whatstack": "1.8.1",
  "chromium": "151.0.7922.34",
  "expect": {
   "must": [
@@ -44,8 +44,6 @@
    "https://angular.dev/main-CIUPUTY5.js",
    "https://angular.dev/styles-V46FXCBJ.css",
    "https://angular.dev/assets/icons/site.webmanifest",
-   "https://angular.dev/media/editor-light-IWWA7SEJ.png",
-   "https://angular.dev/media/angular-logo-light-A36B7RRE.svg",
    "https://angular.dev/chunk-CmRFN2Lw.js",
    "https://angular.dev/chunk-BLjnejr3.js",
    "https://angular.dev/chunk-DWSDm00S.js",
@@ -60,18 +58,20 @@
    "https://angular.dev/chunk-Dy8iGyLf.js",
    "https://angular.dev/chunk-DpV8IDP5.js",
    "https://angular.dev/chunk-BQgwKfs5.js",
+   "https://angular.dev/media/editor-light-IWWA7SEJ.png",
+   "https://angular.dev/media/angular-logo-light-A36B7RRE.svg",
    "https://angular.dev/assets/others/versions.json",
    "https://angular.dev/chunk-zkLfDOfX.js",
-   "https://angular.dev/assets/images/angie/greeting.svg",
    "https://angular.dev/chunk-vgkYz8tD.js",
+   "https://angular.dev/assets/images/angie/greeting.svg",
    "https://angular.dev/chunk-yaDFekiu.js",
-   "https://angular.dev/assets/icons/favicon.ico",
    "https://angular.dev/chunk-C76Gtw6S.js",
    "https://angular.dev/chunk-cLhcnb7m.js",
    "https://angular.dev/chunk-DY8aYXyj.js",
    "https://angular.dev/chunk-CsADmXFc.js",
    "https://angular.dev/chunk-BGPBcj8R.js",
    "https://angular.dev/chunk-jE6Y_6eY.js",
+   "https://angular.dev/assets/icons/favicon.ico",
    "https://www.google-analytics.com/g/collect"
   ],
   "stylesheets": [

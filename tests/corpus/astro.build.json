@@ -1,7 +1,7 @@
 {
  "host": "astro.build",
  "capturedAt": "2026-09-26",
- "whatstack": "1.8.0",
+ "whatstack": "1.8.1",
  "chromium": "151.0.7922.34",
  "expect": {
   "must": [
@@ -30,14 +30,14 @@
    "https://astro.build/_astro/page.4AM5fX2K.js",
    "https://astro.build/_astro/HeaderNav.astro_astro_type_script_index_0_lang.yswXo7wO.js",
    "https://astro.build/_astro/Header.astro_astro_type_script_index_0_lang.DzqrMxS3.js",
-   "https://astro.build/_astro/CodeBlock.astro_astro_type_script_index_0_lang.Cunj9zFc.js",
    "https://astro.build/_astro/HeroBackground.B0iWl89K_1XcMNn.webp",
+   "https://astro.build/_astro/CodeBlock.astro_astro_type_script_index_0_lang.Cunj9zFc.js",
    "https://astro.build/_astro/ec.uumq6.css",
    "https://astro.build/_astro/ec.0vx5m.js",
-   "https://astro.build/_astro/signals-core.module.I2YRmzXw.js",
    "https://astro.build/_astro/dom.CNxIm9IU.js",
-   "https://cdn.usefathom.com/",
+   "https://astro.build/_astro/signals-core.module.I2YRmzXw.js",
    "https://astro.build/fonts/MDIO.woff2",
+   "https://cdn.usefathom.com/",
    "https://astro.build/favicon.svg"
   ],
   "stylesheets": [

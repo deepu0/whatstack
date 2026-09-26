@@ -1,7 +1,7 @@
 {
  "host": "getbootstrap.com",
  "capturedAt": "2026-09-26",
- "whatstack": "1.8.0",
+ "whatstack": "1.8.1",
  "chromium": "151.0.7922.34",
  "expect": {
   "must": [
@@ -29,23 +29,23 @@
    "/docs/5.3/assets/Scripts.astro_astro_type_script_index_0_lang.B072HICR.js",
    "inline:#_carbonads_js",
    "https://getbootstrap.com/docs/5.3/assets/js/color-modes.js",
-   "https://getbootstrap.com/docs/5.3/dist/css/bootstrap.min.css",
    "https://getbootstrap.com/docs/5.3/assets/_slug_.CJzlHdSW.css",
+   "https://getbootstrap.com/docs/5.3/dist/css/bootstrap.min.css",
    "https://getbootstrap.com/docs/5.3/assets/brand/bootstrap-logo-shadow.png",
    "https://getbootstrap.com/docs/5.3/assets/Code.astro_astro_type_script_index_0_lang.jwvOqc1M.js",
    "https://getbootstrap.com/docs/5.3/dist/js/bootstrap.bundle.min.js",
    "https://getbootstrap.com/docs/5.3/assets/Scripts.astro_astro_type_script_index_0_lang.B072HICR.js",
-   "https://getbootstrap.com/docs/5.3/assets/img/favicons/manifest.json",
    "https://getbootstrap.com/docs/5.3/assets/img/webpack.svg",
-   "https://getbootstrap.com/docs/5.3/assets/img/vite.svg",
    "https://getbootstrap.com/docs/5.3/assets/img/parcel.png",
+   "https://getbootstrap.com/docs/5.3/assets/img/vite.svg",
+   "https://getbootstrap.com/docs/5.3/assets/img/favicons/manifest.json",
    "https://cdn.usefathom.com/",
+   "https://srv.carbonads.net/ads/CKYIKKJL.json",
    "https://getbootstrap.com/docs/5.3/assets/img/favicons/favicon.ico",
    "https://getbootstrap.com/docs/5.3/assets/img/favicons/android-chrome-192x192.png",
-   "https://srv.carbonads.net/ads/CKYIKKJL.json",
    "https://srv.carbonads.net/static/30242/400c8e2093e72466a93a26b1de86feabbcd1a9e3",
    "https://srv.carbonads.net/static/30242/a719f75f8b6a44161528117f997a5d75d3ea8145",
-   "https://ad.doubleclick.net/ddm/trackimp/N5295.3091281BUYSELLADS/B34721851.453481133;dc_trk_aid=650200766;dc_trk_cid=246706990;ord=179041306;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;gdpr=$;gdpr_consent=$;ltd=;dc_tdv=1"
+   "https://ad.doubleclick.net/ddm/trackimp/N5295.3091281BUYSELLADS/B34721851.453481133;dc_trk_aid=650200766;dc_trk_cid=246706990;ord=179041581;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;gdpr=$;gdpr_consent=$;ltd=;dc_tdv=1"
   ],
   "stylesheets": [
    "/docs/5.3/dist/css/bootstrap.min.css",

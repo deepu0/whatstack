@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Fixture — TanStack Start app (runtime-only proof)</title>
+<link rel="stylesheet" href="/_shared.css">
+</head>
+<body>
+<main><h1>TanStack Start app</h1><p>Hashed Vite chunks; no package names in URLs.</p></main>
+<script>
+  // What a production TanStack Start app leaves behind: the router global,
+  // Start's options global, and a QueryClient passed to QueryClientProvider in
+  // the React tree (hydrateRoot(document, …) puts the root on document).
+  window.__TSR_ROUTER__ = { routesById: {}, routeTree: {}, buildLocation: function () {}, navigate: function () {} };
+  window.__TSS_START_OPTIONS__ = { serializationAdapters: [] };
+  document['__reactContainer$fx2'] = {
+    child: { memoizedProps: { client: { getQueryCache: function () {}, getMutationCache: function () {} } }, child: null, sibling: null },
+  };
+  document['_reactListeningfx2'] = true;
+</script>
+<script src="/site.js"></script>
+</body>
+</html>

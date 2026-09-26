@@ -44,5 +44,8 @@
   {"host": "newrelic.com", "expect": {"must": ["newrelic"]}},
   {"host": "www.hotjar.com", "expect": {"must": ["nextjs", "react", "hotjar", "module-federation"], "mustNotSolid": ["parcel"]}},
   {"host": "segment.com", "expect": {"must": ["segment"]}},
-  {"host": "www.intercom.com", "expect": {"must": ["nextjs", "react", "intercom"]}}
+  {"host": "www.intercom.com", "expect": {"must": ["nextjs", "react", "intercom"]}},
+  {"host": "tanstack.com", "expect": {"must": ["tanstack-start", "tanstack-router", "tanstack-query", "react"]}},
+  {"host": "railway.com", "expect": {"must": ["tanstack-start", "tanstack-router", "tanstack-query", "react"], "mustNotSolid": ["webpack"]}},
+  {"host": "bolt.new", "expect": {"must": ["react", "react-router", "tanstack-query"]}}
 ]

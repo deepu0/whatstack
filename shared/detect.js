@@ -250,6 +250,73 @@ export function mainWorldProbeSource() {
       }
     });
 
+    // ── React tree walk ──────────────────────────────────────────
+    // TanStack Query, data routers, Redux and Apollo usually expose NO global in
+    // production — but their clients are passed as props to a provider component,
+    // so they are sitting in the React tree. Walk it from the root fiber with a
+    // node and time budget, and only accept objects with the library's own shape.
+    run(() => {
+      const MAX_FIBERS = 6000;
+      const MAX_MS = 25;
+      const now = () => (typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now());
+      const t0 = now();
+      const roots = [];
+      const holders = [document, document.documentElement, document.body].concat(mountCandidates());
+      for (const h of holders) {
+        if (!h) continue;
+        for (const k of ownKeys(h)) {
+          if (k.indexOf('__reactContainer$') === 0) {
+            const f = get(h, k);
+            if (isObj(f) && roots.indexOf(f) === -1) roots.push(f);
+          }
+        }
+        // legacy ReactDOM.render root
+        const legacy = get(get(get(h, '_reactRootContainer'), '_internalRoot'), 'current');
+        if (isObj(legacy) && roots.indexOf(legacy) === -1) roots.push(legacy);
+      }
+      if (!roots.length) return;
+      if (!present.__reactContainer) mark('__reactContainer');
+      const want = ['__tanstackQueryClient', '__tanstackRouterInstance', '__reactRouterDataRouter', '__reduxStore', '__APOLLO_CLIENT__'];
+      const stack = roots.slice();
+      let n = 0;
+      while (stack.length && n < MAX_FIBERS) {
+        if ((n & 255) === 0 && now() - t0 > MAX_MS) break;
+        const f = stack.pop();
+        n++;
+        const props = get(f, 'memoizedProps');
+        if (props && typeof props === 'object') {
+          for (const key of ['client', 'queryClient', 'router', 'store', 'value']) {
+            const v = get(props, key);
+            if (!isObj(v)) continue;
+            if (fnAt(v, 'getQueryCache') && fnAt(v, 'getMutationCache')) {
+              if (!present.__tanstackQueryClient) mark('__tanstackQueryClient');
+            } else if (isObj(get(v, 'routesById')) && fnAt(v, 'buildLocation')) {
+              if (!present.__tanstackRouterInstance) mark('__tanstackRouterInstance');
+            } else if (Array.isArray(get(v, 'routes')) && fnAt(v, 'navigate') && fnAt(v, 'subscribe') && isObj(get(v, 'state'))) {
+              if (!present.__reactRouterDataRouter) mark('__reactRouterDataRouter');
+            } else if (fnAt(v, 'dispatch') && fnAt(v, 'getState') && fnAt(v, 'subscribe')) {
+              if (!present.__reduxStore) mark('__reduxStore');
+            } else if (fnAt(v, 'watchQuery') && fnAt(v, 'query') && isObj(get(v, 'cache'))) {
+              if (!present.__APOLLO_CLIENT__) mark('__APOLLO_CLIENT__');
+            }
+          }
+        }
+        if (want.every((w) => present[w])) break;
+        const sib = get(f, 'sibling');
+        if (isObj(sib)) stack.push(sib);
+        const child = get(f, 'child');
+        if (isObj(child)) stack.push(child);
+      }
+    });
+
+    // ── TanStack Router / Start production globals ───────────────
+    run(() => {
+      const r = tryGet('__TSR_ROUTER__');
+      if (isObj(r) && isObj(get(r, 'routesById')) && fnAt(r, 'buildLocation')) mark('__TSR_ROUTER__');
+      if (isObj(tryGet('__TSS_START_OPTIONS__')) && !isFn(tryGet('__TSS_START_OPTIONS__'))) mark('__TSS_START_OPTIONS__');
+      if (isObj(tryGet('$_TSR')) && !isFn(tryGet('$_TSR'))) mark('$_TSR');
+    });
+
     // ── Next.js ──────────────────────────────────────────────────
     run(() => {
       if (isObj(tryGet('__NEXT_DATA__')) && !Array.isArray(tryGet('__NEXT_DATA__'))) mark('__NEXT_DATA__');
@@ -1436,12 +1503,15 @@ const META_BUNDLERS = {
   sveltekit: ['vite'],
   remix: ['vite'],
   astro: ['vite'],
+  'tanstack-start': ['vite'],
 };
 
 /**
  * One page, one app bundler. When a meta-framework fixes the bundler, a
- * different one seen only as a runtime global (window.parcelRequire from an
- * embedded survey widget on a Next.js site) belongs to someone else's script.
+ * different one seen only as a runtime global belongs to someone else's script:
+ * window.parcelRequire from an embedded survey widget on a Next.js site, or
+ * webpackChunk_osano_cmp_consent_manager from a consent banner on a Vite-built
+ * TanStack Start site (railway.com).
  * @param {Hit[]} hits
  */
 function demoteConflictingBundlers(hits) {
@@ -1450,7 +1520,7 @@ function demoteConflictingBundlers(hits) {
   if (!owner) return;
   const allowed = new Set(META_BUNDLERS[owner]);
   for (const h of hits) {
-    if (!['parcel', 'vite'].includes(h.id) || allowed.has(h.id) || h.confidence === 'low') continue;
+    if (!['parcel', 'vite', 'webpack'].includes(h.id) || allowed.has(h.id) || h.confidence === 'low') continue;
     if (h.evidence.every((e) => e.type === 'global' || e.type === 'inline')) {
       h.confidence = 'low';
       h.evidence = [
