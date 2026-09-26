@@ -265,6 +265,78 @@ export const BRAND_ICONS = {
     bg: '#03363D',
     svg: '<svg viewBox="0 0 24 24"><text x="12" y="15.5" text-anchor="middle" font-size="8" font-weight="700" fill="#fff" font-family="system-ui">Zd</text></svg>',
   },
+  angularjs: {
+    bg: '#1a1a1a',
+    svg: '<svg viewBox="0 0 24 24"><text x="12" y="15.5" text-anchor="middle" font-size="8" font-weight="800" fill="#E23237" font-family="system-ui">AJ</text></svg>',
+  },
+  astro: {
+    bg: '#17191E',
+    svg: '<svg viewBox="0 0 24 24"><text x="12" y="16.2" text-anchor="middle" font-size="11" font-weight="800" fill="#FF5D01" font-family="system-ui">A</text></svg>',
+  },
+  gatsby: {
+    bg: '#663399',
+    svg: '<svg viewBox="0 0 24 24"><text x="12" y="16.2" text-anchor="middle" font-size="11" font-weight="800" fill="#ffffff" font-family="system-ui">G</text></svg>',
+  },
+  qwik: {
+    bg: '#1a1033',
+    svg: '<svg viewBox="0 0 24 24"><text x="12" y="16.2" text-anchor="middle" font-size="11" font-weight="800" fill="#AC7EF4" font-family="system-ui">Q</text></svg>',
+  },
+  preact: {
+    bg: '#673AB8',
+    svg: '<svg viewBox="0 0 24 24"><text x="12" y="16.2" text-anchor="middle" font-size="11" font-weight="800" fill="#ffffff" font-family="system-ui">P</text></svg>',
+  },
+  lit: {
+    bg: '#324FFF',
+    svg: '<svg viewBox="0 0 24 24"><text x="12" y="15.5" text-anchor="middle" font-size="8" font-weight="800" fill="#ffffff" font-family="system-ui">Lit</text></svg>',
+  },
+  polymer: {
+    bg: '#1a1a1a',
+    svg: '<svg viewBox="0 0 24 24"><text x="12" y="15.5" text-anchor="middle" font-size="8" font-weight="800" fill="#FF4081" font-family="system-ui">Py</text></svg>',
+  },
+  ember: {
+    bg: '#E04E39',
+    svg: '<svg viewBox="0 0 24 24"><text x="12" y="16.2" text-anchor="middle" font-size="11" font-weight="800" fill="#ffffff" font-family="system-ui">E</text></svg>',
+  },
+  alpine: {
+    bg: '#2D3441',
+    svg: '<svg viewBox="0 0 24 24"><text x="12" y="15.5" text-anchor="middle" font-size="8" font-weight="800" fill="#77C1D2" font-family="system-ui">Al</text></svg>',
+  },
+  htmx: {
+    bg: '#1a1a1a',
+    svg: '<svg viewBox="0 0 24 24"><text x="12" y="16" text-anchor="middle" font-size="9" font-weight="800" fill="#3D72D7" font-family="system-ui">hx</text></svg>',
+  },
+  wordpress: {
+    bg: '#21759B',
+    svg: '<svg viewBox="0 0 24 24"><text x="12" y="16.2" text-anchor="middle" font-size="11" font-weight="800" fill="#ffffff" font-family="system-ui">W</text></svg>',
+  },
+  shopify: {
+    bg: '#5E8E3E',
+    svg: '<svg viewBox="0 0 24 24"><text x="12" y="16.2" text-anchor="middle" font-size="11" font-weight="800" fill="#ffffff" font-family="system-ui">S</text></svg>',
+  },
+  webflow: {
+    bg: '#146EF5',
+    svg: '<svg viewBox="0 0 24 24"><text x="12" y="15.5" text-anchor="middle" font-size="8" font-weight="800" fill="#ffffff" font-family="system-ui">Wf</text></svg>',
+  },
+  framer: {
+    bg: '#0055FF',
+    svg: '<svg viewBox="0 0 24 24"><text x="12" y="16.2" text-anchor="middle" font-size="11" font-weight="800" fill="#ffffff" font-family="system-ui">F</text></svg>',
+  },
+  posthog: {
+    bg: '#1D4AFF',
+    svg: '<svg viewBox="0 0 24 24"><text x="12" y="15.5" text-anchor="middle" font-size="8" font-weight="800" fill="#F9BD2B" font-family="system-ui">PH</text></svg>',
+  },
+  plausible: {
+    bg: '#5850EC',
+    svg: '<svg viewBox="0 0 24 24"><text x="12" y="16.2" text-anchor="middle" font-size="11" font-weight="800" fill="#ffffff" font-family="system-ui">P</text></svg>',
+  },
+  fathom: {
+    bg: '#1a1a1a',
+    svg: '<svg viewBox="0 0 24 24"><text x="12" y="16.2" text-anchor="middle" font-size="11" font-weight="800" fill="#8B5CF6" font-family="system-ui">F</text></svg>',
+  },
+  amplitude: {
+    bg: '#1E61F0',
+    svg: '<svg viewBox="0 0 24 24"><text x="12" y="16.2" text-anchor="middle" font-size="11" font-weight="800" fill="#ffffff" font-family="system-ui">A</text></svg>',
+  },
 };
 
 const FALLBACK = {

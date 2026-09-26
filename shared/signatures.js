@@ -3,7 +3,7 @@
  * Page copy ("Vue.js jobs") must never be enough to fire a framework hit.
  */
 
-/** @typedef {'framework'|'architecture'|'build'|'state'|'data'|'ui'|'auth'|'payments'|'observability'|'analytics'|'hosting'} Category */
+/** @typedef {'framework'|'platform'|'architecture'|'build'|'state'|'data'|'ui'|'auth'|'payments'|'observability'|'analytics'|'hosting'} Category */
 /** @typedef {'global'|'dom'|'script'|'cookie'|'css'|'meta'|'inline'} EvidenceType */
 
 /**
@@ -13,6 +13,9 @@
  * @property {number} weight
  * @property {boolean} [strong]
  * @property {boolean} [runtime] marks true runtime proof (global / structural)
+ * @property {boolean} [matchQuery] script/css only: match the full URL including ?query.
+ *   By default the query string and fragment are stripped before matching, so a
+ *   search URL (?q=logrocket) or a cache-buster can never fire a rule.
  */
 
 /**
@@ -42,7 +45,9 @@ export const SIGNATURES = [
       { type: 'global', pattern: '__NEXT_DATA__', weight: 5, strong: true, runtime: true },
       { type: 'global', pattern: '__next_f', weight: 5, strong: true, runtime: true },
       { type: 'global', pattern: 'webpackChunk_N_E', weight: 4, strong: true, runtime: true },
-      { type: 'global', pattern: 'next', weight: 2, runtime: true },
+      // window.next is set by the App Router, but also by other Next-compatible
+      // runtimes and by DOM clobbering (<a id="next">). Corroboration only.
+      { type: 'global', pattern: 'next', weight: 1 },
       { type: 'dom', pattern: 'next-route-announcer', weight: 4, strong: true, runtime: true },
       { type: 'dom', pattern: '[data-nextjs-scroll-focus-boundary]', weight: 4, strong: true, runtime: true },
       { type: 'dom', pattern: '#__next', weight: 2 },
@@ -62,15 +67,17 @@ export const SIGNATURES = [
       // Fiber/container keys on a host node (React 16+)
       { type: 'global', pattern: '__reactFiber', weight: 5, strong: true, runtime: true },
       { type: 'global', pattern: '__reactContainer', weight: 5, strong: true, runtime: true },
+      // react-dom stamps _reactListening<random> on the root container and document
+      { type: 'global', pattern: '__reactListening', weight: 5, strong: true, runtime: true },
       // UMD globals only if they look like the real library (probe enforces)
       { type: 'global', pattern: 'React', weight: 4, strong: true, runtime: true },
       { type: 'global', pattern: 'ReactDOM', weight: 4, strong: true, runtime: true },
       { type: 'dom', pattern: '[data-reactroot]', weight: 4, strong: true, runtime: true },
       { type: 'dom', pattern: '[data-reactid]', weight: 3, strong: true, runtime: true },
       // CDN / path assets only (detect.js never matches prose)
-      { type: 'script', pattern: /(?:unpkg\.com|jsdelivr\.net|cdnjs|esm\.sh)\/.*\breact(?:-dom)?(?:@|\/)/i, weight: 4, strong: true, runtime: true },
-      { type: 'script', pattern: /\/react(?:-dom)?@[\d.]+/i, weight: 4, strong: true, runtime: true },
-      { type: 'script', pattern: /react(?:-dom)?\.(?:production|development)(?:\.min)?\.js/i, weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:unpkg\.com|jsdelivr\.net|cdnjs|esm\.sh)\/.*(?<![\w@.-])(?<!@[\w.-]+\/)react(?:-dom)?(?:@|\/)/i, weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /(?<![\w@.-])(?<!@[\w.-]+\/)react(?:-dom)?@\d+\.\d+/i, weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /(?<![\w.-])react(?:-dom)?\.(?:production|development)(?:\.min)?\.js/i, weight: 4, strong: true, runtime: true },
       // Never match bare __REACT_DEVTOOLS_GLOBAL_HOOK__ in page scripts (extension injects it)
       { type: 'inline', pattern: /react(?:-dom)?\.(?:production|development)(?:\.min)?\.js/i, weight: 3, strong: true, runtime: true },
     ],
@@ -83,6 +90,7 @@ export const SIGNATURES = [
     checks: [
       // Mounted Vue 3 app on its container — the only reliable prod fingerprint
       { type: 'global', pattern: '__vue_app__', weight: 5, strong: true, runtime: true },
+      { type: 'global', pattern: '__vue2__', weight: 5, strong: true, runtime: true },
       { type: 'global', pattern: '__VUE__', weight: 4, strong: true, runtime: true },
       { type: 'global', pattern: 'Vue', weight: 3, strong: true, runtime: true },
       // Vue 3 stamps this on the mount container at hydration/mount
@@ -119,7 +127,6 @@ export const SIGNATURES = [
       // Flag token emitted by the content-script probe (which ORs _ngcontent/_nghost)
       { type: 'dom', pattern: '[_ngcontent-]', weight: 4, strong: true, runtime: true },
       { type: 'script', pattern: /(?:^|[\/@])@angular\//i, weight: 4, strong: true, runtime: true },
-      { type: 'script', pattern: /angular(?:\.min)?\.js(?:[?#]|$)/i, weight: 3, strong: true, runtime: true },
     ],
   },
   {
@@ -163,7 +170,6 @@ export const SIGNATURES = [
     requiresRuntime: true,
     checks: [
       { type: 'global', pattern: 'jQuery', weight: 4, strong: true, runtime: true },
-      { type: 'global', pattern: '$', weight: 1 },
       { type: 'script', pattern: /jquery(?:[-.][\d.]+)?(?:\.min)?\.js(?:[?#]|$)/i, weight: 4, strong: true, runtime: true },
       { type: 'script', pattern: /code\.jquery\.com\/jquery/i, weight: 4, strong: true, runtime: true },
     ],
@@ -203,9 +209,9 @@ export const SIGNATURES = [
       { type: 'global', pattern: '__staticRouterHydrationData', weight: 4, strong: true, runtime: true },
       { type: 'global', pattern: '__reactRouterVersion', weight: 4, strong: true, runtime: true },
       { type: 'script', pattern: /@react-router\/(?:dom|dev|node|cloudflare)(?:@|\/|$)/i, weight: 5, strong: true, runtime: true },
-      { type: 'script', pattern: /react-router(?:-dom)?(?:@|\/)[\d.]+/i, weight: 4, strong: true, runtime: true },
-      { type: 'script', pattern: /(?:unpkg\.com|jsdelivr\.net|esm\.sh)\/.*react-router(?:-dom)?/i, weight: 4, strong: true, runtime: true },
-      { type: 'inline', pattern: /@react-router\/|react-router-dom/i, weight: 3, strong: true, runtime: true },
+      { type: 'script', pattern: /(?<![\w@.-])(?<!@[\w.-]+\/)react-router(?:-dom)?(?:@|\/)\d+\.\d+/i, weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:unpkg\.com|jsdelivr\.net|esm\.sh)\/.*(?<![\w@.-])(?<!@[\w.-]+\/)react-router(?:-dom)?(?:@|\/)/i, weight: 4, strong: true, runtime: true },
+      { type: 'inline', pattern: /@react-router\/(?:dom|dev|node)/i, weight: 3, strong: true, runtime: true },
     ],
   },
 
@@ -340,8 +346,8 @@ export const SIGNATURES = [
       { type: 'script', pattern: /@tanstack\/(?:react-)?start(?:@|\/|\/plugin|\/server)/i, weight: 5, strong: true, runtime: true },
       { type: 'script', pattern: /(?:unpkg\.com|jsdelivr\.net|esm\.sh)\/.*@tanstack\/(?:react-)?start/i, weight: 5, strong: true, runtime: true },
       // Vite plugin / build fingerprints sometimes appear in chunk URLs
-      { type: 'script', pattern: /tanstack[_-]start|start[_-]client|StartClient/i, weight: 3, strong: true },
-      { type: 'inline', pattern: /@tanstack\/(?:react|solid)-start|createServerFn|StartClient|createStartHandler/i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /tanstack[_-]start/i, weight: 3, strong: true },
+      { type: 'inline', pattern: /@tanstack\/(?:react|solid)-start|\bcreateServerFn\s*\(|\bcreateStartHandler\s*\(/, weight: 5, strong: true, runtime: true },
       { type: 'global', pattern: '__TANSTACK_START__', weight: 5, strong: true, runtime: true },
       { type: 'global', pattern: '__TSR_SSR__', weight: 4, strong: true, runtime: true },
       { type: 'meta', pattern: /^generator=.*tanstack\s*start/i, weight: 3, strong: true, runtime: true },
@@ -389,8 +395,8 @@ export const SIGNATURES = [
     name: 'GraphQL',
     category: 'data',
     checks: [
-      { type: 'script', pattern: /(?:\/|@)graphql(?:-tag)?(?:@|\/|\.js)/i, weight: 2 },
-      { type: 'global', pattern: '__GRAPHQL', weight: 2, runtime: true },
+      // Library assets only — a /graphql API endpoint is not the graphql package
+      { type: 'script', pattern: /(?<![\w@.-])(?<!@[\w.-]+\/)graphql(?:-tag)?@\d|\/graphql(?:-tag)?(?:\.min)?\.js$/i, weight: 2 },
     ],
   },
   {
@@ -409,9 +415,13 @@ export const SIGNATURES = [
     name: 'Tailwind CSS',
     category: 'ui',
     checks: [
-      { type: 'css', pattern: /tailwind(?:css)?(?:\.|\?|\/|@)/i, weight: 4, strong: true },
-      { type: 'script', pattern: /tailwindcss/i, weight: 4, strong: true },
-      // class soup is low only
+      { type: 'css', pattern: /(?<![\w-])tailwind(?:css)?(?:\.min)?\.css$|(?<![\w@.-])(?<!@[\w.-]+\/)tailwindcss@\d/i, weight: 4, strong: true },
+      { type: 'script', pattern: /cdn\.tailwindcss\.com|(?<![\w@.-])(?<!@[\w.-]+\/)@?tailwindcss(?:@\d|\/browser)/i, weight: 4, strong: true },
+      // --tw-* custom properties computed on the page: Tailwind's own runtime CSS
+      { type: 'dom', pattern: 'tailwind-vars', weight: 4, strong: true },
+      // Tailwind-only class syntax (md:, hover:, w-[42px], bg-black/50, palette-500)
+      { type: 'dom', pattern: 'tailwind-syntax', weight: 3 },
+      // Generic utility-class soup (Bootstrap uses flex / p-3 / rounded too): low only
       { type: 'dom', pattern: 'tailwind-utilities', weight: 1 },
     ],
   },
@@ -420,8 +430,9 @@ export const SIGNATURES = [
     name: 'Bootstrap',
     category: 'ui',
     checks: [
-      { type: 'css', pattern: /bootstrap(?:\.min)?\.css/i, weight: 4, strong: true },
-      { type: 'script', pattern: /bootstrap(?:\.bundle)?(?:\.min)?\.js/i, weight: 4, strong: true },
+      { type: 'css', pattern: /(?<![\w-])bootstrap(?:\.min)?\.css$|(?<![\w@.-])(?<!@[\w.-]+\/)bootstrap@\d[\w.-]*\/dist\/css\//i, weight: 4, strong: true },
+      // Not a bare bootstrap.js: that name is a common loader file (Clerk ships one)
+      { type: 'script', pattern: /(?<![\w-])bootstrap\.bundle(?:\.min)?\.js$|(?<![\w-])bootstrap\.min\.js$|(?<![\w@.-])(?<!@[\w.-]+\/)bootstrap@\d[\w.-]*\/|\/twitter-bootstrap\/\d/i, weight: 4, strong: true },
       { type: 'global', pattern: 'bootstrap', weight: 3, strong: true, runtime: true },
       { type: 'dom', pattern: '.btn-primary', weight: 1 },
     ],
@@ -431,7 +442,7 @@ export const SIGNATURES = [
     name: 'MUI (Material UI)',
     category: 'ui',
     checks: [
-      { type: 'script', pattern: /@mui\/|material-ui/i, weight: 4, strong: true },
+      { type: 'script', pattern: /(?<![\w-])@mui\/|\/material-ui(?:@|\/)/i, weight: 4, strong: true },
       // Flag token emitted by the content-script probe (which ORs MuiButton/MuiBox)
       { type: 'dom', pattern: '[class*="MuiButton-"]', weight: 4, strong: true, runtime: true },
     ],
@@ -441,7 +452,7 @@ export const SIGNATURES = [
     name: 'Chakra UI',
     category: 'ui',
     checks: [
-      { type: 'script', pattern: /@chakra-ui|chakra-ui/i, weight: 4, strong: true },
+      { type: 'script', pattern: /(?<![\w-])@chakra-ui\/|\/chakra-ui(?:@|\/)/i, weight: 4, strong: true },
     ],
   },
 
@@ -469,7 +480,7 @@ export const SIGNATURES = [
     name: 'Mixpanel',
     category: 'analytics',
     checks: [
-      { type: 'script', pattern: /cdn\.mxpnl\.com|mixpanel-2-latest|mixpanel\.com/i, weight: 4, strong: true },
+      { type: 'script', pattern: /cdn\.mxpnl\.com|mixpanel-2-latest|(?:cdn|api-js|api)\.mixpanel\.com/i, weight: 4, strong: true },
       { type: 'global', pattern: 'mixpanel', weight: 4, strong: true, runtime: true },
     ],
   },
@@ -478,8 +489,8 @@ export const SIGNATURES = [
     name: 'Hotjar',
     category: 'analytics',
     checks: [
-      { type: 'script', pattern: /static\.hotjar\.com|hotjar\.com/i, weight: 4, strong: true },
-      { type: 'global', pattern: 'hj', weight: 2, runtime: true },
+      { type: 'script', pattern: /(?:static|script|vars)\.hotjar\.com/i, weight: 4, strong: true },
+      { type: 'global', pattern: 'hj', weight: 3, strong: true, runtime: true },
     ],
   },
 
@@ -492,7 +503,7 @@ export const SIGNATURES = [
       { type: 'script', pattern: /vercel\.live|va\.vercel-scripts|_vercel\/insights/i, weight: 4, strong: true },
       { type: 'cookie', pattern: /^__vercel/, weight: 3, strong: true },
       // dpl= deploy query is a strong Next-on-Vercel client hint
-      { type: 'script', pattern: /[?&]dpl=dpl_/i, weight: 3, strong: true },
+      { type: 'script', pattern: /[?&]dpl=dpl_/i, weight: 3, strong: true, matchQuery: true },
     ],
   },
   {
@@ -502,7 +513,7 @@ export const SIGNATURES = [
     checks: [
       { type: 'dom', pattern: '[data-netlify]', weight: 4, strong: true, runtime: true },
       { type: 'cookie', pattern: /^(?:nf_jwt|netlify)/i, weight: 3, strong: true },
-      { type: 'script', pattern: /netlify(?:\.app|\/|\.com)/i, weight: 2 },
+      { type: 'script', pattern: /\/\.netlify\/(?:functions|images|scripts)\/|\/_netlify\//i, weight: 2 },
     ],
   },
   {
@@ -510,7 +521,8 @@ export const SIGNATURES = [
     name: 'Cloudflare',
     category: 'hosting',
     checks: [
-      { type: 'script', pattern: /cloudflareinsights|challenge-platform|cdnjs\.cloudflare\.com/i, weight: 3, strong: true },
+      // Proxy-only paths. Loading a library from cdnjs does not mean the site is on Cloudflare.
+      { type: 'script', pattern: /static\.cloudflareinsights\.com|\/cdn-cgi\/(?:challenge-platform|rum|zaraz|scripts)\//i, weight: 3, strong: true },
       { type: 'cookie', pattern: /^__(?:cf_bm|cfduid)|^(?:cf_clearance)/i, weight: 2 },
     ],
   },
@@ -527,7 +539,7 @@ export const SIGNATURES = [
       { type: 'global', pattern: '__VMOK__', weight: 3, strong: true, runtime: true }, // module-federation evolved name
       { type: 'script', pattern: /remoteEntry\.(?:js|mjs)(?:[?#]|$)/i, weight: 5, strong: true, runtime: true },
       { type: 'script', pattern: /@module-federation\//i, weight: 4, strong: true, runtime: true },
-      { type: 'inline', pattern: /\b__FEDERATION__\b|remoteEntry\.(?:js|mjs)|module federation/i, weight: 3, strong: true, runtime: true },
+      { type: 'inline', pattern: /\b__FEDERATION__\b|remoteEntry\.m?js\b/, weight: 3, strong: true, runtime: true },
     ],
   },
   {
@@ -538,9 +550,9 @@ export const SIGNATURES = [
     checks: [
       { type: 'global', pattern: 'singleSpa', weight: 5, strong: true, runtime: true },
       { type: 'global', pattern: 'singleSpaNavigate', weight: 4, strong: true, runtime: true },
-      { type: 'script', pattern: /single-spa(?:[@/.]|$)/i, weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /(?<![\w@.-])(?<!@[\w.-]+\/)single-spa(?:@|\/|(?:\.min)?\.js$)/i, weight: 4, strong: true, runtime: true },
       { type: 'dom', pattern: '[data-single-spa]', weight: 3, strong: true, runtime: true },
-      { type: 'inline', pattern: /\bsingleSpa\b|single-spa/i, weight: 3, strong: true, runtime: true },
+      { type: 'inline', pattern: /\bsingleSpa\.(?:registerApplication|start|getAppNames)\b/, weight: 3, strong: true, runtime: true },
     ],
   },
   {
@@ -551,8 +563,8 @@ export const SIGNATURES = [
     checks: [
       { type: 'global', pattern: '__POWERED_BY_QIANKUN__', weight: 5, strong: true, runtime: true },
       { type: 'global', pattern: '__INJECTED_PUBLIC_PATH_BY_QIANKUN__', weight: 4, strong: true, runtime: true },
-      { type: 'script', pattern: /qiankun/i, weight: 3, strong: true, runtime: true },
-      { type: 'inline', pattern: /__POWERED_BY_QIANKUN__|qiankun/i, weight: 3, strong: true, runtime: true },
+      { type: 'script', pattern: /(?<![\w@.-])(?<!@[\w.-]+\/)qiankun(?:@|\/|(?:\.umd)?(?:\.min)?\.js$)/i, weight: 3, strong: true, runtime: true },
+      { type: 'inline', pattern: /__POWERED_BY_QIANKUN__|\b(?:registerMicroApps|loadMicroApp)\s*\(/, weight: 3, strong: true, runtime: true },
     ],
   },
   {
@@ -617,7 +629,7 @@ export const SIGNATURES = [
     category: 'build',
     checks: [
       { type: 'global', pattern: 'parcelRequire', weight: 5, strong: true, runtime: true },
-      { type: 'script', pattern: /parcel(?:Require|\.js)/i, weight: 3, strong: true },
+      { type: 'script', pattern: /(?<![\w@.-])(?<!@[\w.-]+\/)parcel@\d|\/parcel-runtime[\w.-]*\.js$/i, weight: 3, strong: true },
     ],
   },
   {
@@ -625,7 +637,7 @@ export const SIGNATURES = [
     name: 'Turbopack',
     category: 'build',
     checks: [
-      { type: 'script', pattern: /turbopack/i, weight: 3, strong: true },
+      { type: 'script', pattern: /(?<![\w-])turbopack[-_][\w.-]*\.js$/i, weight: 3, strong: true },
       { type: 'inline', pattern: /\bTURBOPACK\b|__turbopack/i, weight: 4, strong: true, runtime: true },
       { type: 'global', pattern: '__turbopack', weight: 4, strong: true, runtime: true },
     ],
@@ -648,7 +660,7 @@ export const SIGNATURES = [
     checks: [
       { type: 'dom', pattern: '[data-styled]', weight: 4, strong: true, runtime: true },
       { type: 'dom', pattern: '[sc-]', weight: 2 },
-      { type: 'script', pattern: /styled-components/i, weight: 4, strong: true },
+      { type: 'script', pattern: /(?<![\w@.-])(?<!@[\w.-]+\/)styled-components(?:@|\/)/i, weight: 4, strong: true },
     ],
   },
 
@@ -689,7 +701,8 @@ export const SIGNATURES = [
       // /api/auth/session is NextAuth's canonical route but not unique to it —
       // plenty of hand-rolled auth uses the same path. Corroborating signal
       // only; the cookie prefix below is the strong proof.
-      { type: 'script', pattern: /\/api\/auth\/session|next-auth/i, weight: 2 },
+      { type: 'script', pattern: /\/api\/auth\/session$/i, weight: 1 },
+      { type: 'script', pattern: /(?<![\w@.-])(?<!@[\w.-]+\/)next-auth(?:@|\/)/i, weight: 2 },
       { type: 'cookie', pattern: /^next-auth\./i, weight: 4, strong: true, runtime: true },
     ],
   },
@@ -709,7 +722,7 @@ export const SIGNATURES = [
     name: 'Razorpay',
     category: 'payments',
     checks: [
-      { type: 'script', pattern: /checkout\.razorpay\.com|razorpay/i, weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:checkout|cdn|api)\.razorpay\.com/i, weight: 4, strong: true, runtime: true },
       { type: 'global', pattern: 'Razorpay', weight: 4, strong: true, runtime: true },
     ],
   },
@@ -720,7 +733,8 @@ export const SIGNATURES = [
     name: 'Sentry',
     category: 'observability',
     checks: [
-      { type: 'script', pattern: /browser\.sentry-cdn\.com|js\.sentry-cdn\.com|@sentry\//i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /browser\.sentry-cdn\.com|js\.sentry-cdn\.com|(?<![\w-])@sentry\/(?:browser|react|vue|angular|nextjs|svelte|tracing|replay|core)/i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /\.ingest\.(?:[a-z]{2}\.)?sentry\.io\/api\//i, weight: 4, strong: true, runtime: true },
       { type: 'global', pattern: 'Sentry', weight: 4, strong: true, runtime: true }, // probe validates
       { type: 'global', pattern: '__SENTRY__', weight: 5, strong: true, runtime: true },
     ],
@@ -730,7 +744,7 @@ export const SIGNATURES = [
     name: 'Datadog RUM',
     category: 'observability',
     checks: [
-      { type: 'script', pattern: /datadoghq\.(?:com|eu)|dd-rum|datadog-rum/i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /datadoghq-browser-agent\.com|browser-intake-[\w.-]*datadoghq\.(?:com|eu)|(?<![\w-])datadog-rum(?:-[\w]+)?(?:\.min)?\.js$|(?<![\w-])@datadog\/browser-(?:rum|logs)/i, weight: 5, strong: true, runtime: true },
       { type: 'global', pattern: 'DD_RUM', weight: 5, strong: true, runtime: true },
       { type: 'global', pattern: 'DD_LOGS', weight: 4, strong: true, runtime: true },
     ],
@@ -757,7 +771,7 @@ export const SIGNATURES = [
     name: 'LogRocket',
     category: 'observability',
     checks: [
-      { type: 'script', pattern: /cdn\.logrocket|logrocket/i, weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:cdn|r)\.(?:logrocket\.(?:io|com)|lr-ingest\.(?:io|com)|lr-in(?:-prod)?\.com|lgrckt-in\.com)|(?<![\w@.-])(?<!@[\w.-]+\/)logrocket@\d/i, weight: 4, strong: true, runtime: true },
       { type: 'global', pattern: 'LogRocket', weight: 4, strong: true, runtime: true },
     ],
   },
@@ -768,7 +782,7 @@ export const SIGNATURES = [
     name: 'LaunchDarkly',
     category: 'analytics',
     checks: [
-      { type: 'script', pattern: /app\.launchdarkly\.com|launchdarkly/i, weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:app|clientsdk|clientstream|events|sdk)\.launchdarkly\.com|(?<![\w@.-])(?<!@[\w.-]+\/)launchdarkly-js-client-sdk/i, weight: 4, strong: true, runtime: true },
       { type: 'global', pattern: 'LDClient', weight: 4, strong: true, runtime: true },
     ],
   },
@@ -787,8 +801,199 @@ export const SIGNATURES = [
     name: 'Zendesk',
     category: 'analytics',
     checks: [
-      { type: 'script', pattern: /static\.zdassets\.com|zendesk/i, weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:static|ekr)\.zdassets\.com|\.zendesk\.com\/embeddable/i, weight: 4, strong: true, runtime: true },
       { type: 'global', pattern: 'zE', weight: 3, strong: true, runtime: true },
+    ],
+  },
+  // ── More frameworks (1.8.0) ───────────────────────────────
+  {
+    id: 'angularjs',
+    name: 'AngularJS',
+    category: 'framework',
+    requiresRuntime: true,
+    checks: [
+      // AngularJS 1.x: window.angular with module() + bootstrap()
+      { type: 'global', pattern: 'angularjs', weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /(?<![\w.-])angular(?:\.min)?\.js$/i, weight: 4, strong: true, runtime: true },
+      { type: 'dom', pattern: '[ng-app]', weight: 2 },
+    ],
+  },
+  {
+    id: 'astro',
+    name: 'Astro',
+    category: 'framework',
+    requiresRuntime: true,
+    checks: [
+      { type: 'dom', pattern: 'astro-island', weight: 5, strong: true, runtime: true },
+      // data-astro-cid-* scoped-style attributes are emitted by the Astro compiler
+      { type: 'dom', pattern: '[data-astro-]', weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /\/_astro\/[\w.-]+\.(?:js|css)$/i, weight: 4, strong: true, runtime: true },
+      { type: 'meta', pattern: /^generator=Astro\b/i, weight: 4, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'gatsby',
+    name: 'Gatsby',
+    category: 'framework',
+    related: ['react'],
+    requiresRuntime: true,
+    checks: [
+      { type: 'dom', pattern: '#___gatsby', weight: 5, strong: true, runtime: true },
+      { type: 'global', pattern: '___gatsby', weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /\/page-data\/(?:[\w.-]+\/)*page-data\.json$|\/webpack-runtime-[\da-f]+\.js$/i, weight: 4, strong: true, runtime: true },
+      { type: 'meta', pattern: /^generator=Gatsby\b/i, weight: 4, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'qwik',
+    name: 'Qwik',
+    category: 'framework',
+    requiresRuntime: true,
+    checks: [
+      { type: 'global', pattern: '__qwik', weight: 5, strong: true, runtime: true },
+      { type: 'dom', pattern: '[q:container]', weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /\/build\/q-[\w-]+\.js$/i, weight: 3, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'preact',
+    name: 'Preact',
+    category: 'framework',
+    requiresRuntime: true,
+    checks: [
+      { type: 'global', pattern: 'preact', weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /(?<![\w@.-])(?<!@[\w.-]+\/)(?:preact@\d|preact\/dist\/|preact(?:\.module|\.min|\.umd)\.js$)/i, weight: 4, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'lit',
+    name: 'Lit',
+    category: 'framework',
+    requiresRuntime: true,
+    checks: [
+      // lit-element / lit-html push their versions onto window.litElementVersions / litHtmlVersions
+      { type: 'global', pattern: 'litVersions', weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /(?<![\w@.-])(?<!@[\w.-]+\/)lit(?:-element|-html)?@\d/i, weight: 4, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'polymer',
+    name: 'Polymer',
+    category: 'framework',
+    requiresRuntime: true,
+    checks: [
+      { type: 'global', pattern: 'Polymer', weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /(?<![\w-])@polymer\/(?:polymer|lit-element)/i, weight: 4, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'ember',
+    name: 'Ember',
+    category: 'framework',
+    requiresRuntime: true,
+    checks: [
+      { type: 'global', pattern: 'Ember', weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /(?<![\w.-])ember(?:\.prod|\.debug)?(?:\.min)?\.js$/i, weight: 4, strong: true, runtime: true },
+    ],
+  },
+  {
+    id: 'alpine',
+    name: 'Alpine.js',
+    category: 'framework',
+    requiresRuntime: true,
+    checks: [
+      { type: 'global', pattern: 'Alpine', weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /(?<![\w@.-])(?<!@[\w.-]+\/)alpinejs@\d|(?<![\w.-])alpine(?:\.min)?\.js$/i, weight: 4, strong: true, runtime: true },
+      { type: 'dom', pattern: '[x-data]', weight: 2 },
+    ],
+  },
+  {
+    id: 'htmx',
+    name: 'htmx',
+    category: 'framework',
+    requiresRuntime: true,
+    checks: [
+      { type: 'global', pattern: 'htmx', weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /(?<![\w@.-])(?<!@[\w.-]+\/)htmx(?:\.org)?@\d|(?<![\w.-])htmx(?:\.min)?\.js$/i, weight: 4, strong: true, runtime: true },
+      { type: 'dom', pattern: '[hx-get]', weight: 2 },
+    ],
+  },
+
+  // ── CMS / site builders ───────────────────────────────────
+  {
+    id: 'wordpress',
+    name: 'WordPress',
+    category: 'platform',
+    checks: [
+      { type: 'meta', pattern: /^generator=WordPress\b/i, weight: 5, strong: true },
+      { type: 'script', pattern: /\/wp-(?:content|includes)\/[\w./-]+\.(?:js|css)$/i, weight: 4, strong: true },
+    ],
+  },
+  {
+    id: 'shopify',
+    name: 'Shopify',
+    category: 'platform',
+    checks: [
+      { type: 'global', pattern: 'Shopify', weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /cdn\.shopify\.com\/(?:s|shopifycloud|extensions)\//i, weight: 5, strong: true },
+    ],
+  },
+  {
+    id: 'webflow',
+    name: 'Webflow',
+    category: 'platform',
+    checks: [
+      { type: 'meta', pattern: /^generator=Webflow\b/i, weight: 5, strong: true },
+      { type: 'dom', pattern: 'html[data-wf-site]', weight: 5, strong: true },
+      { type: 'script', pattern: /(?:assets|uploads-ssl|cdn\.prod)\.website-files\.com\//i, weight: 4, strong: true },
+    ],
+  },
+  {
+    id: 'framer',
+    name: 'Framer',
+    category: 'platform',
+    checks: [
+      { type: 'meta', pattern: /^generator=Framer\b/i, weight: 5, strong: true },
+      { type: 'script', pattern: /framerusercontent\.com\/|events\.framer\.com\//i, weight: 4, strong: true },
+      { type: 'dom', pattern: '[data-framer-name]', weight: 3 },
+    ],
+  },
+
+  // ── More analytics ────────────────────────────────────────
+  {
+    id: 'posthog',
+    name: 'PostHog',
+    category: 'analytics',
+    checks: [
+      { type: 'global', pattern: 'posthog', weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:us|eu)(?:-assets)?\.i\.posthog\.com\/|app\.posthog\.com\/|(?<![\w@.-])(?<!@[\w.-]+\/)posthog-js(?:@|\/)/i, weight: 4, strong: true },
+    ],
+  },
+  {
+    id: 'plausible',
+    name: 'Plausible',
+    category: 'analytics',
+    checks: [
+      { type: 'global', pattern: 'plausible', weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /plausible\.io\/(?:js|api)\//i, weight: 5, strong: true },
+    ],
+  },
+  {
+    id: 'fathom',
+    name: 'Fathom',
+    category: 'analytics',
+    checks: [
+      { type: 'global', pattern: 'fathom', weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /cdn\.usefathom\.com\//i, weight: 5, strong: true },
+    ],
+  },
+  {
+    id: 'amplitude',
+    name: 'Amplitude',
+    category: 'analytics',
+    checks: [
+      { type: 'global', pattern: 'amplitude', weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /cdn\.amplitude\.com\/|api2?\.amplitude\.com\/|(?<![\w-])@amplitude\/(?:analytics-browser|unified)/i, weight: 4, strong: true },
     ],
   },
 ];
@@ -803,6 +1008,7 @@ export const MFE_PLATFORM_IDS = [
 
 export const CATEGORY_ORDER = [
   'framework',
+  'platform',
   'architecture',
   'build',
   'state',
@@ -817,6 +1023,7 @@ export const CATEGORY_ORDER = [
 
 export const CATEGORY_LABELS = {
   framework: 'Frameworks',
+  platform: 'CMS / Site builder',
   architecture: 'Architecture',
   build: 'Build',
   state: 'State',
@@ -830,10 +1037,8 @@ export const CATEGORY_LABELS = {
 };
 
 /** Categories shown first in headline (core stack) */
-export const HEADLINE_CATEGORIES = ['framework', 'architecture', 'build'];
+export const HEADLINE_CATEGORIES = ['framework', 'platform', 'architecture', 'build'];
 
 /** Meta-frameworks that own the page; competitors need independent runtime proof */
-export const META_FRAMEWORKS = ['nextjs', 'nuxt', 'sveltekit', 'tanstack-start', 'remix'];
+export const META_FRAMEWORKS = ['nextjs', 'nuxt', 'sveltekit', 'tanstack-start', 'remix', 'gatsby'];
 
-/** Competing SPA frameworks — suppressed when a meta-framework owns the page unless runtime-proof */
-export const COMPETING_FRAMEWORKS = ['vue', 'angular', 'svelte', 'solid', 'jquery', 'react'];

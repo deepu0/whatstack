@@ -72,445 +72,531 @@ import { calculateBadgeCount } from './architecture-classifier.js';
  */
 export function mainWorldProbeSource() {
   return function probeMainWorld() {
+    'use strict';
     const g = typeof globalThis !== 'undefined' ? globalThis : window;
     /** @type {Record<string, unknown>} */
     const present = {};
+    // Page-controlled strings are clipped: a hostile page must not be able to
+    // push megabytes through the structured clone back to the extension.
+    const MAX_STR = 64;
 
     const mark = (name, extra) => {
       present[name] = extra && typeof extra === 'object' ? { present: true, ...extra } : { present: true };
     };
 
-    const tryGet = (name) => {
+    // Every detector runs in its own try. One throwing getter or Proxy trap on
+    // the page must cost that detector only — never the whole probe.
+    const run = (fn) => {
       try {
-        return g[name];
-      } catch {
-        return undefined;
+        fn();
+      } catch (_) {
+        /* this detector only */
       }
     };
 
-    // jQuery
-    const jq = tryGet('jQuery');
-    if (typeof jq === 'function' && jq.fn && jq.fn.jquery) {
-      mark('jQuery', { version: String(jq.fn.jquery) });
-      mark('$', { version: String(jq.fn.jquery) });
-    }
-
-    // ── React (aligned with React DevTools) ──────────────────────────
-    // The RDT extension injects window.__REACT_DEVTOOLS_GLOBAL_HOOK__ on
-    // EVERY page. That alone is NOT React. React registers itself via
-    // hook.inject(renderer) → hook.renderers becomes non-empty.
-    // Ref: React DevTools backend — Components tab only activates with renderers.
-    (function detectReactLikeDevTools() {
-      let rendererCount = 0;
-      let reactVersion = null;
-      const hook = tryGet('__REACT_DEVTOOLS_GLOBAL_HOOK__');
-      if (hook && hook.renderers) {
-        try {
-          const renderers = hook.renderers;
-          if (typeof renderers.size === 'number') {
-            rendererCount = renderers.size;
-            if (typeof renderers.forEach === 'function') {
-              renderers.forEach(function (r) {
-                if (r && r.version) reactVersion = String(r.version);
-              });
-            } else if (typeof renderers.values === 'function') {
-              for (const r of renderers.values()) {
-                if (r && r.version) reactVersion = String(r.version);
-              }
-            }
-          } else if (typeof renderers.forEach === 'function') {
-            renderers.forEach(function (r) {
-              rendererCount += 1;
-              if (r && r.version) reactVersion = String(r.version);
-            });
-          } else if (typeof renderers === 'object') {
-            rendererCount = Object.keys(renderers).length;
-            for (const k of Object.keys(renderers)) {
-              const r = renderers[k];
-              if (r && r.version) reactVersion = String(r.version);
-            }
-          }
-        } catch {
-          /* ignore */
-        }
-        // Fiber roots (when RDT exposes them)
-        try {
-          if (rendererCount === 0 && typeof hook.getFiberRoots === 'function' && hook.renderers) {
-            const ids =
-              typeof hook.renderers.keys === 'function'
-                ? Array.from(hook.renderers.keys())
-                : Object.keys(hook.renderers || {});
-            for (const id of ids) {
-              const roots = hook.getFiberRoots(id);
-              if (roots && (roots.size > 0 || (typeof roots === 'object' && Object.keys(roots).length))) {
-                rendererCount = Math.max(rendererCount, 1);
-              }
-            }
-          }
-        } catch {
-          /* ignore */
-        }
-      }
-
-      if (rendererCount > 0) {
-        // Only __reactRenderer — do NOT also mark 'React' from the hook. The
-        // version comes off the registered renderer, not off a window.React
-        // that a bundled app does not have, and marking it produced evidence
-        // reading "window.React v18.3.1" for a global that was never there.
-        mark(
-          '__reactRenderer',
-          reactVersion
-            ? { version: reactVersion, count: rendererCount }
-            : { count: rendererCount },
-        );
-      }
-
-      // UMD globals — only if they look like real React (createElement / version)
-      const React = tryGet('React');
-      if (
-        React &&
-        (typeof React === 'object' || typeof React === 'function') &&
-        (React.version || typeof React.createElement === 'function')
-      ) {
-        mark('React', React.version ? { version: String(React.version) } : undefined);
-      }
-      const ReactDOM = tryGet('ReactDOM');
-      if (
-        ReactDOM &&
-        (typeof ReactDOM.render === 'function' ||
-          typeof ReactDOM.createRoot === 'function' ||
-          typeof ReactDOM.hydrate === 'function' ||
-          typeof ReactDOM.hydrateRoot === 'function' ||
-          ReactDOM.version)
-      ) {
-        mark('ReactDOM', ReactDOM.version ? { version: String(ReactDOM.version) } : undefined);
-      }
-
-      // Host-instance fiber keys (React 16+) — verify value looks fiber-like
+    const get = (obj, key) => {
       try {
-        const roots = [
-          document.querySelector('#__next'),
-          document.querySelector('#root'),
-          document.querySelector('#app'),
-          document.querySelector('[data-reactroot]'),
-          document.querySelector('[data-reactroot]'),
-        ].filter(Boolean);
-        // Prefer specific roots; only fall back to a shallow body child scan
-        if (!roots.length && document.body) {
-          const kids = document.body.children;
+        return obj === null || obj === undefined ? undefined : obj[key];
+      } catch (_) {
+        return undefined;
+      }
+    };
+    const tryGet = (name) => get(g, name);
+
+    // DOM clobbering: <div id="bootstrap"> or <a id="next"> becomes window.bootstrap /
+    // window.next. Elements, collections and the window itself are never a library.
+    const isNode = (v) => {
+      try {
+        if (v === g) return true;
+        if (typeof Node !== 'undefined' && v instanceof Node) return true;
+        if (typeof HTMLCollection !== 'undefined' && v instanceof HTMLCollection) return true;
+        if (typeof NodeList !== 'undefined' && v instanceof NodeList) return true;
+        return false;
+      } catch (_) {
+        return true;
+      }
+    };
+    const isObj = (v) => v !== null && (typeof v === 'object' || typeof v === 'function') && !isNode(v);
+    const isFn = (v) => typeof v === 'function';
+    const fnAt = (obj, key) => isFn(get(obj, key));
+    const has = (name) => {
+      const v = tryGet(name);
+      return v !== undefined && v !== null && !isNode(v);
+    };
+    // Never String() a page object — that runs page toString / Symbol.toPrimitive.
+    const str = (v) => {
+      if (typeof v === 'string') return v.slice(0, MAX_STR);
+      if (typeof v === 'number' && isFinite(v)) return String(v);
+      return undefined;
+    };
+    const withVersion = (v) => {
+      const s = str(v);
+      return s ? { version: s } : undefined;
+    };
+    const ownKeys = (obj) => {
+      try {
+        return Object.keys(obj);
+      } catch (_) {
+        return [];
+      }
+    };
+    const q = (sel) => {
+      try {
+        return document.querySelector(sel);
+      } catch (_) {
+        return null;
+      }
+    };
+
+    // Candidate mount points shared by the React / Vue / Preact checks.
+    const mountCandidates = () => {
+      const out = [];
+      for (const sel of ['#__next', '#root', '#app', '#___gatsby', '[data-reactroot]', '[data-v-app]', '#__nuxt']) {
+        const el = q(sel);
+        if (el && out.indexOf(el) === -1) out.push(el);
+      }
+      try {
+        const body = document.body;
+        if (body) {
+          if (out.indexOf(body) === -1) out.push(body);
+          const kids = body.children;
           const limit = Math.min(kids.length, 12);
-          for (let i = 0; i < limit; i++) roots.push(kids[i]);
+          for (let i = 0; i < limit; i++) if (out.indexOf(kids[i]) === -1) out.push(kids[i]);
         }
-        const fiberKey = /^__reactFiber/;
-        const containerKey = /^__reactContainer/;
-        const legacyKey = /^__reactInternalInstance/;
-        for (const el of roots) {
-          if (!el) continue;
-          const keys = Object.keys(el);
-          for (const k of keys) {
-            if (fiberKey.test(k) || legacyKey.test(k)) {
-              try {
-                const fiber = el[k];
-                // Fiber nodes have tag (number) and return/child/sibling or elementType/type
-                if (
-                  fiber &&
-                  typeof fiber === 'object' &&
-                  (typeof fiber.tag === 'number' ||
-                    fiber.elementType !== undefined ||
-                    fiber.type !== undefined ||
-                    fiber.memoizedState !== undefined ||
-                    fiber.memoizedProps !== undefined)
-                ) {
-                  mark('__reactFiber');
-                  break;
-                }
-              } catch {
-                /* ignore */
-              }
-            }
-            if (containerKey.test(k)) {
-              try {
-                const c = el[k];
-                if (c && typeof c === 'object') {
-                  mark('__reactContainer');
-                  break;
-                }
-              } catch {
-                /* ignore */
-              }
-            }
-          }
-          if (present.__reactFiber || present.__reactContainer) break;
-        }
-      } catch {
+      } catch (_) {
         /* ignore */
       }
-    })();
+      return out;
+    };
 
-    // Next.js
-    const nextData = tryGet('__NEXT_DATA__');
-    if (nextData && typeof nextData === 'object') {
-      const ver = nextData.version || (nextData.runtimeConfig && nextData.runtimeConfig.version);
-      mark('__NEXT_DATA__', ver ? { version: String(ver) } : undefined);
-    }
-    if (tryGet('__next_f') !== undefined) mark('__next_f');
-    if (tryGet('webpackChunk_N_E') !== undefined) mark('webpackChunk_N_E');
-    const next = tryGet('next');
-    if (next !== undefined && next !== null) {
-      const ver = next && typeof next === 'object' && next.version ? String(next.version) : undefined;
-      mark('next', ver ? { version: ver } : undefined);
-    }
+    // ── jQuery ───────────────────────────────────────────────────
+    run(() => {
+      const jq = tryGet('jQuery');
+      if (!isFn(jq)) return;
+      const v = str(get(get(jq, 'fn'), 'jquery'));
+      if (v) mark('jQuery', { version: v });
+    });
 
-    // Vue
-    const Vue = tryGet('Vue');
-    if (Vue && (typeof Vue === 'object' || typeof Vue === 'function')) {
-      // Guard: plain objects named Vue in ads shouldn't look like the library
-      const looksLikeVue =
-        Vue.version ||
-        typeof Vue.createApp === 'function' ||
-        typeof Vue.component === 'function' ||
-        typeof Vue.use === 'function';
-      if (looksLikeVue) mark('Vue', Vue.version ? { version: String(Vue.version) } : undefined);
-    }
-    if (tryGet('__VUE__') !== undefined) mark('__VUE__');
-    if (tryGet('__NUXT__') !== undefined) mark('__NUXT__');
+    // ── React (aligned with React DevTools) ──────────────────────
+    // The RDT extension injects __REACT_DEVTOOLS_GLOBAL_HOOK__ on EVERY page,
+    // so the hook alone is not React. React registers a renderer on it.
+    run(() => {
+      const hook = tryGet('__REACT_DEVTOOLS_GLOBAL_HOOK__');
+      const renderers = get(hook, 'renderers');
+      if (!isObj(renderers)) return;
+      let count = 0;
+      let domVersion;
+      let anyVersion;
+      const visit = (r) => {
+        count += 1;
+        const v = str(get(r, 'version'));
+        if (!v) return;
+        // Prefer react-dom: third-party reconcilers (react-pdf, ink, three) also
+        // register renderers carrying their own package versions.
+        if (get(r, 'rendererPackageName') === 'react-dom') domVersion = domVersion || v;
+        anyVersion = anyVersion || v;
+      };
+      if (fnAt(renderers, 'forEach')) {
+        renderers.forEach((r) => run(() => visit(r)));
+      } else {
+        for (const k of ownKeys(renderers).slice(0, 16)) run(() => visit(get(renderers, k)));
+      }
+      if (count > 0) {
+        const version = domVersion || anyVersion;
+        mark('__reactRenderer', version ? { version, count } : { count });
+      }
+    });
 
-    // Angular
-    if (typeof tryGet('getAllAngularRootElements') === 'function') {
-      mark('getAllAngularRootElements');
-    }
-    const ng = tryGet('ng');
-    if (ng && typeof ng === 'object') mark('ng');
+    run(() => {
+      const React = tryGet('React');
+      if (isObj(React) && (str(get(React, 'version')) || fnAt(React, 'createElement'))) {
+        mark('React', withVersion(get(React, 'version')));
+      }
+    });
+    run(() => {
+      const ReactDOM = tryGet('ReactDOM');
+      if (
+        isObj(ReactDOM) &&
+        (fnAt(ReactDOM, 'render') || fnAt(ReactDOM, 'createRoot') || fnAt(ReactDOM, 'hydrateRoot') || fnAt(ReactDOM, 'hydrate'))
+      ) {
+        mark('ReactDOM', withVersion(get(ReactDOM, 'version')));
+      }
+    });
 
-    // Svelte
-    if (tryGet('__svelte') !== undefined) mark('__svelte');
-    if (tryGet('__sveltekit') !== undefined) mark('__sveltekit');
+    // Host-instance keys React writes onto DOM nodes (React 16+). These live on
+    // the JS objects, so only the MAIN world can see them.
+    run(() => {
+      const fiberKey = /^__react(?:Fiber|InternalInstance)\$/;
+      const containerKey = /^__reactContainer\$/;
+      const listeningKey = /^_reactListening/;
+      const els = mountCandidates();
+      try {
+        els.unshift(document);
+      } catch (_) {
+        /* ignore */
+      }
+      for (const el of els) {
+        for (const k of ownKeys(el)) {
+          if (!present.__reactListening && listeningKey.test(k)) mark('__reactListening');
+          if (!present.__reactContainer && containerKey.test(k) && isObj(get(el, k))) mark('__reactContainer');
+          if (!present.__reactFiber && fiberKey.test(k)) {
+            const fiber = get(el, k);
+            if (isObj(fiber) && (typeof get(fiber, 'tag') === 'number' || get(fiber, 'memoizedProps') !== undefined)) {
+              mark('__reactFiber');
+            }
+          }
+        }
+        if (present.__reactFiber || present.__reactContainer) break;
+      }
+    });
 
-    // Microfrontends / composition
-    if (tryGet('__FEDERATION__') !== undefined && tryGet('__FEDERATION__') !== null) {
-      mark('__FEDERATION__');
-    }
-    if (tryGet('__FEDERATION_DEVTOOLS__') !== undefined) mark('__FEDERATION_DEVTOOLS__');
-    if (tryGet('__VMOK__') !== undefined) mark('__VMOK__');
-    if (tryGet('__POWERED_BY_QIANKUN__')) mark('__POWERED_BY_QIANKUN__');
-    if (tryGet('__INJECTED_PUBLIC_PATH_BY_QIANKUN__') !== undefined) {
-      mark('__INJECTED_PUBLIC_PATH_BY_QIANKUN__');
-    }
-    if (tryGet('__MICRO_FRONTEND__') !== undefined) mark('__MICRO_FRONTEND__');
-    if (tryGet('__MICROFRONTEND__') !== undefined) mark('__MICROFRONTEND__');
+    // ── Next.js ──────────────────────────────────────────────────
+    run(() => {
+      if (isObj(tryGet('__NEXT_DATA__')) && !Array.isArray(tryGet('__NEXT_DATA__'))) mark('__NEXT_DATA__');
+    });
+    run(() => {
+      if (Array.isArray(tryGet('__next_f'))) mark('__next_f');
+    });
+    run(() => {
+      if (Array.isArray(tryGet('webpackChunk_N_E'))) mark('webpackChunk_N_E');
+    });
+    run(() => {
+      // App Router sets window.next = { version, appDir }. Other runtimes and
+      // plain DOM clobbering (<a id="next">) also produce a window.next, so this
+      // is a version hint only — never proof of Next.js on its own.
+      const next = tryGet('next');
+      if (!isObj(next) || isFn(next)) return;
+      const v = str(get(next, 'version'));
+      mark('next', v ? { version: v } : undefined);
+    });
 
-    const singleSpa = tryGet('singleSpa');
-    if (
-      singleSpa &&
-      typeof singleSpa === 'object' &&
-      (typeof singleSpa.registerApplication === 'function' ||
-        typeof singleSpa.start === 'function' ||
-        typeof singleSpa.getAppNames === 'function')
-    ) {
-      mark('singleSpa');
-    }
-    if (typeof tryGet('singleSpaNavigate') === 'function') mark('singleSpaNavigate');
+    // ── Vue / Nuxt ───────────────────────────────────────────────
+    run(() => {
+      const Vue = tryGet('Vue');
+      if (
+        isObj(Vue) &&
+        (str(get(Vue, 'version')) || fnAt(Vue, 'createApp') || fnAt(Vue, 'component') || fnAt(Vue, 'use'))
+      ) {
+        mark('Vue', withVersion(get(Vue, 'version')));
+      }
+    });
+    run(() => {
+      if (has('__VUE__')) mark('__VUE__');
+    });
+    run(() => {
+      if (isObj(tryGet('__NUXT__'))) mark('__NUXT__');
+    });
+    // Vue 3 production apps expose NO window.Vue: app.mount(el) sets
+    // el.__vue_app__ (with .version). Vue 2 sets el.__vue__ on the root vm.
+    run(() => {
+      for (const el of mountCandidates()) {
+        const app = get(el, '__vue_app__');
+        if (isObj(app)) {
+          mark('__vue_app__', withVersion(get(app, 'version')));
+          return;
+        }
+        const vm = get(el, '__vue__');
+        if (isObj(vm) && get(vm, '_isVue') === true) {
+          mark('__vue2__');
+          return;
+        }
+      }
+    });
 
-    // SystemJS only — NOT native import-map polyfills that merely expose System.import.
-    // Real SystemJS typically has register + (amdResolve || getConfig || constructor.name).
-    const System = tryGet('System');
-    if (System && typeof System === 'object') {
-      const looksLikeSystemJS =
-        typeof System.register === 'function' &&
-        (typeof System.amdResolve === 'function' ||
-          typeof System.getConfig === 'function' ||
-          typeof System.resolve === 'function' ||
-          (System.constructor && /SystemJS/i.test(String(System.constructor.name || ''))));
-      // es-module-shims / import-map polyfills often only set System.import — do not mark those
-      if (looksLikeSystemJS) {
+    // ── Angular / AngularJS ──────────────────────────────────────
+    run(() => {
+      if (isFn(tryGet('getAllAngularRootElements'))) mark('getAllAngularRootElements');
+    });
+    run(() => {
+      const ng = tryGet('ng');
+      if (isObj(ng) && (fnAt(ng, 'getComponent') || fnAt(ng, 'probe') || fnAt(ng, 'applyChanges'))) mark('ng');
+    });
+    run(() => {
+      const el = q('[ng-version]');
+      if (el) mark('__ng_version_attr', withVersion(el.getAttribute('ng-version')));
+    });
+    run(() => {
+      const angular = tryGet('angular');
+      if (isObj(angular) && fnAt(angular, 'module') && fnAt(angular, 'bootstrap')) {
+        mark('angularjs', withVersion(get(get(angular, 'version'), 'full')));
+      }
+    });
+
+    // ── Svelte / SvelteKit ───────────────────────────────────────
+    run(() => {
+      const s = tryGet('__svelte');
+      if (!isObj(s)) return;
+      // Svelte 5 keeps a Set of runtime majors on window.__svelte.v
+      let version;
+      const v = get(s, 'v');
+      if (v && fnAt(v, 'values')) {
+        for (const x of v.values()) {
+          version = str(x);
+          if (version) break;
+        }
+      }
+      mark('__svelte', version ? { version } : undefined);
+    });
+    run(() => {
+      // SvelteKit's global is __sveltekit_<hash>, not __sveltekit
+      if (ownKeys(g).some((k) => k === '__sveltekit' || k.indexOf('__sveltekit_') === 0)) mark('__sveltekit');
+    });
+
+    // ── Other frameworks ─────────────────────────────────────────
+    run(() => {
+      const p = tryGet('preact');
+      if (isObj(p) && fnAt(p, 'h') && fnAt(p, 'render')) mark('preact');
+    });
+    run(() => {
+      const lit = tryGet('litElementVersions') || tryGet('litHtmlVersions');
+      if (Array.isArray(lit) && lit.length) mark('litVersions', withVersion(lit[0]));
+    });
+    run(() => {
+      const P = tryGet('Polymer');
+      if (isObj(P) && (fnAt(P, 'Element') || str(get(P, 'version')) || isFn(P))) mark('Polymer', withVersion(get(P, 'version')));
+    });
+    run(() => {
+      const E = tryGet('Ember');
+      if (isObj(E) && str(get(E, 'VERSION'))) mark('Ember', withVersion(get(E, 'VERSION')));
+    });
+    run(() => {
+      const A = tryGet('Alpine');
+      if (isObj(A) && (fnAt(A, 'start') || fnAt(A, 'data'))) mark('Alpine', withVersion(get(A, 'version')));
+    });
+    run(() => {
+      const h = tryGet('htmx');
+      if (isObj(h) && fnAt(h, 'ajax') && fnAt(h, 'process')) mark('htmx', withVersion(get(h, 'version')));
+    });
+    run(() => {
+      if (isObj(tryGet('___loader')) || isObj(tryGet('___emitter'))) mark('___gatsby');
+    });
+    run(() => {
+      if (isObj(tryGet('qwikevents')) || q('[q\\:container]')) mark('__qwik');
+    });
+
+    // ── Microfrontends / composition ─────────────────────────────
+    run(() => {
+      if (isObj(tryGet('__FEDERATION__'))) mark('__FEDERATION__');
+    });
+    run(() => {
+      if (has('__FEDERATION_DEVTOOLS__')) mark('__FEDERATION_DEVTOOLS__');
+    });
+    run(() => {
+      if (isObj(tryGet('__VMOK__'))) mark('__VMOK__');
+    });
+    run(() => {
+      if (tryGet('__POWERED_BY_QIANKUN__') === true) mark('__POWERED_BY_QIANKUN__');
+    });
+    run(() => {
+      if (typeof tryGet('__INJECTED_PUBLIC_PATH_BY_QIANKUN__') === 'string') mark('__INJECTED_PUBLIC_PATH_BY_QIANKUN__');
+    });
+    run(() => {
+      if (isObj(tryGet('__MICRO_FRONTEND__')) || tryGet('__MICRO_FRONTEND__') === true) mark('__MICRO_FRONTEND__');
+      if (isObj(tryGet('__MICROFRONTEND__')) || tryGet('__MICROFRONTEND__') === true) mark('__MICROFRONTEND__');
+    });
+    run(() => {
+      const singleSpa = tryGet('singleSpa');
+      if (
+        isObj(singleSpa) &&
+        (fnAt(singleSpa, 'registerApplication') || fnAt(singleSpa, 'start') || fnAt(singleSpa, 'getAppNames'))
+      ) {
+        mark('singleSpa');
+      }
+      if (isFn(tryGet('singleSpaNavigate'))) mark('singleSpaNavigate');
+    });
+    run(() => {
+      // SystemJS only — NOT import-map polyfills that merely expose System.import.
+      const System = tryGet('System');
+      if (!isObj(System) || !fnAt(System, 'register')) return;
+      const ctor = get(System, 'constructor');
+      const ctorName = str(get(ctor, 'name')) || '';
+      if (fnAt(System, 'amdResolve') || fnAt(System, 'getConfig') || fnAt(System, 'resolve') || /SystemJS/i.test(ctorName)) {
         mark('__systemjs');
       }
-    }
+    });
 
-    // Build tools
-    if (typeof tryGet('__webpack_require__') === 'function' || tryGet('__webpack_require__')) {
-      mark('__webpack_require__');
-    }
-    try {
-      const keys = Object.keys(g);
-      if (keys.some((k) => k === 'webpackChunk' || k.startsWith('webpackChunk'))) {
+    // ── Build tools ──────────────────────────────────────────────
+    run(() => {
+      if (isFn(tryGet('__webpack_require__'))) mark('__webpack_require__');
+    });
+    run(() => {
+      const keys = ownKeys(g);
+      // webpack 5 names chunk arrays webpackChunk<name>; webpack 4 used webpackJsonp
+      if (keys.some((k) => (k.indexOf('webpackChunk') === 0 || k.indexOf('webpackJsonp') === 0) && Array.isArray(get(g, k)))) {
         mark('webpackChunk');
       }
-    } catch {
-      /* ignore */
-    }
-    if (tryGet('parcelRequire')) mark('parcelRequire');
-    if (tryGet('__turbopack') !== undefined) mark('__turbopack');
-    if (tryGet('__vite_plugin_react_preamble_installed__')) {
-      mark('__vite_plugin_react_preamble_installed__');
-    }
+    });
+    run(() => {
+      if (isFn(tryGet('parcelRequire'))) mark('parcelRequire');
+    });
+    run(() => {
+      // Turbopack's runtime global is TURBOPACK (plus TURBOPACK_CHUNK_LISTS)
+      if (has('TURBOPACK') || has('TURBOPACK_CHUNK_LISTS') || has('__turbopack')) mark('__turbopack');
+    });
+    run(() => {
+      if (tryGet('__vite_plugin_react_preamble_installed__') === true) mark('__vite_plugin_react_preamble_installed__');
+    });
 
-    // Observability / payments / auth — only real SDKs
-    const Sentry = tryGet('Sentry');
-    if (
-      Sentry &&
-      typeof Sentry === 'object' &&
-      (typeof Sentry.init === 'function' ||
-        typeof Sentry.captureException === 'function' ||
-        typeof Sentry.SDK_VERSION === 'string')
-    ) {
-      mark('Sentry', Sentry.SDK_VERSION ? { version: String(Sentry.SDK_VERSION) } : undefined);
-    }
-    if (tryGet('__SENTRY__')) mark('__SENTRY__');
-    if (tryGet('DD_RUM')) mark('DD_RUM');
-    if (tryGet('DD_LOGS')) mark('DD_LOGS');
-    // New Relic Browser agent
-    // Docs: NREUM config + js-agent.newrelic.com loader; beacons → bam.nr-data.net
-    const NREUM = tryGet('NREUM');
-    if (NREUM && typeof NREUM === 'object') {
-      const info = NREUM.info || {};
-      // Require real agent config — empty NREUM={} is not enough
-      const hasAgent = !!(
-        info.licenseKey ||
-        info.applicationID ||
-        info.beacon ||
-        info.errorBeacon ||
-        info.agent ||
-        NREUM.init ||
-        NREUM.loader_config
-      );
-      if (hasAgent) {
-        mark('NREUM', info.applicationID ? { applicationID: String(info.applicationID) } : undefined);
-      }
-    }
-    const newrelic = tryGet('newrelic');
-    if (
-      newrelic &&
-      typeof newrelic === 'object' &&
-      (typeof newrelic.noticeError === 'function' ||
-        typeof newrelic.setCustomAttribute === 'function' ||
-        typeof newrelic.addPageAction === 'function' ||
-        typeof newrelic.setPageViewName === 'function' ||
-        typeof newrelic.interaction === 'function')
-    ) {
-      mark('newrelic');
-    }
-    if (typeof tryGet('__nr_require') === 'function') mark('__nr_require');
-    if (tryGet('LogRocket')) mark('LogRocket');
-
-    const Stripe = tryGet('Stripe');
-    if (typeof Stripe === 'function') mark('Stripe');
-    if (typeof tryGet('Razorpay') === 'function') mark('Razorpay');
-
-    const Clerk = tryGet('Clerk');
-    if (Clerk && typeof Clerk === 'object') mark('Clerk');
-    const auth0 = tryGet('auth0');
-    if (auth0 && (typeof auth0 === 'object' || typeof auth0 === 'function')) mark('auth0');
-    const firebase = tryGet('firebase');
-    if (firebase && typeof firebase === 'object' && (firebase.apps || firebase.initializeApp)) {
-      mark('firebase');
-    }
-
-    if (typeof tryGet('Intercom') === 'function') mark('Intercom');
-    if (tryGet('intercomSettings')) mark('intercomSettings');
-    if (typeof tryGet('zE') === 'function') mark('zE');
-    if (tryGet('LDClient')) mark('LDClient');
-
-    // Redux: extension injects __REDUX_DEVTOOLS_EXTENSION__ on every page.
-    // Only mark when a store is actually connected or library APIs exist.
-    try {
-      const rde = tryGet('__REDUX_DEVTOOLS_EXTENSION__');
-      if (rde && typeof rde === 'function') {
-        // Connected apps often expose lastAction / stores via extension internals;
-        // also accept explicit store on window used by some apps.
-      }
-      const store =
-        tryGet('__REDUX_STORE__') ||
-        tryGet('store') ||
-        tryGet('__store__');
+    // ── Observability ────────────────────────────────────────────
+    run(() => {
+      const Sentry = tryGet('Sentry');
       if (
-        store &&
-        typeof store === 'object' &&
-        typeof store.dispatch === 'function' &&
-        typeof store.getState === 'function'
+        isObj(Sentry) &&
+        (fnAt(Sentry, 'init') || fnAt(Sentry, 'captureException') || str(get(Sentry, 'SDK_VERSION')))
       ) {
-        mark('__reduxStore');
+        mark('Sentry', withVersion(get(Sentry, 'SDK_VERSION')));
       }
-    } catch {
-      /* ignore */
-    }
+    });
+    run(() => {
+      if (isObj(tryGet('__SENTRY__'))) mark('__SENTRY__');
+    });
+    run(() => {
+      const rum = tryGet('DD_RUM');
+      if (isObj(rum) && (fnAt(rum, 'init') || fnAt(rum, 'onReady'))) mark('DD_RUM');
+      const logs = tryGet('DD_LOGS');
+      if (isObj(logs) && (fnAt(logs, 'init') || fnAt(logs, 'onReady'))) mark('DD_LOGS');
+    });
+    run(() => {
+      // New Relic Browser agent — require real agent config, not an empty NREUM={}
+      const NREUM = tryGet('NREUM');
+      if (!isObj(NREUM)) return;
+      const info = get(NREUM, 'info');
+      const hasAgent = !!(
+        get(info, 'licenseKey') ||
+        get(info, 'applicationID') ||
+        get(info, 'beacon') ||
+        get(info, 'errorBeacon') ||
+        get(info, 'agent') ||
+        get(NREUM, 'init') ||
+        get(NREUM, 'loader_config')
+      );
+      if (hasAgent) mark('NREUM');
+    });
+    run(() => {
+      const newrelic = tryGet('newrelic');
+      if (
+        isObj(newrelic) &&
+        (fnAt(newrelic, 'noticeError') ||
+          fnAt(newrelic, 'setCustomAttribute') ||
+          fnAt(newrelic, 'addPageAction') ||
+          fnAt(newrelic, 'setPageViewName') ||
+          fnAt(newrelic, 'interaction'))
+      ) {
+        mark('newrelic');
+      }
+      if (isFn(tryGet('__nr_require'))) mark('__nr_require');
+    });
+    run(() => {
+      const lr = tryGet('LogRocket');
+      if (isObj(lr) && (fnAt(lr, 'init') || fnAt(lr, 'identify') || fnAt(lr, 'track'))) mark('LogRocket');
+    });
 
-    // State / data / analytics
-    // TanStack (dev / rare runtime markers)
-    // Remix / React Router data APIs (ChatGPT web uses Remix lineage)
-    for (const name of [
-      '__remixContext',
-      '__remixManifest',
-      '__remixRouter',
-      '__remixRouteModules',
-      '__reactRouterDataRouter',
-      '__staticRouterHydrationData',
-      '__reactRouterVersion',
-    ]) {
-      if (tryGet(name) !== undefined && tryGet(name) !== null) {
-        const v = tryGet(name);
-        if (name === '__reactRouterVersion' && (typeof v === 'string' || typeof v === 'number')) {
-          mark(name, { version: String(v) });
-        } else {
-          mark(name);
+    // ── Payments / auth ──────────────────────────────────────────
+    run(() => {
+      if (isFn(tryGet('Stripe'))) mark('Stripe');
+      if (isFn(tryGet('Razorpay'))) mark('Razorpay');
+    });
+    run(() => {
+      const Clerk = tryGet('Clerk');
+      if (isObj(Clerk) && (fnAt(Clerk, 'load') || fnAt(Clerk, 'openSignIn') || get(Clerk, 'loaded') !== undefined)) {
+        mark('Clerk');
+      }
+    });
+    run(() => {
+      const auth0 = tryGet('auth0');
+      if (
+        isObj(auth0) &&
+        (fnAt(auth0, 'createAuth0Client') || fnAt(auth0, 'Auth0Client') || fnAt(auth0, 'WebAuth') || fnAt(auth0, 'Authentication'))
+      ) {
+        mark('auth0');
+      }
+    });
+    run(() => {
+      const firebase = tryGet('firebase');
+      if (isObj(firebase) && (get(firebase, 'apps') || fnAt(firebase, 'initializeApp'))) mark('firebase');
+    });
+
+    // ── Support / flags / analytics ──────────────────────────────
+    run(() => {
+      if (isFn(tryGet('Intercom'))) mark('Intercom');
+      if (isObj(tryGet('intercomSettings')) && !isFn(tryGet('intercomSettings'))) mark('intercomSettings');
+      if (isFn(tryGet('zE'))) mark('zE');
+    });
+    run(() => {
+      const ld = tryGet('LDClient');
+      if (isObj(ld) && (fnAt(ld, 'initialize') || fnAt(ld, 'variation'))) mark('LDClient');
+    });
+    run(() => {
+      if (isFn(tryGet('gtag'))) mark('gtag');
+    });
+    run(() => {
+      const mp = tryGet('mixpanel');
+      if (isObj(mp) && (fnAt(mp, 'track') || get(mp, '__SV') !== undefined)) mark('mixpanel');
+    });
+    run(() => {
+      if (isFn(tryGet('hj'))) mark('hj');
+    });
+    run(() => {
+      const ph = tryGet('posthog');
+      if ((isObj(ph) && fnAt(ph, 'capture')) || isObj(tryGet('__PosthogExtensions__'))) mark('posthog');
+    });
+    run(() => {
+      if (isFn(tryGet('plausible'))) mark('plausible');
+    });
+    run(() => {
+      const f = tryGet('fathom');
+      if (isObj(f) && fnAt(f, 'trackPageview')) mark('fathom');
+    });
+    run(() => {
+      const a = tryGet('amplitude');
+      if (isObj(a) && (fnAt(a, 'getInstance') || fnAt(a, 'track') || fnAt(a, 'init'))) mark('amplitude');
+    });
+    run(() => {
+      const s = tryGet('Shopify');
+      if (isObj(s) && typeof get(s, 'shop') === 'string') mark('Shopify');
+    });
+
+    // ── State / data ─────────────────────────────────────────────
+    run(() => {
+      // The Redux DevTools extension injects __REDUX_DEVTOOLS_EXTENSION__ on every
+      // page, so only an actual store object counts.
+      for (const name of ['__REDUX_STORE__', 'store', '__store__']) {
+        const store = tryGet(name);
+        if (isObj(store) && fnAt(store, 'dispatch') && fnAt(store, 'getState') && fnAt(store, 'subscribe')) {
+          mark('__reduxStore');
+          return;
         }
       }
-    }
-
-    for (const name of [
-      '__TANSTACK_QUERY_CLIENT__',
-      '__TANSTACK_ROUTER__',
-      '__TANSTACK_START__',
-      '__TSR_SSR__',
-      '__TANSTACK__',
-      'ReactQuery',
-    ]) {
-      if (tryGet(name) !== undefined && tryGet(name) !== null) mark(name);
-    }
-
-    for (const name of [
-      '__PINIA__',
-      '__MOBX__',
-      '__APOLLO_CLIENT__',
-      'axios',
-      'gtag',
-      'mixpanel',
-      'bootstrap',
-    ]) {
-      if (tryGet(name) !== undefined && tryGet(name) !== null) mark(name);
-    }
-
-    try {
-      const el = document.querySelector('[ng-version]');
-      if (el) mark('__ng_version_attr', { version: el.getAttribute('ng-version') || undefined });
-    } catch {
-      /* ignore */
-    }
-
-    // Vue 3 production apps expose NO window.Vue and no __VUE__ (devtools-only).
-    // The reliable runtime fingerprint is the mount container: app.mount(el)
-    // sets el.__vue_app__ (with .version) and stamps data-v-app on it.
-    try {
-      const candidates = [
-        document.querySelector('[data-v-app]'),
-        document.querySelector('#app'),
-        document.querySelector('#__nuxt'),
-      ].filter(Boolean);
-      if (!candidates.length && document.body) {
-        const kids = document.body.children;
-        const limit = Math.min(kids.length, 12);
-        for (let i = 0; i < limit; i++) candidates.push(kids[i]);
+    });
+    run(() => {
+      for (const name of [
+        '__remixContext',
+        '__remixManifest',
+        '__remixRouter',
+        '__remixRouteModules',
+        '__reactRouterDataRouter',
+        '__staticRouterHydrationData',
+      ]) {
+        if (isObj(tryGet(name))) mark(name);
       }
-      for (const el of candidates) {
-        const app = el && el.__vue_app__;
-        if (app && typeof app === 'object') {
-          mark('__vue_app__', app.version ? { version: String(app.version) } : undefined);
-          break;
-        }
+      const rr = tryGet('__reactRouterVersion');
+      if (typeof rr === 'string' || typeof rr === 'number') mark('__reactRouterVersion', { version: str(rr) });
+    });
+    run(() => {
+      for (const name of ['__TANSTACK_QUERY_CLIENT__', '__TANSTACK_ROUTER__', '__TANSTACK_START__', '__TSR_SSR__', '__TANSTACK__', 'ReactQuery']) {
+        if (isObj(tryGet(name))) mark(name);
       }
-    } catch {
-      /* ignore */
-    }
+    });
+    run(() => {
+      if (isObj(tryGet('__PINIA__'))) mark('__PINIA__');
+      if (isObj(tryGet('__MOBX__'))) mark('__MOBX__');
+      const apollo = tryGet('__APOLLO_CLIENT__');
+      if (isObj(apollo) && (fnAt(apollo, 'query') || get(apollo, 'cache'))) mark('__APOLLO_CLIENT__');
+      const axios = tryGet('axios');
+      if (isFn(axios) && fnAt(axios, 'get') && fnAt(axios, 'create')) mark('axios', withVersion(get(axios, 'VERSION')));
+      const bs = tryGet('bootstrap');
+      if (isObj(bs) && (fnAt(bs, 'Modal') || fnAt(bs, 'Tooltip') || fnAt(bs, 'Collapse'))) mark('bootstrap');
+    });
 
     return present;
   };
@@ -556,9 +642,33 @@ export function isAssetLike(s) {
  * @param {PageSignals} signals
  */
 export function assetCandidates(signals) {
+  const cached = ASSET_CACHE.get(signals);
+  if (cached) return cached;
   const fromSignals = (signals.scripts || []).filter(isAssetLike);
   const fromCss = (signals.stylesheets || []).filter(isAssetLike);
-  return [...new Set([...fromSignals, ...fromCss])];
+  const out = [...new Set([...fromSignals, ...fromCss])];
+  ASSET_CACHE.set(signals, out);
+  return out;
+}
+
+/** assetCandidates() is consulted by ~150 checks per scan — compute it once. */
+const ASSET_CACHE = new WeakMap();
+
+/**
+ * URL without its query string or fragment.
+ *
+ * Rules match the asset's host and path, never the query: a search request
+ * (`/api/search?q=logrocket`), a tracking parameter or a cache-buster must not
+ * be able to fire a rule. Stripping also keeps session tokens out of evidence
+ * snippets, which end up in exports and in the "Wrong?" report draft.
+ *
+ * @param {string} s
+ */
+export function stripQuery(s) {
+  const t = String(s || '');
+  if (t.startsWith('inline:#')) return t;
+  const cut = t.search(/[?#]/);
+  return cut === -1 ? t : t.slice(0, cut);
 }
 
 function clip(s, n = 120) {
@@ -576,12 +686,78 @@ function matchSnippet(text, pattern) {
   return String(pattern);
 }
 
-function normalizeVersion(v) {
-  if (v == null || v === '') return null;
-  const s = String(v).trim();
-  const m = s.match(/\d+\.\d+(?:\.\d+)?(?:[-+][a-z0-9.]+)?/i);
+/**
+ * Keep "major.minor(.patch)(-prerelease)". Build metadata (`+sha-14793bf`) is
+ * dropped, and a bare major ("5", Svelte's runtime marker) is allowed only when
+ * that is the whole string.
+ * @param {unknown} v
+ */
+export function normalizeVersion(v) {
+  if (v === null || v === undefined || v === '') return null;
+  if (typeof v !== 'string' && typeof v !== 'number') return null;
+  const s = String(v).trim().slice(0, 64);
+  if (/^\d{1,3}$/.test(s)) return s;
+  const m = s.match(/\d+\.\d+(?:\.\d+)?(?:-[0-9a-z]+(?:\.[0-9a-z]+)*)?/i);
   return m ? m[0] : null;
 }
+
+/**
+ * Plausible major-version ranges. A version outside its range was read from the
+ * wrong object (Linear's window.next.version is "1.0.0-beta.9"; no Next.js 1.x
+ * ships an App Router) or the wrong package, and showing none beats showing a
+ * confident wrong one.
+ */
+const MAJOR_RANGE = {
+  nextjs: [9, 40],
+  react: [15, 40],
+  vue: [1, 9],
+  angular: [2, 60],
+  angularjs: [1, 1],
+  jquery: [1, 9],
+  svelte: [3, 20],
+  bootstrap: [2, 9],
+  'react-router': [3, 20],
+  remix: [1, 9],
+  redux: [1, 9],
+  zustand: [1, 9],
+  axios: [0, 9],
+  sentry: [4, 30],
+  lit: [1, 9],
+  polymer: [1, 9],
+  ember: [1, 19],
+  alpine: [2, 9],
+  htmx: [1, 9],
+};
+
+/** npm package boundary: not the tail of another name, not inside a scope. */
+const PKG = String.raw`(?<![\w@.-])(?<!@[\w.-]+\/)`;
+const VER = String.raw`(\d+\.\d+(?:\.\d+)?(?:-[0-9a-z.]+)?)`;
+const pkgRe = (name) => new RegExp(`${PKG}${name}@${VER}`, 'i');
+
+/** [hit id, regex with the version in group 1] over asset URLs (query stripped). */
+const URL_VERSION_RULES = [
+  ['react', pkgRe('react(?:-dom)?')],
+  ['react', new RegExp(String.raw`(?<![\w.-])react(?:-dom)?[_-]${VER}(?:\.production|\.development)?(?:\.min)?\.js$`, 'i')],
+  ['vue', pkgRe('vue')],
+  ['angular', new RegExp(String.raw`(?<![\w-])@angular\/core@${VER}`, 'i')],
+  ['nextjs', pkgRe('next')],
+  ['svelte', pkgRe('svelte')],
+  ['jquery', pkgRe('jquery')],
+  ['jquery', new RegExp(String.raw`(?<![\w.-])jquery[-_.]${VER}(?:\.slim)?(?:\.min)?\.js$`, 'i')],
+  ['bootstrap', pkgRe('bootstrap')],
+  ['bootstrap', new RegExp(String.raw`\/twitter-bootstrap\/${VER}\/`, 'i')],
+  ['redux', pkgRe('redux')],
+  ['axios', pkgRe('axios')],
+  ['zustand', pkgRe('zustand')],
+  ['react-router', pkgRe('react-router(?:-dom)?')],
+  ['react-router', new RegExp(String.raw`(?<![\w-])@react-router\/[a-z0-9-]+@${VER}`, 'i')],
+  ['remix', new RegExp(String.raw`(?<![\w-])@remix-run\/[a-z0-9-]+@${VER}`, 'i')],
+  ['lit', pkgRe('lit(?:-element|-html)?')],
+  ['alpine', pkgRe('alpinejs')],
+  ['htmx', pkgRe('htmx(?:\\.org)?')],
+];
+
+const TANSTACK_VERSION = new RegExp(String.raw`(?<![\w-])@tanstack\/([a-z0-9-]+)@${VER}`, 'i');
 
 /**
  * @param {PageSignals} signals
@@ -589,81 +765,56 @@ function normalizeVersion(v) {
  */
 export function extractVersions(signals) {
   /** @type {Record<string, string>} */
-  const versions = { ...(signals.versions || {}) };
+  const versions = {};
   const g = signals.globals || {};
 
   const take = (id, v) => {
     if (versions[id]) return;
     const n = normalizeVersion(v);
-    if (n) versions[id] = n;
+    if (!n) return;
+    const range = MAJOR_RANGE[id];
+    const major = parseInt(n, 10);
+    if (range && !(major >= range[0] && major <= range[1])) return;
+    versions[id] = n;
+  };
+  const gv = (name) => {
+    const x = g[name];
+    return x && typeof x === 'object' ? x.version : undefined;
   };
 
-  if (g.jQuery && g.jQuery.version) take('jquery', g.jQuery.version);
-  else if (g.$ && g.$.version) take('jquery', g.$.version);
-  if (g.__reactRenderer && g.__reactRenderer.version) take('react', g.__reactRenderer.version);
-  if (g.React && g.React.version) take('react', g.React.version);
-  if (g.ReactDOM && g.ReactDOM.version) take('react', g.ReactDOM.version);
-  if (g.__vue_app__ && g.__vue_app__.version) take('vue', g.__vue_app__.version);
-  if (g.Vue && g.Vue.version) take('vue', g.Vue.version);
-  if (g.next && g.next.version) take('nextjs', g.next.version);
-  if (g.__NEXT_DATA__ && g.__NEXT_DATA__.version) take('nextjs', g.__NEXT_DATA__.version);
-  if (g.__ng_version_attr && g.__ng_version_attr.version) take('angular', g.__ng_version_attr.version);
-  if (g.__reactRouterVersion && g.__reactRouterVersion.version) {
-    take('react-router', g.__reactRouterVersion.version);
-  } else if (typeof g.__reactRouterVersion === 'string') {
-    take('react-router', g.__reactRouterVersion);
-  }
+  for (const [id, v] of Object.entries(signals.versions || {})) take(id, v);
+
+  take('jquery', gv('jQuery'));
+  take('react', gv('__reactRenderer'));
+  take('react', gv('React'));
+  take('react', gv('ReactDOM'));
+  take('vue', gv('__vue_app__'));
+  take('vue', gv('Vue'));
+  // window.next.version is only a Next.js version when it is in Next's range
+  // (the take() range check). It is never proof that Next.js is present.
+  take('nextjs', gv('next'));
+  take('angular', gv('__ng_version_attr'));
+  take('angularjs', gv('angularjs'));
+  take('svelte', gv('__svelte'));
+  take('react-router', gv('__reactRouterVersion'));
+  take('sentry', gv('Sentry'));
+  take('lit', gv('litVersions'));
+  take('polymer', gv('Polymer'));
+  take('ember', gv('Ember'));
+  take('alpine', gv('Alpine'));
+  take('htmx', gv('htmx'));
+  take('axios', gv('axios'));
 
   const ngFlag = (signals.domFlags || []).find((d) => d.startsWith('ng-version:'));
   if (ngFlag) take('angular', ngFlag.slice('ng-version:'.length));
 
-  const urls = assetCandidates(signals);
-  const pairRules = [
-    ['react', /(?:^|[\/@])react(?:-dom)?@([\d.]+)/i],
-    ['react', /react(?:-dom)?(?:\.production|\.development)?(?:\.min)?\.js/i], // no version
-    ['react', /react(?:-dom)?[_-]([\d.]+)(?:\.min)?\.js/i],
-    ['vue', /(?:^|[\/@])vue@([\d.]+)/i],
-    ['jquery', /jquery[_-]([\d.]+)(?:\.min)?\.js/i],
-    ['angular', /@angular\/core@([\d.]+)/i],
-    ['nextjs', /(?:^|[\/@])next@([\d.]+)/i],
-    ['svelte', /(?:^|[\/@])svelte@([\d.]+)/i],
-    ['bootstrap', /bootstrap[@\/_-]([\d.]+)/i],
-    ['redux', /(?:^|[\/@])redux@([\d.]+)/i],
-  ];
-  for (const url of urls) {
-    for (const [id, re] of pairRules) {
+  for (const raw of assetCandidates(signals)) {
+    const url = stripQuery(raw);
+    for (const [id, re] of URL_VERSION_RULES) {
       const m = url.match(re);
       if (m && m[1]) take(id, m[1]);
     }
-  }
-
-  // unpkg / jsdelivr: /react@18.2.0/ or /vue@3.4.0/
-  for (const url of urls) {
-    const m = url.match(/\/(react(?:-dom)?|vue|next|svelte|jquery|axios|redux|zustand)@([\d.]+)/i);
-    if (m) {
-      const map = {
-        react: 'react',
-        'react-dom': 'react',
-        vue: 'vue',
-        next: 'nextjs',
-        svelte: 'svelte',
-        jquery: 'jquery',
-        axios: 'axios',
-        redux: 'redux',
-        zustand: 'zustand',
-      };
-      const id = map[m[1].toLowerCase()];
-      if (id) take(id, m[2]);
-    }
-    const remixPkg = url.match(/@remix-run\/[a-z0-9-]+@([\d.]+)/i);
-    if (remixPkg) take('remix', remixPkg[1]);
-    const rrPkg = url.match(/react-router(?:-dom)?@([\d.]+)/i);
-    if (rrPkg) take('react-router', rrPkg[1]);
-    const rrScoped = url.match(/@react-router\/[a-z0-9-]+@([\d.]+)/i);
-    if (rrScoped) take('react-router', rrScoped[1]);
-
-    // @tanstack/react-query@5.x etc.
-    const ts = url.match(/@tanstack\/([a-z0-9-]+)@([\d.]+)/i);
+    const ts = url.match(TANSTACK_VERSION);
     if (ts) {
       const pkg = ts[1].toLowerCase();
       const ver = ts[2];
@@ -673,14 +824,12 @@ export function extractVersions(signals) {
       else if (/form/.test(pkg)) take('tanstack-form', ver);
       else if (/virtual/.test(pkg)) take('tanstack-virtual', ver);
       else if (/start/.test(pkg)) take('tanstack-start', ver);
-      take('tanstack', ver);
     }
   }
 
+  // Inline code only states a React version in the UMD build banner.
   for (const sample of signals.inlineSamples || []) {
-    const nextV = sample.match(/["']next["']\s*:\s*["']([\d.]+)["']/i);
-    if (nextV) take('nextjs', nextV[1]);
-    const reactV = sample.match(/React\.version\s*=\s*["']([\d.]+)["']/);
+    const reactV = sample.match(/\bReact\.version\s*=\s*["'](\d+\.\d+\.\d+)["']/);
     if (reactV) take('react', reactV[1]);
   }
 
@@ -710,7 +859,8 @@ function evalCheck(signals, check) {
 
   if (type === 'script') {
     for (const s of assetCandidates(signals)) {
-      if (textMatches(pattern, s)) return pack(s);
+      const hay = check.matchQuery ? s : stripQuery(s);
+      if (textMatches(pattern, hay)) return pack(hay);
     }
     return null;
   }
@@ -726,7 +876,8 @@ function evalCheck(signals, check) {
     // Perf resource entries land in scripts[] and include CSS fetches, so the
     // full asset pool covers more than link[rel=stylesheet] alone.
     for (const s of assetCandidates(signals)) {
-      if (textMatches(pattern, s)) return { ...pack(s), type: 'css' };
+      const hay = check.matchQuery ? s : stripQuery(s);
+      if (textMatches(pattern, hay)) return { ...pack(hay), type: 'css' };
     }
     return null;
   }
@@ -756,9 +907,6 @@ function evalCheck(signals, check) {
           val && typeof val === 'object' && val.version ? ` v${val.version}` : '';
         return pack(`window.${key}${version}`);
       }
-    }
-    if (key === 'ng' && globals.__ng_version_attr) {
-      return pack(`ng-version=${globals.__ng_version_attr.version || ''}`);
     }
     return null;
   }
@@ -812,7 +960,8 @@ export function hasSolidReactProof(hit) {
     if (/__reactRenderer/i.test(s)) return true;
     if (/__reactFiber/i.test(s)) return true;
     if (/__reactContainer/i.test(s)) return true;
-    if (/runtime for Next\.js|confirmed via Next\.js/i.test(s)) return true;
+    if (/__reactListening/i.test(s)) return true;
+    if (/runtime for |confirmed via /i.test(s)) return true;
     if (e.type === 'script' && isAssetLike(s) && /react/i.test(s)) return true;
     if (e.type === 'global' && /^window\.React(?:DOM)?\b/.test(s)) return true;
     if (e.type === 'dom' && /data-reactroot|data-reactid/i.test(s)) return true;
@@ -862,6 +1011,7 @@ function resolveStack(hits, signals, ruleById) {
       sveltekit: new Set(['svelte', 'sveltekit']),
       'tanstack-start': new Set(['react', 'solid', 'tanstack-start', 'tanstack-router', 'tanstack']),
       remix: new Set(['react', 'remix', 'react-router']),
+      gatsby: new Set(['react', 'gatsby']),
     };
     const allow = allowedWithMeta[meta] || new Set([meta]);
 
@@ -897,7 +1047,9 @@ function resolveStack(hits, signals, ruleById) {
   // Next.js → React runtime
   if (byId.has('nextjs')) {
     const n = byId.get('nextjs');
-    n.confidence = 'high';
+    // Only promote with strong proof (a /_next/ asset, __NEXT_DATA__, __next_f…).
+    // A lone window.next is a hint, and resolve already dropped that case.
+    if (n.evidence.some((e) => e.strong)) n.confidence = 'high';
     if (versions.nextjs) n.version = versions.nextjs;
 
     if (!byId.has('react')) {
@@ -925,6 +1077,19 @@ function resolveStack(hits, signals, ruleById) {
         });
       }
     }
+    refresh();
+  }
+
+  if (byId.has('gatsby') && !byId.has('react')) {
+    hits.push({
+      id: 'react',
+      name: 'React',
+      category: 'framework',
+      confidence: 'high',
+      version: versions.react,
+      evidence: [{ type: 'dom', snippet: 'runtime for Gatsby', weight: 3, runtime: true, strong: true }],
+      related: ['gatsby'],
+    });
     refresh();
   }
 
@@ -1191,12 +1356,12 @@ function resolveStack(hits, signals, ruleById) {
   for (const h of hits) {
     h.evidence = h.evidence.filter((e) => {
       if (e.type !== 'script' && e.type !== 'css') return true;
-      return isAssetLike(e.snippet) || e.snippet.includes('…');
+      return isAssetLike(e.snippet);
     });
-    if (!h.evidence.length && h.category === 'framework' && !['react', 'vue', 'svelte'].includes(h.id)) {
-      // will be cleaned if empty — keep implied
-    }
   }
+
+  demoteThirdPartyBuildTools(hits, signals.url || '');
+  demoteConflictingBundlers(hits);
 
   // Drop empty-evidence hits (except we always keep with evidence)
   for (const h of [...hits]) {
@@ -1209,6 +1374,90 @@ function resolveStack(hits, signals, ruleById) {
   }
 
   return hits;
+}
+
+/** Second-level labels under which the registrable name sits one level deeper. */
+const MULTI_PART_TLD = /^(?:co|com|net|org|gov|edu|ac|ltd|plc|ne|or)$/;
+
+/**
+ * Registrable site of a host ("www.hj.contentsquare.com" → "contentsquare.com",
+ * "shop.example.co.in" → "example.co.in"). Approximate without the public suffix
+ * list, which is fine for a first-party/third-party hint.
+ * @param {string} host
+ */
+export function siteOf(host) {
+  const parts = String(host || '').toLowerCase().split('.').filter(Boolean);
+  if (parts.length <= 2) return parts.join('.');
+  const n = MULTI_PART_TLD.test(parts[parts.length - 2]) && parts[parts.length - 1].length === 2 ? 3 : 2;
+  return parts.slice(-n).join('.');
+}
+
+function hostOf(url) {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return '';
+  }
+}
+
+/**
+ * A build tool seen only in another site's scripts (an embedded widget, a vendor
+ * SDK) says nothing about how THIS site is built. Keep it visible, as low.
+ * @param {Hit[]} hits
+ * @param {string} pageUrl
+ */
+function demoteThirdPartyBuildTools(hits, pageUrl) {
+  const pageSite = siteOf(hostOf(pageUrl));
+  if (!pageSite) return;
+  for (const h of hits) {
+    if (h.category !== 'build' || h.confidence === 'low') continue;
+    const urls = h.evidence.filter((e) => e.type === 'script' || e.type === 'css');
+    if (!urls.length || urls.length !== h.evidence.length) continue;
+    const thirdParty = urls.every((e) => {
+      const host = hostOf(e.snippet);
+      return host && siteOf(host) !== pageSite;
+    });
+    if (thirdParty) {
+      h.confidence = 'low';
+      h.evidence = [
+        ...h.evidence,
+        { type: 'dom', snippet: 'only in third-party scripts — may not be this site’s own build', weight: 0 },
+      ];
+    }
+  }
+}
+
+/** The bundlers each meta-framework actually builds with. */
+const META_BUNDLERS = {
+  nextjs: ['webpack', 'turbopack'],
+  gatsby: ['webpack'],
+  nuxt: ['vite', 'webpack'],
+  sveltekit: ['vite'],
+  remix: ['vite'],
+  astro: ['vite'],
+};
+
+/**
+ * One page, one app bundler. When a meta-framework fixes the bundler, a
+ * different one seen only as a runtime global (window.parcelRequire from an
+ * embedded survey widget on a Next.js site) belongs to someone else's script.
+ * @param {Hit[]} hits
+ */
+function demoteConflictingBundlers(hits) {
+  const ids = new Set(hits.map((h) => h.id));
+  const owner = Object.keys(META_BUNDLERS).find((id) => ids.has(id));
+  if (!owner) return;
+  const allowed = new Set(META_BUNDLERS[owner]);
+  for (const h of hits) {
+    if (!['parcel', 'vite'].includes(h.id) || allowed.has(h.id) || h.confidence === 'low') continue;
+    if (h.evidence.every((e) => e.type === 'global' || e.type === 'inline')) {
+      h.confidence = 'low';
+      h.evidence = [
+        ...h.evidence,
+        { type: 'dom', snippet: `conflicts with ${owner}'s own bundler — likely an embedded third-party script`, weight: 0 },
+      ];
+    }
+  }
 }
 
 /**
@@ -1246,26 +1495,7 @@ export function detect(signals) {
       }
     }
 
-    // Tailwind class soup
-    if (
-      rule.id === 'tailwind' &&
-      (signals.domFlags || []).includes('tailwind-utilities') &&
-      !evidence.some((e) => e.snippet.includes('utility'))
-    ) {
-      evidence.push({ type: 'dom', snippet: 'utility class density', weight: 1 });
-    }
-
     if (!evidence.length) continue;
-
-    // jQuery bare $
-    if (rule.id === 'jquery') {
-      const onlyWeakDollar =
-        evidence.length === 1 &&
-        evidence[0].type === 'global' &&
-        evidence[0].snippet.startsWith('window.$') &&
-        evidence[0].weight <= 1;
-      if (onlyWeakDollar) continue;
-    }
 
     const confidence = scoreConfidence(evidence, hadStrong);
     hits.push({
@@ -1311,11 +1541,21 @@ function pickPrimary(hits) {
     'tanstack-start',
     'nuxt',
     'sveltekit',
+    'gatsby',
+    'astro',
+    'qwik',
     'angular',
     'react',
     'vue',
     'svelte',
     'solid',
+    'preact',
+    'ember',
+    'lit',
+    'polymer',
+    'angularjs',
+    'alpine',
+    'htmx',
     'jquery',
   ];
   for (const id of prefer) {

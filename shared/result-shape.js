@@ -3,7 +3,23 @@
  */
 
 import { CATEGORY_ORDER, CATEGORY_LABELS, HEADLINE_CATEGORIES } from './signatures.js';
-import { groupHitsByCategory } from './detect.js';
+import { groupHitsByCategory, stripQuery } from './detect.js';
+
+/** Bumped when the JSON export's shape changes. */
+export const EXPORT_SCHEMA_VERSION = 1;
+
+/** Headline length cap, in parts. */
+const HEADLINE_MAX = 5;
+
+/** Page-derived text on one line. */
+function oneLine(v) {
+  return String(v ?? '').replace(/[\r\n]+/g, ' ');
+}
+
+/** One Markdown table cell: no pipes or line breaks from page-derived strings. */
+function mdCell(v) {
+  return String(v ?? '').replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace(/[\r\n]+/g, ' ');
+}
 
 /**
  * @typedef {import('./detect.js').Hit} Hit
@@ -87,7 +103,7 @@ export function buildHeadline(hits, primary) {
   const seen = new Set();
 
   const push = (hit) => {
-    if (!hit || seen.has(hit.id)) return;
+    if (!hit || seen.has(hit.id) || parts.length >= HEADLINE_MAX) return;
     seen.add(hit.id);
     const ver = hit.version ? ` ${hit.version}` : '';
     parts.push(`${hit.name}${ver}`);
@@ -104,18 +120,13 @@ export function buildHeadline(hits, primary) {
       // Never headline native import maps or other low-signal build noise
       if (h.id === 'import-map') continue;
       push(h);
-      if (parts.length >= 5) break;
     }
-    if (parts.length >= 5) break;
   }
 
   // If still thin, add auth/observability highlight
   if (parts.length < 3) {
     for (const cat of ['auth', 'observability', 'payments']) {
-      for (const h of usable.filter((x) => x.category === cat)) {
-        push(h);
-        if (parts.length >= 5) break;
-      }
+      for (const h of usable.filter((x) => x.category === cat)) push(h);
     }
   }
 
@@ -170,8 +181,8 @@ export function formatStackMarkdown(shaped) {
   const lines = [
     `## WhatStack`,
     ``,
-    `**URL:** ${shaped.url || '—'}`,
-    shaped.headline ? `**Stack:** ${shaped.headline}` : '',
+    `**URL:** ${oneLine(shaped.url || '—')}`,
+    shaped.headline ? `**Stack:** ${oneLine(shaped.headline)}` : '',
     ``,
     `| Tech | Category | Confidence | Version |`,
     `| --- | --- | --- | --- |`,
@@ -180,7 +191,7 @@ export function formatStackMarkdown(shaped) {
   for (const sec of shaped.sections) {
     for (const h of [...sec.hits, ...sec.lowHits]) {
       lines.push(
-        `| ${h.name} | ${sec.label} | ${h.confidence} | ${h.version || '—'} |`,
+        `| ${mdCell(h.name)} | ${mdCell(sec.label)} | ${h.confidence} | ${mdCell(h.version || '—')} |`,
       );
     }
   }
@@ -254,9 +265,14 @@ export function formatReportBody(shaped, meta = {}) {
       for (const h of [...sec.hits, ...sec.lowHits]) {
         // Evidence is the whole point of the report — it says WHY the engine
         // believed this, which is what makes a bad call diagnosable.
+        // Query strings are stripped (tokens live there) and backticks cannot
+        // close the code span early.
         const ev = (h.evidence || [])
           .slice(0, 4)
-          .map((e) => `\`${String(e.snippet).replace(/\|/g, '\\|').slice(0, 80)}\``)
+          .map((e) => {
+            const snip = stripQuery(String(e.snippet)).replace(/`/g, "'").replace(/[\r\n]+/g, ' ');
+            return `\`${mdCell(snip).slice(0, 80)}\``;
+          })
           .join(', ');
         lines.push(
           `| ${h.name} | ${sec.label} | ${h.confidence} | ${h.version || '—'} | ${ev || '—'} |`,
@@ -315,6 +331,7 @@ export function buildReportUrl(shaped, meta = {}) {
 export function formatStackJson(shaped) {
   const payload = {
     tool: 'WhatStack',
+    schemaVersion: EXPORT_SCHEMA_VERSION,
     url: shaped?.url || '',
     pass: shaped?.pass || 'deep',
     headline: shaped?.headline || '',
