@@ -1,0 +1,172 @@
+{
+ "host": "react.dev",
+ "capturedAt": "2026-09-26",
+ "whatstack": "1.8.0",
+ "chromium": "151.0.7922.34",
+ "expect": {
+  "must": [
+   "nextjs",
+   "react",
+   "webpack"
+  ]
+ },
+ "snapshot": [
+  "google-analytics:high",
+  "nextjs:high@15.1.12",
+  "react:high",
+  "tailwind:high",
+  "webpack:high"
+ ],
+ "signals": {
+  "url": "https://react.dev/",
+  "scripts": [
+   "https://www.googletagmanager.com/gtag/js",
+   "/_next/static/chunks/polyfills-42372ed130431b0a.js",
+   "/_next/static/chunks/webpack-95fc1f1713249e81.js",
+   "/_next/static/chunks/framework-76ad44d61c11f057.js",
+   "/_next/static/chunks/main-8bc660a98b463b2d.js",
+   "/_next/static/chunks/pages/_app-6d7b64b3b21a9551.js",
+   "/_next/static/chunks/668-9be9de6fa7660277.js",
+   "/_next/static/chunks/928-132eeb57d328ee63.js",
+   "/_next/static/chunks/pages/%5B%5B...markdownPath%5D%5D-5093e36719d692c5.js",
+   "/_next/static/RPs1WuauQUuNobGQiyttk/_buildManifest.js",
+   "/_next/static/RPs1WuauQUuNobGQiyttk/_ssgManifest.js",
+   "https://react.dev/fonts/Source-Code-Pro-Regular.woff2",
+   "https://react.dev/fonts/Source-Code-Pro-Bold.woff2",
+   "https://react.dev/fonts/Optimistic_Display_W_Md.woff2",
+   "https://react.dev/fonts/Optimistic_Display_W_SBd.woff2",
+   "https://react.dev/fonts/Optimistic_Display_W_Bd.woff2",
+   "https://react.dev/fonts/Optimistic_Text_W_Md.woff2",
+   "https://react.dev/fonts/Optimistic_Text_W_Bd.woff2",
+   "https://react.dev/fonts/Optimistic_Text_W_Rg.woff2",
+   "https://react.dev/fonts/Optimistic_Text_W_It.woff2",
+   "/_next/static/css/f647474d5749a6d8.css",
+   "/images/uwu.png",
+   "/images/home/conf2021/cover.svg",
+   "/images/home/conf2021/andrew.jpg",
+   "/images/home/conf2021/lauren.jpg",
+   "/images/home/conf2021/juan.jpg",
+   "/images/home/conf2021/rick.jpg",
+   "/images/home/conf2021/shruti.jpg",
+   "/images/home/conf2021/shaundai.jpg",
+   "/images/home/conf2021/aakansha.jpg",
+   "/images/home/conf2021/brian.jpg",
+   "/images/home/conf2021/xuan.jpg",
+   "/images/home/conf2021/rachel.jpg",
+   "/images/home/conf2021/debbie.jpg",
+   "/images/home/conf2021/sarah.jpg",
+   "/images/home/conf2021/linton.jpg",
+   "/images/home/conf2021/delba.jpg",
+   "/images/home/conf2021/robert.jpg",
+   "/images/home/conf2021/eric.jpg",
+   "/images/home/conf2021/steven.jpg",
+   "/images/home/conf2021/roman.jpg",
+   "/images/home/conf2021/daishi.jpg",
+   "/images/home/conf2021/diego.jpg",
+   "/images/home/conf2021/tafu.jpg",
+   "/images/home/conf2021/lyle.jpg",
+   "/images/home/conf2021/helen.jpg",
+   "/images/home/conf2019/cover.svg",
+   "inline:#__NEXT_DATA__",
+   "https://react.dev/_next/static/css/f647474d5749a6d8.css",
+   "https://react.dev/_next/image",
+   "https://react.dev/_next/static/chunks/webpack-95fc1f1713249e81.js",
+   "https://react.dev/_next/static/chunks/framework-76ad44d61c11f057.js",
+   "https://react.dev/_next/static/chunks/main-8bc660a98b463b2d.js",
+   "https://react.dev/_next/static/chunks/pages/_app-6d7b64b3b21a9551.js",
+   "https://react.dev/_next/static/chunks/668-9be9de6fa7660277.js",
+   "https://react.dev/_next/static/chunks/928-132eeb57d328ee63.js",
+   "https://react.dev/_next/static/RPs1WuauQUuNobGQiyttk/_ssgManifest.js",
+   "https://react.dev/_next/static/RPs1WuauQUuNobGQiyttk/_buildManifest.js",
+   "https://react.dev/_next/static/chunks/pages/%5B%5B...markdownPath%5D%5D-5093e36719d692c5.js",
+   "https://react.dev/images/uwu.png",
+   "https://react.dev/images/home/conf2021/cover.svg",
+   "https://react.dev/images/home/conf2021/andrew.jpg",
+   "https://react.dev/images/home/conf2021/lauren.jpg",
+   "https://react.dev/images/home/conf2021/juan.jpg",
+   "https://react.dev/images/home/conf2021/rick.jpg",
+   "https://react.dev/images/home/conf2021/shaundai.jpg",
+   "https://react.dev/images/home/conf2021/shruti.jpg",
+   "https://react.dev/images/home/conf2021/aakansha.jpg",
+   "https://react.dev/images/home/conf2021/brian.jpg",
+   "https://react.dev/images/home/conf2021/xuan.jpg",
+   "https://react.dev/images/home/conf2021/rachel.jpg",
+   "https://react.dev/images/home/conf2021/debbie.jpg",
+   "https://react.dev/images/home/conf2021/sarah.jpg",
+   "https://react.dev/images/home/conf2021/delba.jpg",
+   "https://react.dev/images/home/conf2021/eric.jpg",
+   "https://react.dev/images/home/conf2021/robert.jpg",
+   "https://react.dev/images/home/conf2021/linton.jpg",
+   "https://react.dev/images/home/conf2021/steven.jpg",
+   "https://react.dev/images/home/conf2021/roman.jpg",
+   "https://react.dev/images/home/conf2021/daishi.jpg",
+   "https://react.dev/images/home/conf2021/lyle.jpg",
+   "https://react.dev/images/home/conf2021/helen.jpg",
+   "https://react.dev/images/home/conf2021/tafu.jpg",
+   "https://react.dev/images/home/conf2021/diego.jpg",
+   "https://react.dev/images/home/conf2019/cover.svg",
+   "https://react.dev/site.webmanifest",
+   "https://react.dev/images/meta-gradient.png",
+   "https://react.dev/_next/static/chunks/4ad82c5e.aa059996e264f809.js",
+   "https://react.dev/_next/static/chunks/811.b2e5ca620a3f883e.js",
+   "https://react.dev/_next/static/chunks/972.d10c430071e5a41c.js",
+   "https://react.dev/images/home/videos/documentary.webp",
+   "https://react.dev/images/home/videos/rn.jpg",
+   "https://react.dev/images/home/videos/rethinking.jpg",
+   "https://react.dev/images/home/videos/hooks.jpg",
+   "https://react.dev/images/home/videos/rsc.jpg",
+   "https://react.dev/_next/data/RPs1WuauQUuNobGQiyttk/index.json",
+   "https://react.dev/_next/data/RPs1WuauQUuNobGQiyttk/versions.json",
+   "https://react.dev/_next/data/RPs1WuauQUuNobGQiyttk/learn.json",
+   "https://react.dev/_next/data/RPs1WuauQUuNobGQiyttk/reference/react.json",
+   "https://react.dev/_next/data/RPs1WuauQUuNobGQiyttk/community.json",
+   "https://react.dev/_next/data/RPs1WuauQUuNobGQiyttk/blog.json",
+   "https://react.dev/_next/data/RPs1WuauQUuNobGQiyttk/community/translations.json",
+   "https://www.google-analytics.com/g/collect",
+   "https://react.dev/favicon-32x32.png"
+  ],
+  "stylesheets": [
+   "/_next/static/css/f647474d5749a6d8.css"
+  ],
+  "cookies": [
+   "_ga_B1E83PJ3RT",
+   "_ga"
+  ],
+  "metas": [],
+  "inlineSamples": [],
+  "domFlags": [
+   "script#__NEXT_DATA__",
+   "#__next",
+   "next-route-announcer",
+   "tailwind-syntax",
+   "tailwind-utilities",
+   "tailwind-vars"
+  ],
+  "globals": {},
+  "pass": "light"
+ },
+ "globals": {
+  "__NEXT_DATA__": {
+   "present": true
+  },
+  "__reactContainer": {
+   "present": true
+  },
+  "__reactListening": {
+   "present": true
+  },
+  "gtag": {
+   "present": true
+  },
+  "next": {
+   "present": true,
+   "version": "15.1.12"
+  },
+  "webpackChunk": {
+   "present": true
+  },
+  "webpackChunk_N_E": {
+   "present": true
+  }
+ }
+}

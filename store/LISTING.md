@@ -38,14 +38,15 @@ WHAT YOU GET
 • A badge on the toolbar as you browse, with a deeper scan when you open the popup
 
 WHAT IT DETECTS (examples)
-• Frameworks: React, Next.js, Remix, Vue, Nuxt, Angular, Svelte/SvelteKit, TanStack Start, jQuery, Solid
+• Frameworks: React, Next.js, Remix, Vue, Nuxt, Angular, Svelte/SvelteKit, Astro, Gatsby, Qwik, Preact, Lit, Polymer, Ember, TanStack Start, Alpine.js, htmx, jQuery, Solid
+• CMS & site builders: WordPress, Shopify, Webflow, Framer
 • Architecture: Module Federation, single-spa, qiankun, SystemJS
 • Build: Webpack, Vite, Parcel, Turbopack
 • Data: TanStack Query/Router/Table/Form/Virtual, Apollo, SWR, Axios
 • UI: Tailwind, Bootstrap, MUI, Emotion, styled-components
 • Auth & payments: Auth0, Clerk, Firebase, Stripe, Razorpay
 • Observability: Sentry, Datadog, New Relic, LogRocket
-• Analytics & hosting: Google Analytics, Segment, Vercel, Cloudflare, and more
+• Analytics & hosting: Google Analytics, Segment, PostHog, Plausible, Fathom, Amplitude, Vercel, Cloudflare, and more
 
 BUILT FOR TRUST
 WhatStack analyzes publicly visible page signals on your machine only. It does not upload page content or stack results, does not sell data, and has no ads. If a result looks wrong, “Wrong?” opens a draft GitHub issue you review and submit yourself — site origin only, never the full URL.

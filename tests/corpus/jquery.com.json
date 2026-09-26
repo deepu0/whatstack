@@ -1,0 +1,59 @@
+{
+ "host": "jquery.com",
+ "capturedAt": "2026-09-26",
+ "whatstack": "1.8.0",
+ "chromium": "151.0.7922.34",
+ "expect": {
+  "must": [
+   "jquery",
+   "wordpress"
+  ]
+ },
+ "snapshot": [
+  "jquery:high@4.0.0",
+  "wordpress:high"
+ ],
+ "signals": {
+  "url": "https://jquery.com/",
+  "scripts": [
+   "https://code.jquery.com/jquery-4.0.0.min.js",
+   "https://jquery.com/wp-content/themes/jquery/js/main.js",
+   "https://jquery.com/wp-content/themes/jquery/lib/typesense-minibar/typesense-minibar.js",
+   "https://jquery.com/wp-content/themes/jquery/lib/typesense-minibar/typesense-minibar.css",
+   "https://jquery.com/wp-content/themes/jquery/css/base.css",
+   "https://jquery.com/wp-content/themes/jquery.com/style.css",
+   "https://jquery.com/wp-content/themes/jquery/images/jq-nav-icons.png",
+   "https://jquery.com/wp-content/themes/jquery/images/logo-jquery.png",
+   "https://jquery.com/wp-content/themes/jquery/images/dark-grey-tile.png",
+   "https://jquery.com/wp-content/themes/jquery.com/i/download.png",
+   "https://jquery.com/wp-content/themes/jquery.com/i/feature-sprites.png",
+   "https://jquery.com/wp-content/themes/jquery/images/logo-digitalocean.svg",
+   "https://jquery.com/wp-content/themes/jquery/images/logo-wordpress.svg",
+   "https://jquery.com/wp-content/themes/jquery/lib/Cairo/Cairo-Bold.woff2",
+   "https://jquery.com/wp-content/themes/jquery/lib/FontAwesome/fontawesome-webfont.woff2",
+   "https://jquery.com/wp-content/themes/jquery/content/books/learning-jquery-4th-ed.jpg",
+   "https://jquery.com/wp-content/themes/jquery/content/books/jquery-in-action.jpg",
+   "https://jquery.com/wp-content/themes/jquery/content/books/jquery-succinctly.jpg",
+   "https://jquery.com/wp-content/themes/jquery.com/i/favicon.ico"
+  ],
+  "stylesheets": [
+   "https://jquery.com/wp-content/themes/jquery/lib/typesense-minibar/typesense-minibar.css",
+   "https://jquery.com/wp-content/themes/jquery/css/base.css",
+   "https://jquery.com/wp-content/themes/jquery.com/style.css"
+  ],
+  "cookies": [],
+  "metas": [
+   "generator=WordPress 7.1"
+  ],
+  "inlineSamples": [],
+  "domFlags": [],
+  "globals": {},
+  "pass": "light"
+ },
+ "globals": {
+  "jQuery": {
+   "present": true,
+   "version": "4.0.0"
+  }
+ }
+}

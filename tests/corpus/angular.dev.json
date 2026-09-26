@@ -1,0 +1,101 @@
+{
+ "host": "angular.dev",
+ "capturedAt": "2026-09-26",
+ "whatstack": "1.8.0",
+ "chromium": "151.0.7922.34",
+ "expect": {
+  "must": [
+   "angular"
+  ]
+ },
+ "snapshot": [
+  "angular:high@22.2.0",
+  "google-analytics:high"
+ ],
+ "signals": {
+  "url": "https://angular.dev/",
+  "scripts": [
+   "https://www.googletagmanager.com/gtag/js",
+   "main-CIUPUTY5.js",
+   "chunk-DG4IofJ1.js",
+   "chunk-DiscwNkY.js",
+   "chunk-4qFaCXLu.js",
+   "chunk-B8DkfwEd.js",
+   "chunk-BmIpPeTJ.js",
+   "chunk-Byc26Hc_.js",
+   "chunk-DeQmF7Iu.js",
+   "chunk-1woBMFvL.js",
+   "chunk-BisTnaeL.js",
+   "chunk-D4i4P6oi.js",
+   "inline:#gtag-script",
+   "inline:#ng-event-dispatch-contract",
+   "inline:#ng-state",
+   "https://fonts.googleapis.com/css2",
+   "https://angular.dev/chunk-DG4IofJ1.js",
+   "https://angular.dev/chunk-DiscwNkY.js",
+   "https://angular.dev/chunk-4qFaCXLu.js",
+   "https://angular.dev/chunk-B8DkfwEd.js",
+   "https://angular.dev/chunk-BmIpPeTJ.js",
+   "https://angular.dev/chunk-Byc26Hc_.js",
+   "https://angular.dev/chunk-DeQmF7Iu.js",
+   "https://angular.dev/chunk-1woBMFvL.js",
+   "https://angular.dev/chunk-BisTnaeL.js",
+   "https://angular.dev/chunk-D4i4P6oi.js",
+   "https://angular.dev/main-CIUPUTY5.js",
+   "https://angular.dev/styles-V46FXCBJ.css",
+   "https://angular.dev/assets/icons/site.webmanifest",
+   "https://angular.dev/media/editor-light-IWWA7SEJ.png",
+   "https://angular.dev/media/angular-logo-light-A36B7RRE.svg",
+   "https://angular.dev/chunk-CmRFN2Lw.js",
+   "https://angular.dev/chunk-BLjnejr3.js",
+   "https://angular.dev/chunk-DWSDm00S.js",
+   "https://angular.dev/chunk-P1aeJ_n_.js",
+   "https://angular.dev/chunk-DcFjTPmj.js",
+   "https://angular.dev/chunk-BrBp6tOx.js",
+   "https://angular.dev/chunk-CH-TvtGQ.js",
+   "https://angular.dev/chunk-BomaQ4l3.js",
+   "https://angular.dev/chunk-UDeI7juy.js",
+   "https://angular.dev/chunk-D_cnI7aO.js",
+   "https://angular.dev/chunk-BJ0bB2d7.js",
+   "https://angular.dev/chunk-Dy8iGyLf.js",
+   "https://angular.dev/chunk-DpV8IDP5.js",
+   "https://angular.dev/chunk-BQgwKfs5.js",
+   "https://angular.dev/assets/others/versions.json",
+   "https://angular.dev/chunk-zkLfDOfX.js",
+   "https://angular.dev/assets/images/angie/greeting.svg",
+   "https://angular.dev/chunk-vgkYz8tD.js",
+   "https://angular.dev/chunk-yaDFekiu.js",
+   "https://angular.dev/assets/icons/favicon.ico",
+   "https://angular.dev/chunk-C76Gtw6S.js",
+   "https://angular.dev/chunk-cLhcnb7m.js",
+   "https://angular.dev/chunk-DY8aYXyj.js",
+   "https://angular.dev/chunk-CsADmXFc.js",
+   "https://angular.dev/chunk-BGPBcj8R.js",
+   "https://angular.dev/chunk-jE6Y_6eY.js",
+   "https://www.google-analytics.com/g/collect"
+  ],
+  "stylesheets": [
+   "https://fonts.googleapis.com/css2",
+   "styles-V46FXCBJ.css"
+  ],
+  "cookies": [],
+  "metas": [],
+  "inlineSamples": [],
+  "domFlags": [
+   "[ng-version]",
+   "ng-version:22.2.0+sha-14793bf",
+   "[_ngcontent-]"
+  ],
+  "globals": {},
+  "pass": "light"
+ },
+ "globals": {
+  "__ng_version_attr": {
+   "present": true,
+   "version": "22.2.0+sha-14793bf"
+  },
+  "gtag": {
+   "present": true
+  }
+ }
+}

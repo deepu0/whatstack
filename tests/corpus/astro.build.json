@@ -1,0 +1,66 @@
+{
+ "host": "astro.build",
+ "capturedAt": "2026-09-26",
+ "whatstack": "1.8.0",
+ "chromium": "151.0.7922.34",
+ "expect": {
+  "must": [
+   "astro"
+  ]
+ },
+ "snapshot": [
+  "astro:high",
+  "fathom:high",
+  "tailwind:high"
+ ],
+ "signals": {
+  "url": "https://astro.build/",
+  "scripts": [
+   "https://cdn.usefathom.com/script.js",
+   "/_astro/page.4AM5fX2K.js",
+   "/_astro/HeaderNav.astro_astro_type_script_index_0_lang.yswXo7wO.js",
+   "/_astro/Header.astro_astro_type_script_index_0_lang.DzqrMxS3.js",
+   "/_astro/CodeBlock.astro_astro_type_script_index_0_lang.Cunj9zFc.js",
+   "/_astro/ec.0vx5m.js",
+   "/fonts/Obviously.woff2",
+   "/fonts/Inter.woff2",
+   "https://astro.build/fonts/Obviously.woff2",
+   "https://astro.build/fonts/Inter.woff2",
+   "https://astro.build/_astro/tailwind.QfH26gv7.css",
+   "https://astro.build/_astro/page.4AM5fX2K.js",
+   "https://astro.build/_astro/HeaderNav.astro_astro_type_script_index_0_lang.yswXo7wO.js",
+   "https://astro.build/_astro/Header.astro_astro_type_script_index_0_lang.DzqrMxS3.js",
+   "https://astro.build/_astro/CodeBlock.astro_astro_type_script_index_0_lang.Cunj9zFc.js",
+   "https://astro.build/_astro/HeroBackground.B0iWl89K_1XcMNn.webp",
+   "https://astro.build/_astro/ec.uumq6.css",
+   "https://astro.build/_astro/ec.0vx5m.js",
+   "https://astro.build/_astro/signals-core.module.I2YRmzXw.js",
+   "https://astro.build/_astro/dom.CNxIm9IU.js",
+   "https://cdn.usefathom.com/",
+   "https://astro.build/fonts/MDIO.woff2",
+   "https://astro.build/favicon.svg"
+  ],
+  "stylesheets": [
+   "/_astro/tailwind.QfH26gv7.css",
+   "/_astro/ec.uumq6.css"
+  ],
+  "cookies": [],
+  "metas": [
+   "generator=Astro v7.3.3"
+  ],
+  "inlineSamples": [],
+  "domFlags": [
+   "[data-astro-]",
+   "tailwind-syntax",
+   "tailwind-utilities",
+   "tailwind-vars"
+  ],
+  "globals": {},
+  "pass": "light"
+ },
+ "globals": {
+  "fathom": {
+   "present": true
+  }
+ }
+}

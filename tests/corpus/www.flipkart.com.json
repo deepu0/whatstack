@@ -1,0 +1,158 @@
+{
+ "host": "www.flipkart.com",
+ "capturedAt": "2026-09-26",
+ "whatstack": "1.8.0",
+ "chromium": "151.0.7922.34",
+ "expect": {
+  "must": [
+   "react",
+   "newrelic"
+  ]
+ },
+ "snapshot": [
+  "newrelic:high",
+  "react-router:high@7.9.5",
+  "react:high",
+  "webpack:high"
+ ],
+ "signals": {
+  "url": "https://www.flipkart.com/",
+  "scripts": [
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/58433938812fd22978a2b699a711ba59/fkvendor.js",
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/58433938812fd22978a2b699a711ba59/CrossCommon.js",
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/58433938812fd22978a2b699a711ba59/app.js",
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/58433938812fd22978a2b699a711ba59/OVHomePageTS.js",
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/58433938812fd22978a2b699a711ba59/DesktopComponents.js",
+   "inline:#__LOADABLE_REQUIRED_CHUNKS__",
+   "inline:#__LOADABLE_REQUIRED_CHUNKS___ext",
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/58433938812fd22978a2b699a711ba59/DesktopComponents.css",
+   "https://rukminim2.flixcart.com/fk-p-flap/1600/2420/image/6691b0270f775d08.png",
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/fonts/Inter-SemiBold.woff2",
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/fonts/Inter-Regular.woff2",
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/fonts/Inter-Bold.woff2",
+   "https://rukminim2.flixcart.com/fk-p-flap/26/22/image/d2ecfddf891a3922.png",
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/profile-6bae67.svg",
+   "https://rukminim2.flixcart.com/fk-p-flap/29/22/image/7ab4040af860941d.png",
+   "https://rukminim2.flixcart.com/fk-p-flap/36/18/image/5a9ff48eef96b876.png",
+   "https://rukminim2.flixcart.com/fk-p-flap/46/18/image/31f7e3af490c225f.png",
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/header_cart_v4-6ac9a8.svg",
+   "https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/all.svg",
+   "https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/electronics.svg",
+   "https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/fashion.svg",
+   "https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/mobiles.svg",
+   "https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/beauty.svg",
+   "https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/tv.svg",
+   "https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/home-final.svg",
+   "https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/toy.svg",
+   "https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/food.svg",
+   "https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/auto-acc.svg",
+   "https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/sport.svg",
+   "https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/auto-new.svg",
+   "https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/furniture.svg",
+   "https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/books.svg",
+   "https://rukminim2.flixcart.com/fk-p-flap/1600/780/image/2b6985299e5f96e8.jpg",
+   "https://rukminim2.flixcart.com/fk-p-flap/1600/780/image/56c6f127c81d67c3.png",
+   "https://rukminim2.flixcart.com/fk-p-flap/920/448/image/1909a1a59154ede1.jpg",
+   "https://rukminim2.flixcart.com/fk-p-flap/800/1070/image/4cd435476ada2048.png",
+   "https://rukminim2.flixcart.com/fk-p-flap/800/1070/image/44589f2c5d3ef94b.png",
+   "https://rukminim2.flixcart.com/www/1600/530/promos/18/09/2026/2cf1918f-ed90-42ba-8bb8-5a318ad55d2c.jpg",
+   "https://rukminim2.flixcart.com/image/140/187/xif0q/gas-stove/r/f/k/2-lpg-4-2-ebony-greenchef-10-5-manual-original-imahgkj9gyhtbcq5.jpeg",
+   "https://rukminim2.flixcart.com/fk-p-flap/800/1070/image/0cdd1a70a2411f3a.png",
+   "https://rukminim2.flixcart.com/image/140/187/xif0q/bottle/p/0/u/910-eiffel-1000-insulated-hot-or-cold-flask-1-ec-thf-ftv-0018-enriched-transparent-original-imahgxnr8dkkgjez.png",
+   "https://rukminim2.flixcart.com/image/140/187/xif0q/solar-light-set/q/6/m/1-08-300-18-nihiti-original-imahh3p4h2ucghyh.jpeg",
+   "https://rukminim2.flixcart.com/image/140/187/xif0q/faucet/6/j/f/wall-concealed-installation-type-premium-360-flexible-spark-sink-original-imah8jehfmgf4wyf.jpeg",
+   "https://rukminim2.flixcart.com/www/1600/530/promos/20/09/2026/c2363faa-c8e6-4863-8b1f-adb58fc8993c.jpg",
+   "https://rukminim2.flixcart.com/image/140/187/xif0q/sandal/t/a/x/8-205089-8-crocs-slate-grey-lime-punch-original-imah8afv5czzbeq9.jpeg",
+   "https://rukminim2.flixcart.com/image/140/187/xif0q/pressure-cooker/0/k/x/-original-imagsjvkh4cgkcar.jpeg",
+   "https://rukminim2.flixcart.com/image/140/187/xif0q/ethnic-set/1/g/l/xl-400268ih-libas-original-imahewdekhkbryqt.jpeg",
+   "https://rukminim2.flixcart.com/image/140/187/xif0q/jean/9/b/7/32-99-winkelstreet-original-imagut2mhtbkxry7.jpeg",
+   "https://rukminim2.flixcart.com/fk-p-flap/1570/350/image/4fb342112a2118be.jpg",
+   "https://rukminim2.flixcart.com/fk-p-flap/800/1070/image/480x640-bengdq-1790170761236.png",
+   "https://rukminim2.flixcart.com/fk-p-flap/800/1070/image/480x640-bengdq-1789717422271.png",
+   "https://rukminim2.flixcart.com/fk-p-flap/800/1070/image/480x640-bengdq-1790340588959.png",
+   "https://rukminim2.flixcart.com/fk-p-flap/800/1070/image/480x640-bengdq-1790320398920.png",
+   "https://rukminim2.flixcart.com/fk-p-flap/800/1070/image/480x640-bengdq-1790323804253.png",
+   "https://rukminim2.flixcart.com/fk-p-flap/800/1070/image/38f8b250d13d9c7a.png",
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/58433938812fd22978a2b699a711ba59/MultiWidgetpage.js",
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/58433938812fd22978a2b699a711ba59/CrossPlatformModules.js",
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/58433938812fd22978a2b699a711ba59/en-js.js",
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/58433938812fd22978a2b699a711ba59/commonLazyLoadChunk.css",
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/58433938812fd22978a2b699a711ba59/commonLazyLoadChunk.js",
+   "https://sonic.fdp.api.flipkart.com/4/data/collector/business",
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/58433938812fd22978a2b699a711ba59/lazyLoadChunk.css",
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/58433938812fd22978a2b699a711ba59/lazyLoadChunk.js",
+   "https://static-assets-web.flixcart.com/www/linchpin/batman-returns/codes.json",
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/58433938812fd22978a2b699a711ba59/StorePageTS.js",
+   "https://1.rome.api.flipkart.com/4/user/state",
+   "https://js-agent.newrelic.com/nr-spa-1.317.0.min.js",
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/logo_lite-cbb357.png",
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/58433938812fd22978a2b699a711ba59/video.js",
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/58433938812fd22978a2b699a711ba59/BaseActionNonCritical.js",
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/58433938812fd22978a2b699a711ba59/LoginBSRenderer.css",
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/58433938812fd22978a2b699a711ba59/LoginBSRenderer.js",
+   "https://rukminim2.flixcart.com/fk-p-flap/480/720/image/6691b0270f775d08.png",
+   "https://rukminim2.flixcart.com/fk-p-flap/1600/780/image/1312x640-19f82h-1790276801789.png",
+   "https://bam.nr-data.net/1/NRJS-dd5f16cdf95712c6cba",
+   "https://1.rome.api.flipkart.com/4/page/fetch",
+   "https://bam.nr-data.net/events/1/NRJS-dd5f16cdf95712c6cba",
+   "https://bam.nr-data.net/jserrors/1/NRJS-dd5f16cdf95712c6cba",
+   "https://bam.nr-data.net/ins/1/NRJS-dd5f16cdf95712c6cba",
+   "https://trinity-fk.akamaized.net/videos/57b88b707759ab76/master.m3u8",
+   "https://trinity-fk.akamaized.net/videos/57b88b707759ab76/1312x640/playlist.m3u8",
+   "https://trinity-fk.akamaized.net/videos/57b88b707759ab76/1312x640/00.ts",
+   "https://rukminim2.flixcart.com/fk-p-flap/460/224/image/1909a1a59154ede1.jpg",
+   "https://1.sonic.fdp.api.flipkart.com/4/data/collector/business",
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/58433938812fd22978a2b699a711ba59/OmnitureLazyChunk.js",
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/58433938812fd22978a2b699a711ba59/MapiActionNonCriticalActions.js",
+   "https://rukminim2.flixcart.com/fk-p-flap/1600/780/image/408b66ccf94dcc63.png",
+   "https://rukminim2.flixcart.com/fk-p-flap/1600/780/image/1312x640-19f82h-1790160250231.png"
+  ],
+  "stylesheets": [
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/58433938812fd22978a2b699a711ba59/DesktopComponents.css",
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/58433938812fd22978a2b699a711ba59/commonLazyLoadChunk.css",
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/58433938812fd22978a2b699a711ba59/lazyLoadChunk.css",
+   "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/58433938812fd22978a2b699a711ba59/LoginBSRenderer.css"
+  ],
+  "cookies": [
+   "T",
+   "vh",
+   "vw",
+   "dpr",
+   "fonts-loaded",
+   "Network-Type",
+   "isH2EnabledBandwidth",
+   "h2NetworkBandwidth"
+  ],
+  "metas": [],
+  "inlineSamples": [
+   "window.NREUM||(NREUM={}),NREUM.init={browser_consent_mode:{enabled:!1},privacy:{cookies_enabled:!0},distributed_tracing:{enabled:!0}"
+  ],
+  "domFlags": [],
+  "globals": {},
+  "pass": "light"
+ },
+ "globals": {
+  "NREUM": {
+   "present": true
+  },
+  "__reactContainer": {
+   "present": true
+  },
+  "__reactListening": {
+   "present": true
+  },
+  "__reactRouterVersion": {
+   "present": true,
+   "version": "7.9.5"
+  },
+  "__staticRouterHydrationData": {
+   "present": true
+  },
+  "newrelic": {
+   "present": true
+  },
+  "webpackChunk": {
+   "present": true
+  }
+ }
+}

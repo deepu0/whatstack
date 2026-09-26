@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Fixture — DOM clobbering</title>
+<link rel="stylesheet" href="/_shared.css">
+</head>
+<body>
+<main>
+  <h1>Pagination and ids that shadow library globals</h1>
+  <!-- Elements with an id or name become window properties. None of these is a library. -->
+  <nav><a id="prev" href="#">Previous</a> <a id="next" href="#">Next</a></nav>
+  <div id="bootstrap">Bootstrap your career</div>
+  <div id="axios">Axios</div>
+  <div id="ng">ng</div>
+  <form name="Stripe"><input name="card"></form>
+  <div id="Sentry"></div><div id="LogRocket"></div><div id="__FEDERATION__"></div>
+</main>
+<script src="/site.js"></script>
+</body>
+</html>

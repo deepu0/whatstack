@@ -1,0 +1,95 @@
+{
+ "host": "www.netflix.com",
+ "capturedAt": "2026-09-26",
+ "whatstack": "1.8.0",
+ "chromium": "151.0.7922.34",
+ "expect": {
+  "must": [
+   "react",
+   "webpack",
+   "emotion"
+  ]
+ },
+ "snapshot": [
+  "emotion:high",
+  "react:high",
+  "webpack:high"
+ ],
+ "signals": {
+  "url": "https://www.netflix.com/",
+  "scripts": [
+   "https://www.gstatic.com/recaptcha/releases/kemdRjWFxNjgsGdhRslyEPwU/recaptcha__en.js",
+   "https://help.nflxext.com/helpcenter/OneTrust/oneTrust_production_2026-08-21/scripttemplates/otSDKStub.js",
+   "https://help.nflxext.com/helpcenter/OneTrust/oneTrust_production_2026-08-21/scripttemplates/202607.1.0/otBannerSdk.js",
+   "https://assets.nflxext.com/web/ffe/wp/ui/landingPages/nmhp/nmhpFrameworkClient.9a014d292430d2a34266.js",
+   "https://www.google.com/recaptcha/enterprise.js",
+   "https://occ.a.nflxso.net/genc/hawkins/5.29.0/font/netflix-sans-core-variable-full.woff2",
+   "https://occ.a.nflxso.net/genc/hawkins/5.29.0/font/netflix-sans-mono-variable-full.woff2",
+   "https://assets.nflxext.com/web/ffe/wp/@nf-web-ui/ui-shared/dist/less/signup/nmhp/nmhp.1afe2e52bff213979e1d.css",
+   "https://occ.a.nflxso.net/dnmt/api/v6/iL4oJVDYZ8KLSrJ6eG2OwtghbfQ/AAAAAdEhm1UzVexHjKqFOP9W6E2UVtkWFvL-vdxIEbTU81rsqNuPmDDy_dQvmQ85ath49JBruVV4aGQA3gY2Dl5SiqFf-AEwPAZBTNkW8FMxGXpDN2mHrf8KlRRiddj1P422ZW1eZkZNWLTd.svg",
+   "https://assets.nflxext.com/ffe/siteui/vlv3/4263c437-c678-4724-ad80-e3ba0dc8761e/web/US-en-20260921-TRIFECTA-perspective_3ba19b37-271f-4bc1-9c2b-1d21fd8ad26d_large.jpg",
+   "https://logs.netflix.com/log/wwwhead/cl/2",
+   "https://help.nflxext.com/helpcenter/OneTrust/oneTrust_production_2026-08-21/consent/87b6a5c0-0104-4e96-a291-092c11350111/87b6a5c0-0104-4e96-a291-092c11350111.json",
+   "https://occ-0-2433-2705.1.nflxso.net/dnm/api/v6/mAcAr9TxZIVbINe88xb3Teg5_OA/AAAABURvOfNePjiok1oZ0-kndO-uYIxMODGFtfZXKD7lnEPS1vYx6Od7OA6XOlYGxT6Ndqo3Vsv2RRzTvyvPChMi-T91zLI20phGDbrKcTQDx0Bulqd_P06xrTjrdlBeHK5Jy3-7.webp",
+   "https://occ-0-2433-2705.1.nflxso.net/dnm/api/v6/mAcAr9TxZIVbINe88xb3Teg5_OA/AAAABW_6b8-mD7aaxTVLDSlAtOXQ6fB5kEFUudLmiGXscmfLahPb9EEx10da3TShTspUOj5bIeuOU_4ef1i7x9odmzZQDUPD1YmrUxTGDkbpzv71moN5hH09E0yIx28wMQmFvkec.webp",
+   "https://occ-0-2433-2705.1.nflxso.net/dnm/api/v6/mAcAr9TxZIVbINe88xb3Teg5_OA/AAAABSbzJ6NnBf6p7bSm2F_WIJsR94io_SwDrox_Ebc56UAvSfkRmuK5T50HJ9BIc2cZbUaZGpyrXQ4RIt4TzwQnpXePRG0hkFD_yRAiB_6nTcPqJrTPa2NJnLUTPXfMklER9Y-l.webp",
+   "https://occ-0-2433-2705.1.nflxso.net/dnm/api/v6/mAcAr9TxZIVbINe88xb3Teg5_OA/AAAABe1MiwM3CO7Cvo-N_h406Lh3WkH1-9Xj-ou6TDCVbpHAlwVGw6zngVYK1NhKDyI5mg--XrFyitRA1go3TkhFe7UVPT3QI7QIhBzCE3HXj67k7QddpwTCgwnLr3JpxPX8Uxy1.webp",
+   "https://occ-0-2433-2705.1.nflxso.net/dnm/api/v6/mAcAr9TxZIVbINe88xb3Teg5_OA/AAAABWxje2zWQBskeyW9xUIVCcuijGGuLx0mmrzCm2HCSYuE94WjkwT0EPx5fsj-sFk5pIkJMiszgAx9wqRea7UBopDQQl8-1ls4N7OZbNwmorICk_nTWQcj3Sas7RqsqE3lEHem.webp",
+   "https://occ-0-2433-2705.1.nflxso.net/dnm/api/v6/mAcAr9TxZIVbINe88xb3Teg5_OA/AAAABXh2b42NIWP9eEZRow3y3SgJTTItNbQg-Z46PMfzrj19MObGoqsr7VOJ2SiRM9e0IYQ97UYBoGAdES-vlikUKvSFQI6qUWdKU6w.webp",
+   "https://occ-0-2433-2705.1.nflxso.net/dnm/api/v6/mAcAr9TxZIVbINe88xb3Teg5_OA/AAAABQxjdY3-o2_HMGPNScx63Fh6MJUriV48oMXIV1HbP5EFuoPzSzj24paH4cP9mVN3YHh71oRS_5GfDV5I5Exl-Tv_DlRWSmE4JiofsQDkIrlT6b53N_vJD8lI7qjEUCsJCTRP.webp",
+   "https://occ-0-2433-2705.1.nflxso.net/dnm/api/v6/mAcAr9TxZIVbINe88xb3Teg5_OA/AAAABbaLoMsjJgbfjdTr3SNGPpzylvVWo3PjRy307_uRizBADiF2aJCiqQlExOSf1fx9nCMo6SeH843e-u6PKSDzWjmWX_q296iMZhJDw0vIt60GwgkRyvwirvZP7hDcheyI5WC4.webp",
+   "https://occ-0-2433-2705.1.nflxso.net/dnm/api/v6/mAcAr9TxZIVbINe88xb3Teg5_OA/AAAABQaZz6w4WN-xljuaOiyyPIV2iwoXVJyvgdJu-AvWezdhexhlDUNxIZmg8fk2m7ValjyQ563IfsRtuKYh5UhD6ovWtfNAVdNfkcc_2mKttwIg1F3H_6YFxWpRd6lS_F7mOorK.webp",
+   "https://occ-0-2433-2705.1.nflxso.net/dnm/api/v6/mAcAr9TxZIVbINe88xb3Teg5_OA/AAAABU1g7VUmR7qjRsB7sLXVN7mvzbdSN4XHcrRXxiVCdrGiZaybz4bKZ4r-Ky0cyL-enJL8a7bB4vvOj_fv7RqwjTeBLPy2y3AAXyfWQif2Bp0cwGUM8bpkxwBW9DnKwegJoOmm.webp",
+   "https://assets.nflxext.com/ffe/siteui/fonts/netflix-sans/v3/NetflixSans_W_Rg.woff2",
+   "https://assets.nflxext.com/ffe/siteui/fonts/netflix-sans/v3/NetflixSans_W_Md.woff2",
+   "https://assets.nflxext.com/ffe/siteui/fonts/netflix-sans/v3/NetflixSans_W_Bd.woff2",
+   "https://occ.a.nflxso.net/dnmt/api/v6/jXBzyCe8ipOg2XQkxoKMq9wr74g/AAAAAS5NZfs3pCk4oWdvbb1fwwdoCguB9kLbPUnvV47I4LuPif03URbj6Rp6G9DGhy1E4Kq9wzMi9OICr7bV-IGQyghcLsGIn0Z_L1f8LF4oFYG6gGHk2BgP0AuuQCdN9uYeIwYm4BSJjjxx00I6EIjzKsJr0xZjlFU.svg",
+   "https://occ.a.nflxso.net/dnmt/api/v6/jXBzyCe8ipOg2XQkxoKMq9wr74g/AAAAAQ3ruAVPmOuNfp9nFhU28YPY_V5TpbC8Njrd9c6Z1QBr_vqKMJSZ3SyXEl7jhi5EV1vTdVdQE_viqqS3uJ9-cCyI9K6IRtvX9Ef3YML84IfU-0JW4fJo5ce9C0F9e_O7o9xVnSNnHrM1OnkexBi9_N9DJ6CKpsm6.svg",
+   "https://occ.a.nflxso.net/dnmt/api/v6/jXBzyCe8ipOg2XQkxoKMq9wr74g/AAAAAbYBShwcZCgHAdRTyBC59odq9eDsEHwzLX8-j_cCWCWBfjnExjnm72SEWYd7j2lZMsGzDvPnbJZSoutoV5aPiurvSYCfHKuiQR8jIXYbiJdSt7GXwdR5WBbWnk8wz329nNGd2CQXyLTh4tmWRNW27Kzk.svg",
+   "https://geolocation.onetrust.com/cookieconsentpub/v1/geo/location",
+   "https://logs.netflix.com/log/www/cl/2",
+   "https://www.netflix.com/log/www/1",
+   "https://www.netflix.com/graphql",
+   "https://help.nflxext.com/helpcenter/OneTrust/oneTrust_production_2026-08-21/consent/87b6a5c0-0104-4e96-a291-092c11350111/019ae4b5-d8fb-7693-90ba-7a61d24a8837/en.json",
+   "https://cookies-data.onetrust.io/cfw/cmp/v1/session",
+   "https://help.nflxext.com/helpcenter/OneTrust/oneTrust_production_2026-08-21/scripttemplates/202607.1.0/assets/otFlat.json",
+   "https://help.nflxext.com/helpcenter/OneTrust/oneTrust_production_2026-08-21/scripttemplates/202607.1.0/assets/v2/otPcTab.json",
+   "https://help.nflxext.com/helpcenter/OneTrust/oneTrust_production_2026-08-21/scripttemplates/202607.1.0/assets/otCommonStyles.css",
+   "https://help.nflxext.com/helpcenter/OneTrust/oneTrust_production_2026-08-21/consent/87b6a5c0-0104-4e96-a291-092c11350111/019ae4b5-d8fb-7693-90ba-7a61d24a8837/logos/static/ot_guard_logo.svg",
+   "https://help.nflxext.com/helpcenter/OneTrust/oneTrust_production_2026-08-21/consent/87b6a5c0-0104-4e96-a291-092c11350111/019ae4b5-d8fb-7693-90ba-7a61d24a8837/logos/dd6b162f-1a32-456a-9cfe-897231c7763c/4345ea78-053c-46d2-b11e-09adaef973dc/Netflix_Logo_PMS.png",
+   "https://help.nflxext.com/helpcenter/OneTrust/oneTrust_production_2026-08-21/consent/87b6a5c0-0104-4e96-a291-092c11350111/019ae4b5-d8fb-7693-90ba-7a61d24a8837/logos/static/powered_by_logo.svg",
+   "https://www.google.com/recaptcha/enterprise/anchor",
+   "https://ae.nflximg.net/monet/scripts/adtech_iframe_target_05.html",
+   "https://assets.nflxext.com/us/ffe/siteui/common/icons/nficon2023.ico"
+  ],
+  "stylesheets": [
+   "https://assets.nflxext.com/web/ffe/wp/@nf-web-ui/ui-shared/dist/less/signup/nmhp/nmhp.1afe2e52bff213979e1d.css"
+  ],
+  "cookies": [
+   "flwssn",
+   "nfvdid",
+   "netflix-sans-normal-3-loaded",
+   "netflix-sans-bold-3-loaded",
+   "OptanonConsent",
+   "_OT_sm"
+  ],
+  "metas": [],
+  "inlineSamples": [],
+  "domFlags": [
+   "[data-emotion]"
+  ],
+  "globals": {},
+  "pass": "light"
+ },
+ "globals": {
+  "__reactContainer": {
+   "present": true
+  },
+  "__reactListening": {
+   "present": true
+  },
+  "webpackChunk": {
+   "present": true
+  }
+ }
+}
