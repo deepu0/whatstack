@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  unit:
+    name: Unit + corpus (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [20, 22]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run audit:manifest
+      - run: npm run audit:local
+
+  coverage:
+    name: Coverage (≥ 80% lines)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run test:coverage
+
+  browser:
+    name: Real Chromium, real extension
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser
+        env:
+          HEADLESS: '1'
+
+  package:
+    name: Store package
+    runs-on: ubuntu-latest
+    needs: [unit, browser]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/check-version.mjs
+      - run: npm run pack
+      - uses: actions/upload-artifact@v4
+        with:
+          name: whatstack-extension
+          path: dist/*.zip
+          if-no-files-found: error

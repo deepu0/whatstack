@@ -6,7 +6,6 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -116,9 +115,16 @@ describe('store publish readiness', () => {
     fs.rmSync(extractDir, { recursive: true, force: true });
   });
 
-  it('hashes PRIVACY.md for evidence trail', () => {
-    const buf = fs.readFileSync(path.join(root, 'PRIVACY.md'));
-    const hash = createHash('sha256').update(buf).digest('hex');
-    assert.equal(hash.length, 64);
+  it('toolbar and store icons are the sizes the manifest claims', () => {
+    const m = readJson('manifest.json');
+    for (const [size, rel] of [...Object.entries(m.icons), ...Object.entries(m.action.default_icon)]) {
+      const { w, h } = pngDimensions(path.join(root, rel));
+      assert.equal(w, Number(size), `${rel} width`);
+      assert.equal(h, Number(size), `${rel} height`);
+    }
+  });
+
+  it('version is consistent across manifest, package, lockfile and release notes', () => {
+    execFileSync('node', ['scripts/check-version.mjs'], { cwd: root, stdio: 'pipe' });
   });
 });

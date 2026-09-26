@@ -88,7 +88,8 @@ function scanImports(rel, seen = new Set()) {
   const abs = path.join(root, rel);
   if (!fs.existsSync(abs) || !/\.m?js$/.test(abs)) return;
   const text = fs.readFileSync(abs, 'utf8');
-  const re = /from\s+['"](\.\.?\/[^'"]+)['"]/g;
+  // static `from`, side-effect `import './x.js'` and dynamic `import('./x.js')`
+  const re = /(?:\bfrom\s+|\bimport\s*\(?\s*)['"](\.\.?\/[^'"]+)['"]/g;
   let m;
   while ((m = re.exec(text))) {
     let dep = path.posix.normalize(path.posix.join(path.posix.dirname(rel), m[1]));
@@ -101,8 +102,8 @@ function scanImports(rel, seen = new Set()) {
 if (manifest.background?.service_worker) scanImports(manifest.background.service_worker);
 if (manifest.action?.default_popup) {
   const popupHtml = fs.readFileSync(path.join(root, manifest.action.default_popup), 'utf8');
-  const sm = popupHtml.match(/src=["']([^"']+\.js)["']/);
-  if (sm) {
+  // every popup script, not just the first
+  for (const sm of popupHtml.matchAll(/src=["']([^"']+\.js)["']/g)) {
     const rel = path.posix.normalize(
       path.posix.join(path.posix.dirname(manifest.action.default_popup), sm[1]),
     );

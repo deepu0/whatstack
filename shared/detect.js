@@ -778,7 +778,7 @@ export function extractVersions(signals) {
     versions[id] = n;
   };
   const gv = (name) => {
-    const x = g[name];
+    const x = /** @type {any} */ (g[name]);
     return x && typeof x === 'object' ? x.version : undefined;
   };
 
@@ -902,9 +902,10 @@ function evalCheck(signals, check) {
       const val = globals[key];
       // A probe reporting absence as `{ present: false }` must not score as a
       // hit, so require an explicit positive marker rather than any object.
-      if (val === true || (val && typeof val === 'object' && val.present !== false)) {
+      const v = /** @type {any} */ (val);
+      if (v === true || (v && typeof v === 'object' && v.present !== false)) {
         const version =
-          val && typeof val === 'object' && val.version ? ` v${val.version}` : '';
+          v && typeof v === 'object' && v.version ? ` v${v.version}` : '';
         return pack(`window.${key}${version}`);
       }
     }
@@ -1573,7 +1574,7 @@ export function mergeDeepSignals(light, mainGlobals) {
   return {
     ...light,
     globals: { ...(light.globals || {}), ...(mainGlobals || {}) },
-    pass: 'deep',
+    pass: /** @type {'deep'} */ ('deep'),
   };
 }
 

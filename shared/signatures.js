@@ -126,7 +126,7 @@ export const SIGNATURES = [
       { type: 'global', pattern: 'ng', weight: 2, runtime: true },
       // Flag token emitted by the content-script probe (which ORs _ngcontent/_nghost)
       { type: 'dom', pattern: '[_ngcontent-]', weight: 4, strong: true, runtime: true },
-      { type: 'script', pattern: /(?:^|[\/@])@angular\//i, weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:^|[/@])@angular\//i, weight: 4, strong: true, runtime: true },
     ],
   },
   {
@@ -574,7 +574,7 @@ export const SIGNATURES = [
     // Loader only — NOT an MFE framework. Tight paths only (no bare system.js).
     checks: [
       { type: 'dom', pattern: 'script[type="systemjs-importmap"]', weight: 5, strong: true, runtime: true },
-      { type: 'script', pattern: /(?:^|[\/@])systemjs(?:@|\/|\.js)/i, weight: 5, strong: true, runtime: true },
+      { type: 'script', pattern: /(?:^|[/@])systemjs(?:@|\/|\.js)/i, weight: 5, strong: true, runtime: true },
       { type: 'script', pattern: /(?:unpkg\.com|jsdelivr\.net|esm\.sh|cdnjs).*systemjs/i, weight: 5, strong: true, runtime: true },
       { type: 'script', pattern: /systemjs\.org|systemjs@[\d.]+/i, weight: 5, strong: true, runtime: true },
       { type: 'global', pattern: '__systemjs', weight: 4, strong: true, runtime: true },

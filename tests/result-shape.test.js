@@ -47,21 +47,16 @@ describe('result shaping for popup', () => {
       stylesheets: [],
       cookies: [],
       metas: [],
-      // only weak tailwind utilities flag → low tailwind
+      // only the weak utility-class flag → Tailwind must be low
       domFlags: ['tailwind-utilities'],
-      html: '<div class="flex items-center p-4 m-2 rounded shadow bg-gray-100 text-sm"></div>'.repeat(3),
       globals: {},
     });
     const shaped = shapeForPopup(raw);
     const ui = shaped.sections.find((s) => s.category === 'ui');
-    if (ui) {
-      // if tailwind present only as low, it should be in lowHits
-      const all = [...ui.hits, ...ui.lowHits];
-      const tw = all.find((h) => h.id === 'tailwind');
-      if (tw && tw.confidence === 'low') {
-        assert.ok(ui.lowHits.some((h) => h.id === 'tailwind'));
-      }
-    }
+    assert.ok(ui, 'ui section present');
+    assert.deepEqual(ui.hits.map((h) => h.id), [], 'nothing solid');
+    assert.deepEqual(ui.lowHits.map((h) => h.id), ['tailwind']);
+    assert.equal(shaped.highMediumCount, 0);
   });
 
   it('formatStackSummary lists detected tech', () => {

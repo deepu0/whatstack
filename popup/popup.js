@@ -12,7 +12,8 @@ import {
 import { getBrandIcon } from '../shared/brand-icons.js';
 import { isRestrictedUrl } from '../shared/url-policy.js';
 
-const $ = (id) => document.getElementById(id);
+/** @param {string} id */
+const $ = (id) => /** @type {HTMLButtonElement} */ (document.getElementById(id));
 
 const els = {
   status: $('status'),
