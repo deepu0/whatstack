@@ -1,7 +1,7 @@
 {
  "host": "www.flipkart.com",
  "capturedAt": "2026-09-26",
- "whatstack": "1.7.2",
+ "whatstack": "1.8.0",
  "chromium": "151.0.7922.34",
  "expect": {
   "must": [

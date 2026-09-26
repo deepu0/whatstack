@@ -2,7 +2,7 @@
 
 Chrome extension (Manifest V3) that answers: **what stack is this page using?**
 
-Fully **local** detection — frameworks, architecture (microfrontends), build tools, state/data, UI, auth, payments, observability, analytics, and hosting hints. No cloud matching, no page upload.
+Fully **local** detection of 82 technologies — frameworks, CMS / site builders, architecture (microfrontends), build tools, state/data, UI, auth, payments, observability, analytics, and hosting hints. No cloud matching, no page upload.
 
 ## Load unpacked (development)
 
@@ -13,8 +13,11 @@ Fully **local** detection — frameworks, architecture (microfrontends), build t
 
 ## Features
 
-- Hybrid scan: light pass on navigate (badge) + deep pass when the popup opens
+- Hybrid scan: light pass on navigate, then a background MAIN-world probe, so the
+  **badge counts what the popup shows**; the popup always runs a fresh deep scan
 - Confidence tiers + expandable evidence (why it matched)
+- Evidence from asset URLs (host + path, never the query), runtime objects with the
+  right shape, and probed DOM flags — never page text, data islands or file names
 - Core stack headline + Copy / Markdown / JSON export
 - React detection aligned with React DevTools (renderer registered, not bare hook)
 - Microfrontend platforms: Module Federation, single-spa, qiankun, SystemJS
@@ -23,17 +26,26 @@ Fully **local** detection — frameworks, architecture (microfrontends), build t
 ## Develop / test
 
 ```bash
-npm test                 # unit + integration suites (node:test, no deps)
-npm run test:browser     # loads the real unpacked extension into Chrome
-npm run audit:manifest
-npm run audit:local
+npm ci
+npm test                 # unit, coverage gate, golden corpus (node:test, offline)
+npm run check            # lint + type check + tests + audits
+npm run test:coverage    # fails under 80% lines
+npx playwright install chromium
+npm run test:browser     # real unpacked extension in real Chromium
+HEADLESS=1 npm run test:browser   # same, headless (CI)
+npm run corpus:capture   # re-capture real sites into tests/corpus (network)
 ```
 
-`npm run test:browser` needs `npm install` (Playwright) and a Chrome/Chromium
-build; point `CHROME_PATH` at one if you don't have the `chrome` channel
-installed. It serves `tests/browser/fixtures/` over localhost and checks that
-pages which merely *display* framework markup produce no detections, while pages
-that really use the framework still do.
+`npm run test:browser` uses Playwright's bundled Chromium — branded Chrome
+stable ignores `--load-extension`. Set `CHROME_PATH` to use another
+Chromium-family build. It serves `tests/browser/fixtures/` over localhost and
+checks that pages which merely *display* or *mention* a framework produce no
+detections, that real ones do, and that the badge matches the popup.
+
+**Golden corpus.** `tests/corpus/*.json` are real sites captured by
+`scripts/capture-corpus.mjs` (light signals + probe globals, query strings and
+non-evidence text removed). `npm test` replays them offline. When a change
+alters a snapshot on purpose, review it and run `npm run corpus:update`.
 
 Detection evidence comes from real `querySelector` probes only — never from the
 page's HTML as text. `tests/dom-evidence.test.js` is the guard for that.
@@ -42,15 +54,20 @@ page's HTML as text. `tests/dom-evidence.test.js` is the guard for that.
 
 ```
 manifest.json
-background/service-worker.js   # cache, badge, deep scan
-content/content-script.js      # light signals
+background/service-worker.js   # message adapter, tab lifecycle
+content/content-script.js      # light signals (isolated world)
 popup/                         # toolbar UI
-shared/detect.js               # pure detection engine
-shared/signatures.js           # local rule pack
-shared/result-shape.js         # popup shaping + exports
+shared/detect.js               # pure engine + MAIN-world probe source
+shared/signatures.js           # local rule pack (82 technologies)
+shared/signature-matcher.js    # evidence → confidence
+shared/architecture-classifier.js  # badge count
+shared/scan-orchestrator.js    # light/deep passes, cache, badge, timeouts
+shared/url-policy.js           # which pages can be scanned
+shared/result-shape.js         # popup shaping + exports + report link
 shared/brand-icons.js          # tech marks (local SVG)
 tests/                         # node:test suites + fixtures
-tests/browser/                 # real-Chrome end-to-end suite
+tests/corpus/                  # golden corpus of real captured sites
+tests/browser/                 # real-Chromium end-to-end suite
 scripts/                       # audits, packaging, store assets
 icons/                         # toolbar + brand assets
 store/                         # listing copy, screenshots, promo tile

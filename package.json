@@ -1,8 +1,8 @@
 {
   "name": "whatstack",
-  "version": "1.7.2",
+  "version": "1.8.0",
   "private": true,
-  "description": "WhatStack \u2014 local Chrome extension that reports a site's frontend tech stack",
+  "description": "WhatStack — local Chrome extension that reports a site's frontend tech stack",
   "type": "module",
   "scripts": {
     "test": "node --test tests/*.test.js",
