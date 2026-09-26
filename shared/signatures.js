@@ -51,7 +51,7 @@ export const SIGNATURES = [
       { type: 'dom', pattern: 'next-route-announcer', weight: 4, strong: true, runtime: true },
       { type: 'dom', pattern: '[data-nextjs-scroll-focus-boundary]', weight: 4, strong: true, runtime: true },
       { type: 'dom', pattern: '#__next', weight: 2 },
-      { type: 'inline', pattern: /\bself\.__next_f\b|\b__NEXT_DATA__\b|\bwebpackChunk_N_E\b/i, weight: 5, strong: true, runtime: true },
+      { type: 'inline', pattern: /\bself\.__next_f\b|\b__NEXT_DATA__\b|\bwebpackChunk_N_E\b/, weight: 5, strong: true, runtime: true },
       { type: 'meta', pattern: /^generator=.*\bnext\.?js\b/i, weight: 3, strong: true, runtime: true },
     ],
   },
@@ -194,7 +194,7 @@ export const SIGNATURES = [
       { type: 'script', pattern: /@remix-run\/(?:react|node|cloudflare|deno|serve)(?:@|\/|$)/i, weight: 5, strong: true, runtime: true },
       { type: 'script', pattern: /(?:unpkg\.com|jsdelivr\.net|esm\.sh)\/.*@remix-run\//i, weight: 5, strong: true, runtime: true },
       { type: 'script', pattern: /\/build\/(?:entry\.client|root|routes)/i, weight: 2 },
-      { type: 'inline', pattern: /\b__remixContext\b|\b__remixManifest\b|@remix-run\//i, weight: 5, strong: true, runtime: true },
+      { type: 'inline', pattern: /\b__remixContext\b|\b__remixManifest\b|@remix-run\//, weight: 5, strong: true, runtime: true },
       { type: 'meta', pattern: /^generator=.*\bremix\b/i, weight: 3, strong: true, runtime: true },
     ],
   },
@@ -346,7 +346,7 @@ export const SIGNATURES = [
       { type: 'script', pattern: /@tanstack\/(?:react-)?start(?:@|\/|\/plugin|\/server)/i, weight: 5, strong: true, runtime: true },
       { type: 'script', pattern: /(?:unpkg\.com|jsdelivr\.net|esm\.sh)\/.*@tanstack\/(?:react-)?start/i, weight: 5, strong: true, runtime: true },
       // Vite plugin / build fingerprints sometimes appear in chunk URLs
-      { type: 'script', pattern: /tanstack[_-]start/i, weight: 3, strong: true },
+      { type: 'script', pattern: /(?<![\w-])tanstack[_-]start[\w.-]*\.m?js$/i, weight: 3, strong: true },
       { type: 'inline', pattern: /@tanstack\/(?:react|solid)-start|\bcreateServerFn\s*\(|\bcreateStartHandler\s*\(/, weight: 5, strong: true, runtime: true },
       { type: 'global', pattern: '__TANSTACK_START__', weight: 5, strong: true, runtime: true },
       { type: 'global', pattern: '__TSR_SSR__', weight: 4, strong: true, runtime: true },
@@ -608,8 +608,9 @@ export const SIGNATURES = [
     checks: [
       { type: 'global', pattern: '__webpack_require__', weight: 5, strong: true, runtime: true },
       { type: 'global', pattern: 'webpackChunk', weight: 4, strong: true, runtime: true }, // probe sets when any webpackChunk* exists
-      { type: 'script', pattern: /\/webpack(?:~|\.|\/|-)/i, weight: 3, strong: true },
-      { type: 'inline', pattern: /\b__webpack_require__\b|\bwebpackJsonp\b/i, weight: 4, strong: true, runtime: true },
+      // webpack runtime / chunk files (webpack-abc123.js, webpack~vendor.js) — not any path containing the word
+      { type: 'script', pattern: /(?<![\w-])webpack(?:[~.-][\w.~-]*)?\.m?js$/i, weight: 3, strong: true },
+      { type: 'inline', pattern: /\b__webpack_require__\b|\bwebpackJsonp\b/, weight: 4, strong: true, runtime: true },
     ],
   },
   {
@@ -638,7 +639,8 @@ export const SIGNATURES = [
     category: 'build',
     checks: [
       { type: 'script', pattern: /(?<![\w-])turbopack[-_][\w.-]*\.js$/i, weight: 3, strong: true },
-      { type: 'inline', pattern: /\bTURBOPACK\b|__turbopack/i, weight: 4, strong: true, runtime: true },
+      // Case-sensitive: the runtime global is TURBOPACK; the word "Turbopack" in text is not
+      { type: 'inline', pattern: /\bTURBOPACK\b|\b__turbopack_[a-z]/, weight: 4, strong: true, runtime: true },
       { type: 'global', pattern: '__turbopack', weight: 4, strong: true, runtime: true },
     ],
   },
@@ -763,7 +765,7 @@ export const SIGNATURES = [
       { type: 'global', pattern: 'newrelic', weight: 4, strong: true, runtime: true },
       { type: 'global', pattern: '__nr_require', weight: 5, strong: true, runtime: true },
       // Inline snippet: window.NREUM||(NREUM={}) … bam.nr-data.net
-      { type: 'inline', pattern: /\bNREUM\b|\b__nr_require\b|bam(?:-cell)?\.nr-data\.net|js-agent\.newrelic\.com/i, weight: 5, strong: true, runtime: true },
+      { type: 'inline', pattern: /\bNREUM\b|\b__nr_require\b|bam(?:-cell)?\.nr-data\.net|js-agent\.newrelic\.com/, weight: 5, strong: true, runtime: true },
     ],
   },
   {
