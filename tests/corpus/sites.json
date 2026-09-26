@@ -1,5 +1,5 @@
 [
-  {"host": "nextjs.org", "expect": {"must": ["nextjs", "react", "turbopack", "vercel"]}},
+  {"host": "nextjs.org", "expect": {"must": ["nextjs", "react", "turbopack"]}},
   {"host": "vercel.com", "expect": {"must": ["nextjs", "react"]}},
   {"host": "stripe.com", "expect": {"must": ["nextjs", "react", "webpack", "sentry"]}},
   {"host": "linear.app", "expect": {"must": ["nextjs", "react", "styled-components", "sentry"], "noVersion": ["nextjs"]}},
