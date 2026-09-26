@@ -1,0 +1,43 @@
+{
+  "bpm": 120,
+  "fps": 60,
+  "beats": 64,
+  "subframes": 10,
+  "shutter": 0.5,
+  "posterBeat": 23.5,
+  "scenes": {
+    "hook":    [0, 6],
+    "reveal":  [6, 10],
+    "browse":  [10, 18],
+    "click":   [18, 26],
+    "conf":    [26, 32],
+    "evid":    [32, 38],
+    "any":     [38, 46],
+    "export":  [46, 52],
+    "private": [52, 56],
+    "cta":     [56, 58],
+    "end":     [58, 64]
+  },
+  "cues": {
+    "hookText": 1.0,
+    "sitePages": [10.0, 12.667, 15.333],
+    "badges": [11.0, 13.667, 16.333],
+    "iconClick": 19.5,
+    "popupOpen": 19.55,
+    "badgeDeep": 20.4,
+    "headlinePush": 21.0,
+    "rings": [26.6, 27.1, 27.6, 28.1, 28.6],
+    "githubCut": 29.5,
+    "lowRing": 30.1,
+    "rowClick": 33.0,
+    "evidReveal": [33.1, 34.4],
+    "anyCuts": [38.0, 39.333, 40.667, 42.0, 43.333, 44.667],
+    "mdClick": 47.0,
+    "jsonClick": 49.5,
+    "localRing": 52.6,
+    "addClick": 57.3,
+    "clicks": [19.5, 33.0, 47.0, 49.5, 57.3],
+    "whooshes": [5.6, 9.6, 17.6, 25.6, 31.6, 37.6, 45.6, 51.6, 55.6, 57.6],
+    "impacts": [6.0, 19.5, 38.0, 58.0]
+  }
+}

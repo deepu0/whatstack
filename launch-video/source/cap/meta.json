@@ -1,0 +1,1469 @@
+{
+ "stripe": {
+  "url": "https://stripe.com/",
+  "light": {
+   "badge": "4",
+   "title": "WhatStack: Next.js · 4 signals"
+  },
+  "deep": {
+   "badge": "5",
+   "title": "WhatStack: Next.js · 5 signals"
+  },
+  "popup": {
+   "nat": 560,
+   "status": "5 solid · 5 total · deep · Next.js",
+   "headline": {
+    "x": 10,
+    "y": 116.015625,
+    "w": 340,
+    "h": 58.6875
+   },
+   "headlineText": "CORE STACK\n\nNext.js 14.2.32 · React · Webpack",
+   "sections": [
+    {
+     "title": "FRAMEWORKS",
+     "x": 10,
+     "y": 184.703125,
+     "w": 340,
+     "h": 111.9375
+    },
+    {
+     "title": "BUILD",
+     "x": 10,
+     "y": 304.640625,
+     "w": 340,
+     "h": 72.9375
+    },
+    {
+     "title": "OBSERVABILITY",
+     "x": 10,
+     "y": 385.578125,
+     "w": 340,
+     "h": 72.9375
+    },
+    {
+     "title": "ANALYTICS & PRODUCT",
+     "x": 10,
+     "y": 466.515625,
+     "w": 340,
+     "h": 72.9375
+    }
+   ],
+   "hits": [
+    {
+     "text": "Next.js v14.2.32 HIGH",
+     "x": 11,
+     "y": 218.640625,
+     "w": 338,
+     "h": 38,
+     "badge": {
+      "x": 296.96875,
+      "y": 227.390625,
+      "w": 42.03125,
+      "h": 20.5
+     }
+    },
+    {
+     "text": "React HIGH",
+     "x": 11,
+     "y": 257.640625,
+     "w": 338,
+     "h": 38,
+     "badge": {
+      "x": 296.96875,
+      "y": 266.390625,
+      "w": 42.03125,
+      "h": 20.5
+     }
+    },
+    {
+     "text": "Webpack HIGH",
+     "x": 11,
+     "y": 338.578125,
+     "w": 338,
+     "h": 38,
+     "badge": {
+      "x": 296.96875,
+      "y": 347.328125,
+      "w": 42.03125,
+      "h": 20.5
+     }
+    },
+    {
+     "text": "Sentry HIGH",
+     "x": 11,
+     "y": 419.515625,
+     "w": 338,
+     "h": 38,
+     "badge": {
+      "x": 296.96875,
+      "y": 428.265625,
+      "w": 42.03125,
+      "h": 20.5
+     }
+    },
+    {
+     "text": "Google Analytics MEDIUM",
+     "x": 11,
+     "y": 500.453125,
+     "w": 338,
+     "h": 38,
+     "badge": {
+      "x": 279.28125,
+      "y": 509.203125,
+      "w": 59.71875,
+      "h": 20.5
+     }
+    }
+   ],
+   "low": null,
+   "evidence": [],
+   "buttons": {
+    "Rescan": {
+     "x": 282.609375,
+     "y": 15.34375,
+     "w": 63.390625,
+     "h": 31
+    },
+    "Next.js\nv14.2.32\nHIGH": {
+     "x": 11,
+     "y": 218.640625,
+     "w": 338,
+     "h": 38
+    },
+    "React\nHIGH": {
+     "x": 11,
+     "y": 257.640625,
+     "w": 338,
+     "h": 38
+    },
+    "Webpack\nHIGH": {
+     "x": 11,
+     "y": 338.578125,
+     "w": 338,
+     "h": 38
+    },
+    "Sentry\nHIGH": {
+     "x": 11,
+     "y": 419.515625,
+     "w": 338,
+     "h": 38
+    },
+    "Google Analytics\nMEDIUM": {
+     "x": 11,
+     "y": 500.453125,
+     "w": 338,
+     "h": 38
+    },
+    "Copy": {
+     "x": 14,
+     "y": 570.453125,
+     "w": 50.828125,
+     "h": 31
+    },
+    "MD": {
+     "x": 70.828125,
+     "y": 570.453125,
+     "w": 41.984375,
+     "h": 31
+    },
+    "JSON": {
+     "x": 118.8125,
+     "y": 570.453125,
+     "w": 51.3125,
+     "h": 31
+    },
+    "Wrong?": {
+     "x": 178.125,
+     "y": 570.453125,
+     "w": 66.46875,
+     "h": 31
+    }
+   },
+   "local": {
+    "x": 281.203125,
+    "y": 574.703125,
+    "w": 64.796875,
+    "h": 22.5
+   },
+   "url": "https://stripe.com/",
+   "H": 613,
+   "expanded": {
+    "status": "5 solid · 5 total · deep · Next.js",
+    "headline": {
+     "x": 10,
+     "y": 116.015625,
+     "w": 340,
+     "h": 58.6875
+    },
+    "headlineText": "CORE STACK\n\nNext.js 14.2.32 · React · Webpack",
+    "sections": [
+     {
+      "title": "FRAMEWORKS",
+      "x": 10,
+      "y": 184.703125,
+      "w": 340,
+      "h": 299.375
+     },
+     {
+      "title": "BUILD",
+      "x": 10,
+      "y": 492.078125,
+      "w": 340,
+      "h": 72.9375
+     },
+     {
+      "title": "OBSERVABILITY",
+      "x": 10,
+      "y": 573.015625,
+      "w": 340,
+      "h": 72.9375
+     },
+     {
+      "title": "ANALYTICS & PRODUCT",
+      "x": 10,
+      "y": 653.953125,
+      "w": 340,
+      "h": 72.9375
+     }
+    ],
+    "hits": [
+     {
+      "text": "Next.js v14.2.32 HIGH",
+      "x": 11,
+      "y": 218.640625,
+      "w": 338,
+      "h": 38,
+      "badge": {
+       "x": 296.96875,
+       "y": 227.390625,
+       "w": 42.03125,
+       "h": 20.5
+      }
+     },
+     {
+      "text": "React HIGH",
+      "x": 11,
+      "y": 445.078125,
+      "w": 338,
+      "h": 38,
+      "badge": {
+       "x": 296.96875,
+       "y": 453.828125,
+       "w": 42.03125,
+       "h": 20.5
+      }
+     },
+     {
+      "text": "Webpack HIGH",
+      "x": 11,
+      "y": 526.015625,
+      "w": 338,
+      "h": 38,
+      "badge": {
+       "x": 296.96875,
+       "y": 534.765625,
+       "w": 42.03125,
+       "h": 20.5
+      }
+     },
+     {
+      "text": "Sentry HIGH",
+      "x": 11,
+      "y": 606.953125,
+      "w": 338,
+      "h": 38,
+      "badge": {
+       "x": 296.96875,
+       "y": 615.703125,
+       "w": 42.03125,
+       "h": 20.5
+      }
+     },
+     {
+      "text": "Google Analytics MEDIUM",
+      "x": 11,
+      "y": 687.890625,
+      "w": 338,
+      "h": 38,
+      "badge": {
+       "x": 279.28125,
+       "y": 696.640625,
+       "w": 59.71875,
+       "h": 20.5
+      }
+     }
+    ],
+    "low": null,
+    "evidence": [
+     {
+      "x": 11,
+      "y": 267.640625,
+      "w": 338,
+      "h": 165.4375
+     }
+    ],
+    "buttons": {
+     "Rescan": {
+      "x": 282.609375,
+      "y": 15.34375,
+      "w": 63.390625,
+      "h": 31
+     },
+     "Next.js\nv14.2.32\nHIGH": {
+      "x": 11,
+      "y": 218.640625,
+      "w": 338,
+      "h": 38
+     },
+     "React\nHIGH": {
+      "x": 11,
+      "y": 445.078125,
+      "w": 338,
+      "h": 38
+     },
+     "Webpack\nHIGH": {
+      "x": 11,
+      "y": 526.015625,
+      "w": 338,
+      "h": 38
+     },
+     "Sentry\nHIGH": {
+      "x": 11,
+      "y": 606.953125,
+      "w": 338,
+      "h": 38
+     },
+     "Google Analytics\nMEDIUM": {
+      "x": 11,
+      "y": 687.890625,
+      "w": 338,
+      "h": 38
+     },
+     "Copy": {
+      "x": 14,
+      "y": 757.890625,
+      "w": 50.828125,
+      "h": 31
+     },
+     "MD": {
+      "x": 70.828125,
+      "y": 757.890625,
+      "w": 41.984375,
+      "h": 31
+     },
+     "JSON": {
+      "x": 118.8125,
+      "y": 757.890625,
+      "w": 51.3125,
+      "h": 31
+     },
+     "Wrong?": {
+      "x": 178.125,
+      "y": 757.890625,
+      "w": 66.46875,
+      "h": 31
+     }
+    },
+    "local": {
+     "x": 281.203125,
+     "y": 762.140625,
+     "w": 64.796875,
+     "h": 22.5
+    },
+    "url": "https://stripe.com/",
+    "H": 801,
+    "evidenceText": [
+     "scripthttps://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/polyfills-42372ed130431b0a.js",
+     "domscript#__NEXT_DATA__",
+     "globalwindow.__NEXT_DATA__",
+     "globalwindow.webpackChunk_N_E",
+     "globalwindow.next v14.2.32",
+     "domnext-route-announcer",
+     "dom#__next"
+    ]
+   },
+   "exports": {
+    "text": "WhatStack for https://stripe.com/:\nStack: Next.js 14.2.32 · React · Webpack\nFrameworks: Next.js@14.2.32 (high), React (high)\nBuild: Webpack (high)\nObservability: Sentry (high)\nAnalytics & product: Google Analytics (medium)",
+    "textStatus": "Copied text summary",
+    "md": "## WhatStack\n**URL:** https://stripe.com/\n**Stack:** Next.js 14.2.32 · React · Webpack\n| Tech | Category | Confidence | Version |\n| --- | --- | --- | --- |\n| Next.js | Frameworks | high | 14.2.32 |\n| React | Frameworks | high | — |\n| Webpack | Build | high | — |\n| Sentry | Observability | high | — |\n| Google Analytics | Analytics & product | medium | — |",
+    "mdStatus": "Copied Markdown",
+    "json": "{\n  \"tool\": \"WhatStack\",\n  \"url\": \"https://stripe.com/\",\n  \"pass\": \"deep\",\n  \"headline\": \"Next.js 14.2.32 · React · Webpack\",\n  \"primary\": {\n    \"id\": \"nextjs\",\n    \"name\": \"Next.js\"\n  },\n  \"hits\": [\n    {\n      \"id\": \"nextjs\",\n      \"name\": \"Next.js\",\n      \"category\": \"framework\",\n      \"confidence\": \"high\",\n      \"version\": \"14.2.32\",\n      \"evidence\": [\n        {\n          \"type\": \"script\",\n          \"snippet\": \"https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/polyfills-42372ed130431b0a.js\",\n          \"weight\": 5\n        },\n        {\n          \"type\": \"dom\",\n          \"snippet\": \"script#__NEXT_DATA__\",\n          \"weight\": 5\n        },\n        {\n          \"type\": \"global\",\n          \"snippet\": \"window.__NEXT_DATA__\",\n          \"weight\": 5\n        },\n        {\n          \"type\": \"global\",\n          \"snippet\": \"window.webpackChunk_N_E\",\n          \"weight\": 4\n        },\n        {\n          \"type\": \"global\",\n          \"snippet\": \"window.next v14.2.32\",\n          \"weight\": 2\n        },\n        {\n          \"type\": \"dom\",\n          \"snippet\": \"next-route-announcer\",\n          \"weight\": 4\n        },\n        {\n          \"type\": \"dom\",\n          \"snippet\": \"#__next\",\n          \"weight\": 2\n        }\n      ]\n    },\n    {\n      \"id\": \"react\",\n      \"name\": \"React\",\n      \"category\": \"framework\",\n      \"confidence\": \"high\",\n      \"version\": null,\n      \"evidence\": [\n        {\n          \"type\": \"global\",\n          \"snippet\": \"window.__reactContainer\",\n          \"weight\": 5\n        },\n        {\n          \"type\": \"dom\",\n          \"snippet\": \"confirmed via Next.js stack\",\n          \"weight\": 3\n        }\n      ]\n    },\n    {\n      \"id\": \"webpack\",\n      \"name\": \"Webpack\",\n      \"category\": \"build\",\n      \"confidence\": \"high\",\n      \"version\": null,\n      \"evidence\": [\n        {\n          \"type\": \"global\",\n          \"snippet\": \"window.webpackChunk\",\n          \"weight\": 4\n        },\n        {\n          \"type\": \"script\",\n          \"snippet\": \"https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/webpack-f85e96e588c53278.js\",\n          \"weight\": 3\n        }\n      ]\n    },\n    {\n      \"id\": \"sentry\",\n      \"name\": \"Sentry\",\n      \"category\": \"observability\",\n      \"confidence\": \"high\",\n      \"version\": null,\n      \"evidence\": [\n        {\n          \"type\": \"global\",\n          \"snippet\": \"window.__SENTRY__\",\n          \"weight\": 5\n        }\n      ]\n    },\n    {\n      \"id\": \"google-analytics\",\n      \"name\": \"Google Analytics\",\n      \"category\": \"analytics\",\n      \"confidence\": \"medium\",\n      \"version\": null,\n      \"evidence\": [\n        {\n          \"type\": \"cookie\",\n          \"snippet\": \"_ga\",\n          \"weight\": 2\n        }\n      ]\n    }\n  ]\n}",
+    "jsonStatus": "Copied JSON"
+   }
+  }
+ },
+ "notion": {
+  "url": "https://www.notion.com/",
+  "light": {
+   "badge": "4",
+   "title": "WhatStack: Next.js · 4 signals"
+  },
+  "deep": {
+   "badge": "5",
+   "title": "WhatStack: Next.js · 5 signals"
+  },
+  "popup": {
+   "nat": 560,
+   "status": "5 solid · 5 total · deep · Next.js",
+   "headline": {
+    "x": 10,
+    "y": 116.015625,
+    "w": 340,
+    "h": 58.6875
+   },
+   "headlineText": "CORE STACK\n\nNext.js 16.3.2 · React · Turbopack",
+   "sections": [
+    {
+     "title": "FRAMEWORKS",
+     "x": 10,
+     "y": 184.703125,
+     "w": 340,
+     "h": 111.9375
+    },
+    {
+     "title": "BUILD",
+     "x": 10,
+     "y": 304.640625,
+     "w": 340,
+     "h": 72.9375
+    },
+    {
+     "title": "OBSERVABILITY",
+     "x": 10,
+     "y": 385.578125,
+     "w": 340,
+     "h": 72.9375
+    },
+    {
+     "title": "ANALYTICS & PRODUCT",
+     "x": 10,
+     "y": 466.515625,
+     "w": 340,
+     "h": 72.9375
+    }
+   ],
+   "hits": [
+    {
+     "text": "Next.js v16.3.2 HIGH",
+     "x": 11,
+     "y": 218.640625,
+     "w": 338,
+     "h": 38,
+     "badge": {
+      "x": 296.96875,
+      "y": 227.390625,
+      "w": 42.03125,
+      "h": 20.5
+     }
+    },
+    {
+     "text": "React HIGH",
+     "x": 11,
+     "y": 257.640625,
+     "w": 338,
+     "h": 38,
+     "badge": {
+      "x": 296.96875,
+      "y": 266.390625,
+      "w": 42.03125,
+      "h": 20.5
+     }
+    },
+    {
+     "text": "Turbo Turbopack HIGH",
+     "x": 11,
+     "y": 338.578125,
+     "w": 338,
+     "h": 38,
+     "badge": {
+      "x": 296.96875,
+      "y": 347.328125,
+      "w": 42.03125,
+      "h": 20.5
+     }
+    },
+    {
+     "text": "Sentry HIGH",
+     "x": 11,
+     "y": 419.515625,
+     "w": 338,
+     "h": 38,
+     "badge": {
+      "x": 296.96875,
+      "y": 428.265625,
+      "w": 42.03125,
+      "h": 20.5
+     }
+    },
+    {
+     "text": "Google Analytics HIGH",
+     "x": 11,
+     "y": 500.453125,
+     "w": 338,
+     "h": 38,
+     "badge": {
+      "x": 296.96875,
+      "y": 509.203125,
+      "w": 42.03125,
+      "h": 20.5
+     }
+    }
+   ],
+   "low": null,
+   "evidence": [],
+   "buttons": {
+    "Rescan": {
+     "x": 282.609375,
+     "y": 15.34375,
+     "w": 63.390625,
+     "h": 31
+    },
+    "Next.js\nv16.3.2\nHIGH": {
+     "x": 11,
+     "y": 218.640625,
+     "w": 338,
+     "h": 38
+    },
+    "React\nHIGH": {
+     "x": 11,
+     "y": 257.640625,
+     "w": 338,
+     "h": 38
+    },
+    "Turbo\nTurbopack\nHIGH": {
+     "x": 11,
+     "y": 338.578125,
+     "w": 338,
+     "h": 38
+    },
+    "Sentry\nHIGH": {
+     "x": 11,
+     "y": 419.515625,
+     "w": 338,
+     "h": 38
+    },
+    "Google Analytics\nHIGH": {
+     "x": 11,
+     "y": 500.453125,
+     "w": 338,
+     "h": 38
+    },
+    "Copy": {
+     "x": 14,
+     "y": 570.453125,
+     "w": 50.828125,
+     "h": 31
+    },
+    "MD": {
+     "x": 70.828125,
+     "y": 570.453125,
+     "w": 41.984375,
+     "h": 31
+    },
+    "JSON": {
+     "x": 118.8125,
+     "y": 570.453125,
+     "w": 51.3125,
+     "h": 31
+    },
+    "Wrong?": {
+     "x": 178.125,
+     "y": 570.453125,
+     "w": 66.46875,
+     "h": 31
+    }
+   },
+   "local": {
+    "x": 281.203125,
+    "y": 574.703125,
+    "w": 64.796875,
+    "h": 22.5
+   },
+   "url": "https://www.notion.com/",
+   "H": 613
+  }
+ },
+ "nextjs": {
+  "url": "https://nextjs.org/",
+  "light": {
+   "badge": "4",
+   "title": "WhatStack: Next.js · 4 signals"
+  },
+  "deep": {
+   "badge": "4",
+   "title": "WhatStack: Next.js · 4 signals"
+  },
+  "popup": {
+   "nat": 533,
+   "status": "4 solid · 4 total · deep · Next.js",
+   "headline": {
+    "x": 10,
+    "y": 116.015625,
+    "w": 340,
+    "h": 58.6875
+   },
+   "headlineText": "CORE STACK\n\nNext.js 16.4.0-canary.38 · React · Turbopack",
+   "sections": [
+    {
+     "title": "FRAMEWORKS",
+     "x": 10,
+     "y": 184.703125,
+     "w": 340,
+     "h": 111.9375
+    },
+    {
+     "title": "BUILD",
+     "x": 10,
+     "y": 304.640625,
+     "w": 340,
+     "h": 72.9375
+    },
+    {
+     "title": "UI / CSS",
+     "x": 10,
+     "y": 385.578125,
+     "w": 340,
+     "h": 72.9375
+    }
+   ],
+   "hits": [
+    {
+     "text": "Next.js v16.4.0-canary.38 HIGH",
+     "x": 11,
+     "y": 218.640625,
+     "w": 338,
+     "h": 38,
+     "badge": {
+      "x": 296.96875,
+      "y": 227.390625,
+      "w": 42.03125,
+      "h": 20.5
+     }
+    },
+    {
+     "text": "React HIGH",
+     "x": 11,
+     "y": 257.640625,
+     "w": 338,
+     "h": 38,
+     "badge": {
+      "x": 296.96875,
+      "y": 266.390625,
+      "w": 42.03125,
+      "h": 20.5
+     }
+    },
+    {
+     "text": "Turbo Turbopack HIGH",
+     "x": 11,
+     "y": 338.578125,
+     "w": 338,
+     "h": 38,
+     "badge": {
+      "x": 296.96875,
+      "y": 347.328125,
+      "w": 42.03125,
+      "h": 20.5
+     }
+    },
+    {
+     "text": "Tailwind CSS MEDIUM",
+     "x": 11,
+     "y": 419.515625,
+     "w": 338,
+     "h": 38,
+     "badge": {
+      "x": 279.28125,
+      "y": 428.265625,
+      "w": 59.71875,
+      "h": 20.5
+     }
+    }
+   ],
+   "low": null,
+   "evidence": [],
+   "buttons": {
+    "Rescan": {
+     "x": 282.609375,
+     "y": 15.34375,
+     "w": 63.390625,
+     "h": 31
+    },
+    "Next.js\nv16.4.0-canary.38\nHIGH": {
+     "x": 11,
+     "y": 218.640625,
+     "w": 338,
+     "h": 38
+    },
+    "React\nHIGH": {
+     "x": 11,
+     "y": 257.640625,
+     "w": 338,
+     "h": 38
+    },
+    "Turbo\nTurbopack\nHIGH": {
+     "x": 11,
+     "y": 338.578125,
+     "w": 338,
+     "h": 38
+    },
+    "Tailwind CSS\nMEDIUM": {
+     "x": 11,
+     "y": 419.515625,
+     "w": 338,
+     "h": 38
+    },
+    "Copy": {
+     "x": 14,
+     "y": 489.515625,
+     "w": 50.828125,
+     "h": 31
+    },
+    "MD": {
+     "x": 70.828125,
+     "y": 489.515625,
+     "w": 41.984375,
+     "h": 31
+    },
+    "JSON": {
+     "x": 118.8125,
+     "y": 489.515625,
+     "w": 51.3125,
+     "h": 31
+    },
+    "Wrong?": {
+     "x": 178.125,
+     "y": 489.515625,
+     "w": 66.46875,
+     "h": 31
+    }
+   },
+   "local": {
+    "x": 281.203125,
+    "y": 493.765625,
+    "w": 64.796875,
+    "h": 22.5
+   },
+   "url": "https://nextjs.org/",
+   "H": 533
+  }
+ },
+ "netflix": {
+  "url": "https://www.netflix.com/",
+  "light": {
+   "badge": "1",
+   "title": "WhatStack: 1 stack signals"
+  },
+  "deep": {
+   "badge": "3",
+   "title": "WhatStack: React · 3 signals"
+  },
+  "popup": {
+   "nat": 494,
+   "status": "3 solid · 3 total · deep · React",
+   "headline": {
+    "x": 10,
+    "y": 116.015625,
+    "w": 340,
+    "h": 58.6875
+   },
+   "headlineText": "CORE STACK\n\nReact · Webpack",
+   "sections": [
+    {
+     "title": "FRAMEWORKS",
+     "x": 10,
+     "y": 184.703125,
+     "w": 340,
+     "h": 72.9375
+    },
+    {
+     "title": "BUILD",
+     "x": 10,
+     "y": 265.640625,
+     "w": 340,
+     "h": 72.9375
+    },
+    {
+     "title": "UI / CSS",
+     "x": 10,
+     "y": 346.578125,
+     "w": 340,
+     "h": 72.9375
+    }
+   ],
+   "hits": [
+    {
+     "text": "React HIGH",
+     "x": 11,
+     "y": 218.640625,
+     "w": 338,
+     "h": 38,
+     "badge": {
+      "x": 296.96875,
+      "y": 227.390625,
+      "w": 42.03125,
+      "h": 20.5
+     }
+    },
+    {
+     "text": "Webpack HIGH",
+     "x": 11,
+     "y": 299.578125,
+     "w": 338,
+     "h": 38,
+     "badge": {
+      "x": 296.96875,
+      "y": 308.328125,
+      "w": 42.03125,
+      "h": 20.5
+     }
+    },
+    {
+     "text": "💅 Emotion HIGH",
+     "x": 11,
+     "y": 380.515625,
+     "w": 338,
+     "h": 38,
+     "badge": {
+      "x": 296.96875,
+      "y": 389.265625,
+      "w": 42.03125,
+      "h": 20.5
+     }
+    }
+   ],
+   "low": null,
+   "evidence": [],
+   "buttons": {
+    "Rescan": {
+     "x": 282.609375,
+     "y": 15.34375,
+     "w": 63.390625,
+     "h": 31
+    },
+    "React\nHIGH": {
+     "x": 11,
+     "y": 218.640625,
+     "w": 338,
+     "h": 38
+    },
+    "Webpack\nHIGH": {
+     "x": 11,
+     "y": 299.578125,
+     "w": 338,
+     "h": 38
+    },
+    "💅\nEmotion\nHIGH": {
+     "x": 11,
+     "y": 380.515625,
+     "w": 338,
+     "h": 38
+    },
+    "Copy": {
+     "x": 14,
+     "y": 450.515625,
+     "w": 50.828125,
+     "h": 31
+    },
+    "MD": {
+     "x": 70.828125,
+     "y": 450.515625,
+     "w": 41.984375,
+     "h": 31
+    },
+    "JSON": {
+     "x": 118.8125,
+     "y": 450.515625,
+     "w": 51.3125,
+     "h": 31
+    },
+    "Wrong?": {
+     "x": 178.125,
+     "y": 450.515625,
+     "w": 66.46875,
+     "h": 31
+    }
+   },
+   "local": {
+    "x": 281.203125,
+    "y": 454.765625,
+    "w": 64.796875,
+    "h": 22.5
+   },
+   "url": "https://www.netflix.com/",
+   "H": 494
+  }
+ },
+ "react": {
+  "url": "https://react.dev/",
+  "light": {
+   "badge": "5",
+   "title": "WhatStack: Next.js · 5 signals"
+  },
+  "deep": {
+   "badge": "5",
+   "title": "WhatStack: Next.js · 5 signals"
+  },
+  "popup": {
+   "nat": 560,
+   "status": "5 solid · 5 total · deep · Next.js",
+   "headline": {
+    "x": 10,
+    "y": 116.015625,
+    "w": 340,
+    "h": 58.6875
+   },
+   "headlineText": "CORE STACK\n\nNext.js 15.1.12 · React · Webpack",
+   "sections": [
+    {
+     "title": "FRAMEWORKS",
+     "x": 10,
+     "y": 184.703125,
+     "w": 340,
+     "h": 111.9375
+    },
+    {
+     "title": "BUILD",
+     "x": 10,
+     "y": 304.640625,
+     "w": 340,
+     "h": 72.9375
+    },
+    {
+     "title": "UI / CSS",
+     "x": 10,
+     "y": 385.578125,
+     "w": 340,
+     "h": 72.9375
+    },
+    {
+     "title": "ANALYTICS & PRODUCT",
+     "x": 10,
+     "y": 466.515625,
+     "w": 340,
+     "h": 72.9375
+    }
+   ],
+   "hits": [
+    {
+     "text": "Next.js v15.1.12 HIGH",
+     "x": 11,
+     "y": 218.640625,
+     "w": 338,
+     "h": 38,
+     "badge": {
+      "x": 296.96875,
+      "y": 227.390625,
+      "w": 42.03125,
+      "h": 20.5
+     }
+    },
+    {
+     "text": "React HIGH",
+     "x": 11,
+     "y": 257.640625,
+     "w": 338,
+     "h": 38,
+     "badge": {
+      "x": 296.96875,
+      "y": 266.390625,
+      "w": 42.03125,
+      "h": 20.5
+     }
+    },
+    {
+     "text": "Webpack HIGH",
+     "x": 11,
+     "y": 338.578125,
+     "w": 338,
+     "h": 38,
+     "badge": {
+      "x": 296.96875,
+      "y": 347.328125,
+      "w": 42.03125,
+      "h": 20.5
+     }
+    },
+    {
+     "text": "Tailwind CSS MEDIUM",
+     "x": 11,
+     "y": 419.515625,
+     "w": 338,
+     "h": 38,
+     "badge": {
+      "x": 279.28125,
+      "y": 428.265625,
+      "w": 59.71875,
+      "h": 20.5
+     }
+    },
+    {
+     "text": "Google Analytics HIGH",
+     "x": 11,
+     "y": 500.453125,
+     "w": 338,
+     "h": 38,
+     "badge": {
+      "x": 296.96875,
+      "y": 509.203125,
+      "w": 42.03125,
+      "h": 20.5
+     }
+    }
+   ],
+   "low": null,
+   "evidence": [],
+   "buttons": {
+    "Rescan": {
+     "x": 282.609375,
+     "y": 15.34375,
+     "w": 63.390625,
+     "h": 31
+    },
+    "Next.js\nv15.1.12\nHIGH": {
+     "x": 11,
+     "y": 218.640625,
+     "w": 338,
+     "h": 38
+    },
+    "React\nHIGH": {
+     "x": 11,
+     "y": 257.640625,
+     "w": 338,
+     "h": 38
+    },
+    "Webpack\nHIGH": {
+     "x": 11,
+     "y": 338.578125,
+     "w": 338,
+     "h": 38
+    },
+    "Tailwind CSS\nMEDIUM": {
+     "x": 11,
+     "y": 419.515625,
+     "w": 338,
+     "h": 38
+    },
+    "Google Analytics\nHIGH": {
+     "x": 11,
+     "y": 500.453125,
+     "w": 338,
+     "h": 38
+    },
+    "Copy": {
+     "x": 14,
+     "y": 570.453125,
+     "w": 50.828125,
+     "h": 31
+    },
+    "MD": {
+     "x": 70.828125,
+     "y": 570.453125,
+     "w": 41.984375,
+     "h": 31
+    },
+    "JSON": {
+     "x": 118.8125,
+     "y": 570.453125,
+     "w": 51.3125,
+     "h": 31
+    },
+    "Wrong?": {
+     "x": 178.125,
+     "y": 570.453125,
+     "w": 66.46875,
+     "h": 31
+    }
+   },
+   "local": {
+    "x": 281.203125,
+    "y": 574.703125,
+    "w": 64.796875,
+    "h": 22.5
+   },
+   "url": "https://react.dev/",
+   "H": 613
+  }
+ },
+ "vuejs": {
+  "url": "https://vuejs.org/",
+  "light": {
+   "badge": "",
+   "title": "WhatStack: no high/medium signals"
+  },
+  "deep": {
+   "badge": "1",
+   "title": "WhatStack: Vue · 1 signals"
+  },
+  "popup": {
+   "nat": 332,
+   "status": "1 solid · 1 total · deep · Vue",
+   "headline": {
+    "x": 10,
+    "y": 116.015625,
+    "w": 340,
+    "h": 58.6875
+   },
+   "headlineText": "CORE STACK\n\nVue 3.5.42",
+   "sections": [
+    {
+     "title": "FRAMEWORKS",
+     "x": 10,
+     "y": 184.703125,
+     "w": 340,
+     "h": 72.9375
+    }
+   ],
+   "hits": [
+    {
+     "text": "Vue v3.5.42 HIGH",
+     "x": 11,
+     "y": 218.640625,
+     "w": 338,
+     "h": 38,
+     "badge": {
+      "x": 296.96875,
+      "y": 227.390625,
+      "w": 42.03125,
+      "h": 20.5
+     }
+    }
+   ],
+   "low": null,
+   "evidence": [],
+   "buttons": {
+    "Rescan": {
+     "x": 282.609375,
+     "y": 15.34375,
+     "w": 63.390625,
+     "h": 31
+    },
+    "Vue\nv3.5.42\nHIGH": {
+     "x": 11,
+     "y": 218.640625,
+     "w": 338,
+     "h": 38
+    },
+    "Copy": {
+     "x": 14,
+     "y": 288.640625,
+     "w": 50.828125,
+     "h": 31
+    },
+    "MD": {
+     "x": 70.828125,
+     "y": 288.640625,
+     "w": 41.984375,
+     "h": 31
+    },
+    "JSON": {
+     "x": 118.8125,
+     "y": 288.640625,
+     "w": 51.3125,
+     "h": 31
+    },
+    "Wrong?": {
+     "x": 178.125,
+     "y": 288.640625,
+     "w": 66.46875,
+     "h": 31
+    }
+   },
+   "local": {
+    "x": 281.203125,
+    "y": 292.890625,
+    "w": 64.796875,
+    "h": 22.5
+   },
+   "url": "https://vuejs.org/",
+   "H": 332
+  }
+ },
+ "airbnb": {
+  "url": "https://www.airbnb.com/",
+  "light": {
+   "badge": "1",
+   "title": "WhatStack: 1 stack signals"
+  },
+  "deep": {
+   "badge": "3",
+   "title": "WhatStack: React · 3 signals"
+  },
+  "popup": {
+   "nat": 494,
+   "status": "3 solid · 3 total · deep · React",
+   "headline": {
+    "x": 10,
+    "y": 116.015625,
+    "w": 340,
+    "h": 58.6875
+   },
+   "headlineText": "CORE STACK\n\nReact",
+   "sections": [
+    {
+     "title": "FRAMEWORKS",
+     "x": 10,
+     "y": 184.703125,
+     "w": 340,
+     "h": 72.9375
+    },
+    {
+     "title": "DATA",
+     "x": 10,
+     "y": 265.640625,
+     "w": 340,
+     "h": 72.9375
+    },
+    {
+     "title": "ANALYTICS & PRODUCT",
+     "x": 10,
+     "y": 346.578125,
+     "w": 340,
+     "h": 72.9375
+    }
+   ],
+   "hits": [
+    {
+     "text": "React HIGH",
+     "x": 11,
+     "y": 218.640625,
+     "w": 338,
+     "h": 38,
+     "badge": {
+      "x": 296.96875,
+      "y": 227.390625,
+      "w": 42.03125,
+      "h": 20.5
+     }
+    },
+    {
+     "text": "React Router HIGH",
+     "x": 11,
+     "y": 299.578125,
+     "w": 338,
+     "h": 38,
+     "badge": {
+      "x": 296.96875,
+      "y": 308.328125,
+      "w": 42.03125,
+      "h": 20.5
+     }
+    },
+    {
+     "text": "Google Analytics MEDIUM",
+     "x": 11,
+     "y": 380.515625,
+     "w": 338,
+     "h": 38,
+     "badge": {
+      "x": 279.28125,
+      "y": 389.265625,
+      "w": 59.71875,
+      "h": 20.5
+     }
+    }
+   ],
+   "low": null,
+   "evidence": [],
+   "buttons": {
+    "Rescan": {
+     "x": 282.609375,
+     "y": 15.34375,
+     "w": 63.390625,
+     "h": 31
+    },
+    "React\nHIGH": {
+     "x": 11,
+     "y": 218.640625,
+     "w": 338,
+     "h": 38
+    },
+    "React Router\nHIGH": {
+     "x": 11,
+     "y": 299.578125,
+     "w": 338,
+     "h": 38
+    },
+    "Google Analytics\nMEDIUM": {
+     "x": 11,
+     "y": 380.515625,
+     "w": 338,
+     "h": 38
+    },
+    "Copy": {
+     "x": 14,
+     "y": 450.515625,
+     "w": 50.828125,
+     "h": 31
+    },
+    "MD": {
+     "x": 70.828125,
+     "y": 450.515625,
+     "w": 41.984375,
+     "h": 31
+    },
+    "JSON": {
+     "x": 118.8125,
+     "y": 450.515625,
+     "w": 51.3125,
+     "h": 31
+    },
+    "Wrong?": {
+     "x": 178.125,
+     "y": 450.515625,
+     "w": 66.46875,
+     "h": 31
+    }
+   },
+   "local": {
+    "x": 281.203125,
+    "y": 454.765625,
+    "w": 64.796875,
+    "h": 22.5
+   },
+   "url": "https://www.airbnb.com/",
+   "H": 494
+  }
+ },
+ "github": {
+  "url": "https://github.com/",
+  "light": {
+   "badge": "",
+   "title": "WhatStack: no high/medium signals"
+  },
+  "deep": {
+   "badge": "1",
+   "title": "WhatStack: 1 stack signals"
+  },
+  "popup": {
+   "nat": 367,
+   "status": "1 solid · 2 total · deep",
+   "headline": {
+    "x": 0,
+    "y": 0,
+    "w": 0,
+    "h": 0
+   },
+   "headlineText": "\n      Core stack\n      \n    ",
+   "sections": [
+    {
+     "title": "BUILD",
+     "x": 10,
+     "y": 116.015625,
+     "w": 340,
+     "h": 96.4375
+    },
+    {
+     "title": "DATA",
+     "x": 10,
+     "y": 220.453125,
+     "w": 340,
+     "h": 72.9375
+    }
+   ],
+   "hits": [
+    {
+     "text": "Import Maps LOW",
+     "x": 11,
+     "y": 173.453125,
+     "w": 338,
+     "h": 38,
+     "badge": {
+      "x": 300.8125,
+      "y": 182.203125,
+      "w": 38.1875,
+      "h": 20.5
+     }
+    },
+    {
+     "text": "React Router v8.3.0 HIGH",
+     "x": 11,
+     "y": 254.390625,
+     "w": 338,
+     "h": 38,
+     "badge": {
+      "x": 296.96875,
+      "y": 263.140625,
+      "w": 42.03125,
+      "h": 20.5
+     }
+    }
+   ],
+   "low": {
+    "x": 11,
+    "y": 149.953125,
+    "w": 338,
+    "h": 23.5
+   },
+   "evidence": [],
+   "buttons": {
+    "Rescan": {
+     "x": 282.609375,
+     "y": 15.34375,
+     "w": 63.390625,
+     "h": 31
+    },
+    "Import Maps\nLOW": {
+     "x": 11,
+     "y": 173.453125,
+     "w": 338,
+     "h": 38
+    },
+    "React Router\nv8.3.0\nHIGH": {
+     "x": 11,
+     "y": 254.390625,
+     "w": 338,
+     "h": 38
+    },
+    "Copy": {
+     "x": 14,
+     "y": 324.390625,
+     "w": 50.828125,
+     "h": 31
+    },
+    "MD": {
+     "x": 70.828125,
+     "y": 324.390625,
+     "w": 41.984375,
+     "h": 31
+    },
+    "JSON": {
+     "x": 118.8125,
+     "y": 324.390625,
+     "w": 51.3125,
+     "h": 31
+    },
+    "Wrong?": {
+     "x": 178.125,
+     "y": 324.390625,
+     "w": 66.46875,
+     "h": 31
+    }
+   },
+   "local": {
+    "x": 281.203125,
+    "y": 328.640625,
+    "w": 64.796875,
+    "h": 22.5
+   },
+   "url": "https://github.com/",
+   "H": 367
+  }
+ },
+ "store": {
+  "add": {
+   "x": 1109,
+   "y": 262,
+   "w": 147,
+   "h": 40
+  },
+  "addText": "Add to Chrome",
+  "title": {
+   "x": 260,
+   "y": 261.5,
+   "w": 724,
+   "h": 41
+  }
+ }
+}
