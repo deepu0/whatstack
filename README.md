@@ -4,6 +4,38 @@ Chrome extension (Manifest V3) that answers: **what stack is this page using?**
 
 Fully **local** detection of 82 technologies — frameworks, CMS / site builders, architecture (microfrontends), build tools, state/data, UI, auth, payments, observability, analytics, and hosting hints. No cloud matching, no page upload.
 
+[**Install from the Chrome Web Store →**](https://chromewebstore.google.com/detail/whatstack/kpmbanlddakoocgimdenfeppfaidmcgk)
+
+## See it in action
+
+<p align="center">
+  <a href="launch-video/whatstack-launch.mp4"><img src="launch-video/preview.gif" alt="WhatStack launch film: click for the full video with sound" width="720"></a>
+</p>
+
+<p align="center">
+  ▶ <a href="launch-video/whatstack-launch.mp4"><b>Watch the full film</b></a> (32 s, 1080p60, with sound) ·
+  <a href="launch-video/whatstack-launch-vertical.mp4">Vertical 9:16 cut</a> ·
+  <a href="launch-video/README.md">How it was made</a>
+</p>
+
+Every frame is a real capture of the extension scanning real sites (Stripe, Notion, Netflix, Airbnb and more), rendered from code. See [`launch-video/`](launch-video/).
+
+## What’s new in 1.8.0
+
+A full engine and runtime audit ([docs/AUDIT-2026-09.md](docs/AUDIT-2026-09.md)), with every finding fixed and pinned by a test. Details: [docs/RELEASE-1.8.0.md](docs/RELEASE-1.8.0.md).
+
+| Measured on 48 real sites | 1.7.2 | 1.8.0 |
+|---|---|---|
+| Toolbar badge matches the popup | 21 / 48 | **48 / 48** |
+| Confirmed wrong results | 9 | **0** |
+| Technologies | 64 | **82** |
+| Tests | 134 | **433** + 17 real-browser checks |
+
+- **More precise:** a page element with `id="next"` can’t fake Next.js; words in file names, search queries or page text never count as proof; Tailwind and version numbers are no longer mis-read (no more “Next.js v1.0.0-beta.9” on linear.app or Bootstrap on clerk.com).
+- **A badge you can trust:** a background probe runs after each page load, so the badge counts what the popup shows. Rescan re-reads the page, scans time out instead of hanging, and SPA navigation rebuilds the badge.
+- **18 new technologies:** Astro, Gatsby, Qwik, Preact, Lit, Polymer, Ember, AngularJS, Alpine.js, htmx, WordPress, Shopify, Webflow, Framer, PostHog, Plausible, Fathom, Amplitude.
+- **Proven on real sites:** 46 real pages are captured into a golden corpus and replayed on every `npm test`; CI runs lint, type checks, coverage and the real extension in Chromium.
+
 ## Load unpacked (development)
 
 1. Open `chrome://extensions`
@@ -13,15 +45,15 @@ Fully **local** detection of 82 technologies — frameworks, CMS / site builders
 
 ## Features
 
-- Hybrid scan: light pass on navigate, then a background MAIN-world probe, so the
-  **badge counts what the popup shows**; the popup always runs a fresh deep scan
-- Confidence tiers + expandable evidence (why it matched)
-- Evidence from asset URLs (host + path, never the query), runtime objects with the
-  right shape, and probed DOM flags — never page text, data islands or file names
-- Core stack headline + Copy / Markdown / JSON export
-- React detection aligned with React DevTools (renderer registered, not bare hook)
-- Microfrontend platforms: Module Federation, single-spa, qiankun, SystemJS
-- Observability includes Sentry, Datadog, **New Relic**, LogRocket, and more
+- **One-click core stack:** a headline such as *Next.js 14.2.32 · React · Webpack*, then every detection grouped by category
+- **Confidence you can read:** high / medium / low, with weak signals listed under “Lower confidence — verify before trusting”
+- **Evidence for every result:** expand a row to see the exact script, runtime global or DOM marker it matched
+- **Badge while you browse:** a light pass on load plus a background MAIN-world probe, so the badge counts what the popup shows; opening the popup always runs a fresh deep scan
+- **Proof, not prose:** evidence comes from asset URLs (host + path, never the query), runtime objects with the right shape, and probed DOM flags — never page text, data islands or file names
+- **React detection aligned with React DevTools** (a registered renderer, not the bare hook)
+- **Microfrontends:** Module Federation, single-spa, qiankun, SystemJS
+- **Export** as plain text, Markdown or JSON; **Wrong?** opens a prefilled GitHub issue you review yourself
+- **Private:** runs entirely on your device, no account, nothing uploaded
 
 ## Develop / test
 
@@ -111,7 +143,7 @@ Pre-submit checklist: [docs/PRE-SUBMIT-AUDIT.md](./docs/PRE-SUBMIT-AUDIT.md)
 
 ## Status
 
-Live on the [Chrome Web Store](https://chromewebstore.google.com/detail/whatstack/kpmbanlddakoocgimdenfeppfaidmcgk) — 5 users as of Sep 19, 2026.
+Live on the [Chrome Web Store](https://chromewebstore.google.com/detail/whatstack/kpmbanlddakoocgimdenfeppfaidmcgk). The repository is at **1.8.0**; the store listing updates once that build is submitted and approved.
 
 ## License
 
