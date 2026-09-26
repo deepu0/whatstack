@@ -20,6 +20,16 @@ Fully **local** detection of 82 technologies — frameworks, CMS / site builders
 
 Every frame is a real capture of the extension scanning real sites (Stripe, Notion, Netflix, Airbnb and more), rendered from code. See [`launch-video/`](launch-video/).
 
+## What’s new in 1.8.1
+
+**TanStack in production.** Real TanStack Start, Router and Query apps ship hashed chunks and no package names, so 1.8.0 missed them — even on tanstack.com. 1.8.1 reads the globals production builds actually expose (`__TSR_ROUTER__`, `__TSS_START_OPTIONS__`) and walks the React tree (bounded: 6,000 fibers / 25 ms) for provider clients that have no global at all: **TanStack Query, TanStack Router, React Router data routers, Redux and Apollo**. Now detected on tanstack.com, railway.com, bolt.new, spotify.com and onlyfrontendjobs.com. Details: [docs/RELEASE-1.8.1.md](docs/RELEASE-1.8.1.md).
+
+**Check any site yourself** (DevTools console) — the same markers WhatStack reads:
+
+```js
+({ tanstackRouter: !!window.__TSR_ROUTER__, tanstackStart: !!window.__TSS_START_OPTIONS__ })
+```
+
 ## What’s new in 1.8.0
 
 A full engine and runtime audit ([docs/AUDIT-2026-09.md](docs/AUDIT-2026-09.md)), with every finding fixed and pinned by a test. Details: [docs/RELEASE-1.8.0.md](docs/RELEASE-1.8.0.md).

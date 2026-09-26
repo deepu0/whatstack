@@ -1,7 +1,7 @@
 {
  "host": "www.spotify.com",
  "capturedAt": "2026-09-26",
- "whatstack": "1.8.0",
+ "whatstack": "1.8.1",
  "chromium": "151.0.7922.34",
  "expect": {
   "must": [
@@ -13,14 +13,17 @@
   "google-analytics:high",
   "react-router:high@6",
   "react:high",
+  "redux:high",
   "sentry:high",
-  "styled-components:high"
+  "styled-components:high",
+  "tanstack-query:high",
+  "tanstack:high"
  ],
  "signals": {
   "url": "https://open.spotify.com/",
   "scripts": [
-   "https://sb.scorecardresearch.com/c2/15654041/cs.js",
    "https://www.googletagmanager.com/gtag/js",
+   "https://sb.scorecardresearch.com/c2/15654041/cs.js",
    "https://www.google-analytics.com/analytics.js",
    "https://www.googletagmanager.com/gtm.js",
    "https://www.gstatic.com/recaptcha/releases/kemdRjWFxNjgsGdhRslyEPwU/recaptcha__en.js",
@@ -120,22 +123,18 @@
    "https://www.gstatic.com/cast/sdk/libs/sender/1.0/cast_framework.js",
    "https://www.gstatic.com/eureka/clank/151/cast_sender.js",
    "https://cdn.cookielaw.org/consent/50da44be-0564-43df-b139-329aedcf267b/50da44be-0564-43df-b139-329aedcf267b.json",
-   "https://spclient.wg.spotify.com/library-import/v1/eligible",
    "https://geolocation.onetrust.com/cookieconsentpub/v1/geo/location",
+   "https://spclient.wg.spotify.com/library-import/v1/eligible",
    "https://api-partner.spotify.com/pathfinder/v2/query",
    "https://open.spotifycdn.com/cdn/build/web-player/listening-stats-modal.6b80239d.css",
    "https://open.spotifycdn.com/cdn/build/web-player/listening-stats-modal.6962c519.js",
    "https://open.spotifycdn.com/cdn/build/web-player/dwp-user-comments.85b63e05.css",
    "https://open.spotifycdn.com/cdn/build/web-player/dwp-user-comments.cd53dd74.js",
-   "https://cdn.cookielaw.org/consent/50da44be-0564-43df-b139-329aedcf267b/019df341-54d8-70a0-989d-eced0feae4a3/en.json",
-   "https://cdn.cookielaw.org/scripttemplates/202601.2.0/assets/v2/otPcPanel.json",
-   "https://cdn.cookielaw.org/scripttemplates/202601.2.0/assets/otCommonStyles.css",
-   "https://sb.scorecardresearch.com/b",
    "https://i.scdn.co/image/ab67616d00001e02ac9d5d5263e9f03802d6864c",
    "https://i.scdn.co/image/ab67616d00001e024427c537ffaab6552c96abe8",
    "https://i.scdn.co/image/ab67616d00001e02d7812467811a7da6e6a44902",
-   "https://i.scdn.co/image/ab67616d00001e02322b8ded39dc108536090089",
    "https://i.scdn.co/image/ab6742d3000052b7d7e2970cd8ee3f7aaa2ddcc4",
+   "https://i.scdn.co/image/ab67616d00001e02322b8ded39dc108536090089",
    "https://i.scdn.co/image/ab67616d00001e020bb214c1800ec1e4e497cf75",
    "https://i.scdn.co/image/ab67616d00001e02c2452dcf7d9dbbff64574d27",
    "https://i.scdn.co/image/ab67616d00001e0219e2462d9211bade93d05419",
@@ -156,18 +155,22 @@
    "https://i.scdn.co/image/ab67616d00001e02e2a0a166493a2bde5480a420",
    "https://i.scdn.co/image/ab67616d00001e02b5a28a256eae6dc0424fef59",
    "https://i.scdn.co/image/ab67616d00001e026b219c8d8462bfe254a20469",
-   "https://i.scdn.co/image/ab67616d00001e02882265cd9bdded9ea9a153b9",
    "https://i.scdn.co/image/ab67616d00001e02d72fb5571087bca0a2fed008",
+   "https://i.scdn.co/image/ab67616d00001e02882265cd9bdded9ea9a153b9",
+   "https://cdn.cookielaw.org/consent/50da44be-0564-43df-b139-329aedcf267b/019df341-54d8-70a0-989d-eced0feae4a3/en.json",
+   "https://open.spotifycdn.com/cdn/images/favicon.0f31d2ea.ico",
+   "https://open.spotifycdn.com/cdn/images/icons/Spotify_256.17e41e58.png",
+   "https://cdn.cookielaw.org/scripttemplates/202601.2.0/assets/v2/otPcPanel.json",
+   "https://cdn.cookielaw.org/scripttemplates/202601.2.0/assets/otCommonStyles.css",
+   "https://sb.scorecardresearch.com/b",
    "https://cdn.cookielaw.org/logos/static/ot_guard_logo.svg",
-   "https://cdn.cookielaw.org/logos/static/ot_company_logo.png",
    "https://cdn.cookielaw.org/logos/static/powered_by_logo.svg",
+   "https://cdn.cookielaw.org/logos/static/ot_company_logo.png",
    "https://www.google-analytics.com/j/collect",
    "https://www.google-analytics.com/g/collect",
    "https://analytics.google.com/g/collect",
    "https://stats.g.doubleclick.net/g/collect",
    "https://www.spotify.com/api/masthead/v1/masthead",
-   "https://open.spotifycdn.com/cdn/images/favicon.0f31d2ea.ico",
-   "https://open.spotifycdn.com/cdn/images/icons/Spotify_256.17e41e58.png",
    "https://gue1-spclient.spotify.com/gabo-receiver-service/v3/events"
   ],
   "stylesheets": [
@@ -220,6 +223,12 @@
   "__reactRouterVersion": {
    "present": true,
    "version": "6"
+  },
+  "__reduxStore": {
+   "present": true
+  },
+  "__tanstackQueryClient": {
+   "present": true
   },
   "gtag": {
    "present": true

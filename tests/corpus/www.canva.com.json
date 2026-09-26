@@ -1,7 +1,7 @@
 {
  "host": "www.canva.com",
  "capturedAt": "2026-09-26",
- "whatstack": "1.8.0",
+ "whatstack": "1.8.1",
  "chromium": "151.0.7922.34",
  "expect": {},
  "snapshot": [
@@ -16,8 +16,8 @@
    "https://status.canva.com/images/block/light-background.jpg",
    "https://status.canva.com/images/block/light-clouds.jpg",
    "https://status.canva.com/images/block/light-foreground.png",
-   "https://www.canva.com/cdn-cgi/challenge-platform/h/b/fo/1505596625:1790409777:fiamSjisZwQ3qsrMhPno8JrnGznII46foJMFzLbcTGM/a411140249c7e647/0YFUKCLFtgRkrKbCUf8YXLuZr3D_yugrpQHTUSBJx0s-1790413225-1.2.1.1-VFZRoxJDYH8IMWWdLeiVpS.IGjIyT0BJ4innCIlcQpqs9.I7SsGlJc1_UZ7pgLjW",
-   "https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/b/turnstile/f/av0/rch/pz62o/0x4AAAAAAADnPIDROrmt1Wwj/light/fbE/new/normal",
+   "https://www.canva.com/cdn-cgi/challenge-platform/h/b/fo/1038461106:1790413510:rcDF2LOCAKfbjD7XibKbw0HO9LH1oyBjlj3T6V6CzHY/a41157005868ea42/TvgNDLh8i3hTPUBqesJ_t6bLB4xVx2fwhXVx.82j8HY-1790415969-1.2.1.1-JBMqgvdVofaizhNU60SoODQK.nlhuwdTA_0tcdQSoxylLQiBPeTvQZlFl4lck5cQ",
+   "https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/b/turnstile/f/av0/rch/0l5cb/0x4AAAAAAADnPIDROrmt1Wwj/light/fbE/new/normal",
    "https://www.canva.com/favicon.ico"
   ],
   "stylesheets": [],

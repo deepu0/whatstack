@@ -182,6 +182,50 @@ describe('MAIN-world probe (executed)', () => {
     assert.equal(out.litVersions.version, '4.1.0');
   });
 
+  it('reads the TanStack Router / Start production globals, with shape checks', () => {
+    const out = probe(() => ({
+      __TSR_ROUTER__: { routesById: {}, routeTree: {}, buildLocation() {}, navigate() {} },
+      __TSS_START_OPTIONS__: { serializationAdapters: [] },
+    }));
+    assert.ok(out.__TSR_ROUTER__);
+    assert.ok(out.__TSS_START_OPTIONS__);
+    const fake = probe((ctx) => ({ __TSR_ROUTER__: {}, __TSS_START_OPTIONS__: el(ctx) }));
+    assert.deepEqual(fake, {}, 'shapeless or clobbered globals are ignored');
+  });
+
+  it('walks the React tree for provider clients that have no global', () => {
+    const queryClient = { getQueryCache() {}, getMutationCache() {} };
+    const tsRouter = { routesById: {}, buildLocation() {} };
+    const rrRouter = { routes: [], navigate() {}, subscribe() {}, state: { location: {} } };
+    const store = { dispatch() {}, getState() {}, subscribe() {} };
+    const apollo = { watchQuery() {}, query() {}, cache: {} };
+    // root → QueryClientProvider → RouterProvider(TanStack) → Provider(redux) → ApolloProvider → sibling RR RouterProvider
+    const tree = {
+      child: {
+        memoizedProps: { client: queryClient },
+        child: {
+          memoizedProps: { router: tsRouter },
+          child: { memoizedProps: { store }, child: { memoizedProps: { client: apollo } } },
+          sibling: { memoizedProps: { router: rrRouter } },
+        },
+      },
+    };
+    const out = probe(() => ({}), { documentKeys: { '__reactContainer$abc': tree } });
+    for (const k of ['__reactContainer', '__tanstackQueryClient', '__tanstackRouterInstance', '__reduxStore', '__APOLLO_CLIENT__', '__reactRouterDataRouter']) {
+      assert.ok(out[k], k);
+    }
+  });
+
+  it('the tree walk ignores look-alikes and stays inside its budget', () => {
+    // 20k-node chain with a prop that is NOT a QueryClient (only one of the two methods)
+    let node = null;
+    for (let i = 0; i < 20000; i++) node = { memoizedProps: { client: { getQueryCache() {} } }, child: node };
+    const started = Date.now();
+    const out = probe(() => ({}), { documentKeys: { '__reactContainer$x': node } });
+    assert.ok(Date.now() - started < 1000);
+    assert.equal(out.__tanstackQueryClient, undefined);
+  });
+
   it('empty Redux DevTools and empty NREUM are not detections', () => {
     const out = probe(() => ({ __REDUX_DEVTOOLS_EXTENSION__: function () {}, NREUM: {} }));
     assert.deepEqual(out, {});

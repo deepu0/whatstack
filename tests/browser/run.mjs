@@ -46,6 +46,12 @@ const CASES = {
   'real-tailwind.html': { expect: ['tailwind'], forbid: ['bootstrap'], solid: ['tailwind'] },
   // Runtime-only proof: the badge must count it too (background deep pass)
   'runtime-react.html': { expect: ['react'], forbid: [], solid: ['react'] },
+  // 1.8.1 — TanStack Start / Router / Query with no package names in any URL
+  'runtime-tanstack.html': {
+    expect: ['tanstack-start', 'tanstack-router', 'tanstack-query', 'tanstack', 'react'],
+    forbid: [],
+    solid: ['tanstack-start', 'tanstack-router', 'tanstack-query'],
+  },
 };
 
 // Serve fixtures from inside this process — content_scripts only match

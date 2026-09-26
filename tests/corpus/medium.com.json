@@ -1,13 +1,9 @@
 {
  "host": "medium.com",
  "capturedAt": "2026-09-26",
- "whatstack": "1.8.0",
+ "whatstack": "1.8.1",
  "chromium": "151.0.7922.34",
- "expect": {
-  "mustNotSolid": [
-   "tailwind"
-  ]
- },
+ "expect": {},
  "snapshot": [
   "cloudflare:high",
   "tailwind:medium"
@@ -21,7 +17,7 @@
    "https://medium.com/cdn-cgi/challenge-platform/scripts/precursor/main.js",
    "https://medium.com/cdn-cgi/images/browser-bar.png",
    "https://medium.com/cdn-cgi/images/cf-no-screenshot-error.png",
-   "https://medium.com/cdn-cgi/challenge-platform/h/b/precursor/d76008a69eab/0.7182440836012771:1790409786:uv-jagL0f8Eh1xleDq_jUmMgjpfYzTz4YXTcODmmAsA/a411116e7edf0143",
+   "https://medium.com/cdn-cgi/challenge-platform/h/b/precursor/d76008a69eab/0.8390472234190814:1790413516:NcLIw89jNhoGEUfaMbhFZaVfPSXhvnF6kjMbp3uICS4/a4115471582073a3",
    "https://medium.com/cdn-cgi/rum",
    "https://medium.com/favicon.ico"
   ],

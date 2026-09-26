@@ -1,7 +1,7 @@
 {
  "host": "stripe.com",
  "capturedAt": "2026-09-26",
- "whatstack": "1.8.0",
+ "whatstack": "1.8.1",
  "chromium": "151.0.7922.34",
  "expect": {
   "must": [
@@ -122,9 +122,9 @@
    "https://stripe.com/notifications",
    "https://b.stripecdn.com/mkt-ssr-statics/assets/_next/static/chunks/40414.d4517af1bd2d7917.js",
    "https://stripe.com/_workers/_next/static/chunks/dotGeneration.worker.bf20e833.js",
-   "https://stripe.com/_workers/_next/static/chunks/waveGeometry.worker.07101200.js",
    "https://r.stripe.com/0",
    "https://q.stripe.com/",
+   "https://stripe.com/_workers/_next/static/chunks/waveGeometry.worker.07101200.js",
    "https://ext.stripe.com/universal-chat/agent-availability",
    "https://images.stripeassets.com/fzn2n1nzq965/6BTjJGdjfGVA8brPwj7p3M/fcf084ff85142366e118fe85ee78b632/payments-electric-kettle.jpg",
    "https://images.stripeassets.com/fzn2n1nzq965/1Vf8oT9Fm6dEwpnEx5PgK1/055956f38d7fd8b0cc7419692ef29778/bento-terminal.png",

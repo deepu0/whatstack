@@ -42,7 +42,7 @@ WHAT IT DETECTS (examples)
 • CMS & site builders: WordPress, Shopify, Webflow, Framer
 • Architecture: Module Federation, single-spa, qiankun, SystemJS
 • Build: Webpack, Vite, Parcel, Turbopack
-• Data: TanStack Query/Router/Table/Form/Virtual, Apollo, SWR, Axios
+• Data: TanStack Query/Router/Table/Form/Virtual (including production builds with no package names), Apollo, Redux, SWR, Axios
 • UI: Tailwind, Bootstrap, MUI, Emotion, styled-components
 • Auth & payments: Auth0, Clerk, Firebase, Stripe, Razorpay
 • Observability: Sentry, Datadog, New Relic, LogRocket

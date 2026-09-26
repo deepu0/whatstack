@@ -277,6 +277,10 @@ export const SIGNATURES = [
       // Legacy package name (pre-TanStack rebrand)
       { type: 'script', pattern: /(?:\/|@)react-query(?:@|\/)/i, weight: 4, strong: true, runtime: true },
       { type: 'global', pattern: '__TANSTACK_QUERY_CLIENT__', weight: 4, strong: true, runtime: true },
+      // A QueryClient (getQueryCache + getMutationCache) found in the React tree
+      { type: 'global', pattern: '__tanstackQueryClient', weight: 5, strong: true, runtime: true },
+      // Vite/Rolldown manual chunk names used by TanStack apps (tanstack-query-Cs_IuARx.js)
+      { type: 'script', pattern: /(?<![\w-])tanstack-query-[\w-]+\.m?js$/i, weight: 3, strong: true },
       { type: 'global', pattern: 'ReactQuery', weight: 3, strong: true, runtime: true },
     ],
   },
@@ -290,6 +294,13 @@ export const SIGNATURES = [
       { type: 'script', pattern: /@tanstack\/router-core(?:@|\/|$)/i, weight: 5, strong: true, runtime: true },
       { type: 'script', pattern: /(?:unpkg\.com|jsdelivr\.net|esm\.sh)\/.*@tanstack\/(?:react-)?router/i, weight: 5, strong: true, runtime: true },
       { type: 'global', pattern: '__TANSTACK_ROUTER__', weight: 4, strong: true, runtime: true },
+      // What production TanStack Router / Start apps actually expose (tanstack.com, railway.com, t3.chat)
+      { type: 'global', pattern: '__TSR_ROUTER__', weight: 5, strong: true, runtime: true },
+      // A router (routesById + buildLocation) passed to RouterProvider, found in the React tree
+      { type: 'global', pattern: '__tanstackRouterInstance', weight: 5, strong: true, runtime: true },
+      // SSR dehydration global of earlier router versions
+      { type: 'global', pattern: '$_TSR', weight: 4, strong: true, runtime: true },
+      { type: 'script', pattern: /(?<![\w-])tanstack-router-[\w-]+\.m?js$/i, weight: 3, strong: true },
       { type: 'inline', pattern: /@tanstack\/(?:react-)?router/i, weight: 3, strong: true, runtime: true },
     ],
   },
@@ -349,6 +360,8 @@ export const SIGNATURES = [
       { type: 'script', pattern: /(?<![\w-])tanstack[_-]start[\w.-]*\.m?js$/i, weight: 3, strong: true },
       { type: 'inline', pattern: /@tanstack\/(?:react|solid)-start|\bcreateServerFn\s*\(|\bcreateStartHandler\s*\(/, weight: 5, strong: true, runtime: true },
       { type: 'global', pattern: '__TANSTACK_START__', weight: 5, strong: true, runtime: true },
+      // Set by the TanStack Start client entry in production
+      { type: 'global', pattern: '__TSS_START_OPTIONS__', weight: 5, strong: true, runtime: true },
       { type: 'global', pattern: '__TSR_SSR__', weight: 4, strong: true, runtime: true },
       { type: 'meta', pattern: /^generator=.*tanstack\s*start/i, weight: 3, strong: true, runtime: true },
     ],

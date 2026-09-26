@@ -247,3 +247,34 @@ describe('R6 / L1 — result shaping', () => {
     assert.equal(stripQuery('https://a.test/x.js?v=1#h'), 'https://a.test/x.js');
   });
 });
+
+describe('1.8.1 — TanStack in production', () => {
+  it('TanStack Start from its production globals (tanstack.com, railway.com)', () => {
+    const r = run({ globals: { __TSR_ROUTER__: { present: true }, __TSS_START_OPTIONS__: { present: true }, __reactContainer: { present: true } } });
+    for (const id of ['tanstack-start', 'tanstack-router', 'tanstack', 'react']) assert.ok(hit(r, id), id);
+    assert.equal(r.primary.id, 'tanstack-start');
+  });
+
+  it('TanStack Query from a QueryClient in the React tree (bolt.new)', () => {
+    const r = run({ globals: { __tanstackQueryClient: { present: true }, __reactContainer: { present: true } } });
+    assert.equal(hit(r, 'tanstack-query').confidence, 'high');
+    assert.ok(hit(r, 'tanstack'));
+  });
+
+  it('manual chunk names count, image names do not', () => {
+    const r = run({ scripts: ['https://tanstack.com/assets/tanstack-router-B-OQbHRF.js', 'https://tanstack.com/assets/tanstack-query-Cs_IuARx.js'] });
+    assert.ok(hit(r, 'tanstack-router'));
+    assert.ok(hit(r, 'tanstack-query'));
+    assert.deepEqual(ids(run({ scripts: ['https://blog.example/img/tanstack-query-vs-swr.png'] })), []);
+  });
+
+  it("a consent banner's webpackChunk global is not the build of a Vite-based TanStack Start site", () => {
+    const r = run({ globals: { __TSS_START_OPTIONS__: { present: true }, webpackChunk: { present: true } } });
+    assert.equal(hit(r, 'webpack').confidence, 'low');
+  });
+
+  it('webpack stays high on Next.js, which builds with it', () => {
+    const r = run({ scripts: ['/_next/static/chunks/main.js'], globals: { webpackChunk: { present: true } } });
+    assert.equal(hit(r, 'webpack').confidence, 'high');
+  });
+});

@@ -1,7 +1,7 @@
 {
  "host": "www.netflix.com",
  "capturedAt": "2026-09-26",
- "whatstack": "1.8.0",
+ "whatstack": "1.8.1",
  "chromium": "151.0.7922.34",
  "expect": {
   "must": [
@@ -11,6 +11,7 @@
   ]
  },
  "snapshot": [
+  "apollo:high",
   "emotion:high",
   "react:high",
   "webpack:high"
@@ -30,23 +31,23 @@
    "https://assets.nflxext.com/ffe/siteui/vlv3/4263c437-c678-4724-ad80-e3ba0dc8761e/web/US-en-20260921-TRIFECTA-perspective_3ba19b37-271f-4bc1-9c2b-1d21fd8ad26d_large.jpg",
    "https://logs.netflix.com/log/wwwhead/cl/2",
    "https://help.nflxext.com/helpcenter/OneTrust/oneTrust_production_2026-08-21/consent/87b6a5c0-0104-4e96-a291-092c11350111/87b6a5c0-0104-4e96-a291-092c11350111.json",
+   "https://geolocation.onetrust.com/cookieconsentpub/v1/geo/location",
    "https://occ-0-2433-2705.1.nflxso.net/dnm/api/v6/mAcAr9TxZIVbINe88xb3Teg5_OA/AAAABURvOfNePjiok1oZ0-kndO-uYIxMODGFtfZXKD7lnEPS1vYx6Od7OA6XOlYGxT6Ndqo3Vsv2RRzTvyvPChMi-T91zLI20phGDbrKcTQDx0Bulqd_P06xrTjrdlBeHK5Jy3-7.webp",
-   "https://occ-0-2433-2705.1.nflxso.net/dnm/api/v6/mAcAr9TxZIVbINe88xb3Teg5_OA/AAAABW_6b8-mD7aaxTVLDSlAtOXQ6fB5kEFUudLmiGXscmfLahPb9EEx10da3TShTspUOj5bIeuOU_4ef1i7x9odmzZQDUPD1YmrUxTGDkbpzv71moN5hH09E0yIx28wMQmFvkec.webp",
    "https://occ-0-2433-2705.1.nflxso.net/dnm/api/v6/mAcAr9TxZIVbINe88xb3Teg5_OA/AAAABSbzJ6NnBf6p7bSm2F_WIJsR94io_SwDrox_Ebc56UAvSfkRmuK5T50HJ9BIc2cZbUaZGpyrXQ4RIt4TzwQnpXePRG0hkFD_yRAiB_6nTcPqJrTPa2NJnLUTPXfMklER9Y-l.webp",
-   "https://occ-0-2433-2705.1.nflxso.net/dnm/api/v6/mAcAr9TxZIVbINe88xb3Teg5_OA/AAAABe1MiwM3CO7Cvo-N_h406Lh3WkH1-9Xj-ou6TDCVbpHAlwVGw6zngVYK1NhKDyI5mg--XrFyitRA1go3TkhFe7UVPT3QI7QIhBzCE3HXj67k7QddpwTCgwnLr3JpxPX8Uxy1.webp",
+   "https://occ-0-2433-2705.1.nflxso.net/dnm/api/v6/mAcAr9TxZIVbINe88xb3Teg5_OA/AAAABW_6b8-mD7aaxTVLDSlAtOXQ6fB5kEFUudLmiGXscmfLahPb9EEx10da3TShTspUOj5bIeuOU_4ef1i7x9odmzZQDUPD1YmrUxTGDkbpzv71moN5hH09E0yIx28wMQmFvkec.webp",
    "https://occ-0-2433-2705.1.nflxso.net/dnm/api/v6/mAcAr9TxZIVbINe88xb3Teg5_OA/AAAABWxje2zWQBskeyW9xUIVCcuijGGuLx0mmrzCm2HCSYuE94WjkwT0EPx5fsj-sFk5pIkJMiszgAx9wqRea7UBopDQQl8-1ls4N7OZbNwmorICk_nTWQcj3Sas7RqsqE3lEHem.webp",
-   "https://occ-0-2433-2705.1.nflxso.net/dnm/api/v6/mAcAr9TxZIVbINe88xb3Teg5_OA/AAAABXh2b42NIWP9eEZRow3y3SgJTTItNbQg-Z46PMfzrj19MObGoqsr7VOJ2SiRM9e0IYQ97UYBoGAdES-vlikUKvSFQI6qUWdKU6w.webp",
    "https://occ-0-2433-2705.1.nflxso.net/dnm/api/v6/mAcAr9TxZIVbINe88xb3Teg5_OA/AAAABQxjdY3-o2_HMGPNScx63Fh6MJUriV48oMXIV1HbP5EFuoPzSzj24paH4cP9mVN3YHh71oRS_5GfDV5I5Exl-Tv_DlRWSmE4JiofsQDkIrlT6b53N_vJD8lI7qjEUCsJCTRP.webp",
    "https://occ-0-2433-2705.1.nflxso.net/dnm/api/v6/mAcAr9TxZIVbINe88xb3Teg5_OA/AAAABbaLoMsjJgbfjdTr3SNGPpzylvVWo3PjRy307_uRizBADiF2aJCiqQlExOSf1fx9nCMo6SeH843e-u6PKSDzWjmWX_q296iMZhJDw0vIt60GwgkRyvwirvZP7hDcheyI5WC4.webp",
    "https://occ-0-2433-2705.1.nflxso.net/dnm/api/v6/mAcAr9TxZIVbINe88xb3Teg5_OA/AAAABQaZz6w4WN-xljuaOiyyPIV2iwoXVJyvgdJu-AvWezdhexhlDUNxIZmg8fk2m7ValjyQ563IfsRtuKYh5UhD6ovWtfNAVdNfkcc_2mKttwIg1F3H_6YFxWpRd6lS_F7mOorK.webp",
-   "https://occ-0-2433-2705.1.nflxso.net/dnm/api/v6/mAcAr9TxZIVbINe88xb3Teg5_OA/AAAABU1g7VUmR7qjRsB7sLXVN7mvzbdSN4XHcrRXxiVCdrGiZaybz4bKZ4r-Ky0cyL-enJL8a7bB4vvOj_fv7RqwjTeBLPy2y3AAXyfWQif2Bp0cwGUM8bpkxwBW9DnKwegJoOmm.webp",
+   "https://occ-0-2433-2705.1.nflxso.net/dnm/api/v6/mAcAr9TxZIVbINe88xb3Teg5_OA/AAAABRF_0sMpZX6Do2ukZ9ZN_gjMvDfZbpn-fmVO13Y8dGUCCDdu8yztz97bggpYdpO7MtzP1wGNdDpzJ2Phge6QdiQzmMQ3LRor_7SRZgbuuvaEKIkKG4IeOb3bH-NVm1IJUIFb.webp",
+   "https://occ-0-2433-2705.1.nflxso.net/dnm/api/v6/mAcAr9TxZIVbINe88xb3Teg5_OA/AAAABS0_DKS675rFbR_78XmdpNmiJEi6zZOjagyC6BXYqPUS6mV2zWQ_cfq3QUcb5TL5F6nt7McxmSz9m8vW5rX1kQNeJ5Fvwzf2gspTYunQTVKuRuMKnnC0PwX96bZ3HATyFS17.webp",
+   "https://occ-0-2433-2705.1.nflxso.net/dnm/api/v6/mAcAr9TxZIVbINe88xb3Teg5_OA/AAAABT-H3ThjtotPgF63a7t-hPXglEUTHS9Ru3AvQLRr5UJ-s39yL-pNspyafoSzaaUhopGDn27QMhyFUDUGVI7RTYkGkNQu7YccP48xhCD_5c2OH4ePtbi6VyS4_C8rDWZwynBP.webp",
    "https://assets.nflxext.com/ffe/siteui/fonts/netflix-sans/v3/NetflixSans_W_Rg.woff2",
    "https://assets.nflxext.com/ffe/siteui/fonts/netflix-sans/v3/NetflixSans_W_Md.woff2",
    "https://assets.nflxext.com/ffe/siteui/fonts/netflix-sans/v3/NetflixSans_W_Bd.woff2",
    "https://occ.a.nflxso.net/dnmt/api/v6/jXBzyCe8ipOg2XQkxoKMq9wr74g/AAAAAS5NZfs3pCk4oWdvbb1fwwdoCguB9kLbPUnvV47I4LuPif03URbj6Rp6G9DGhy1E4Kq9wzMi9OICr7bV-IGQyghcLsGIn0Z_L1f8LF4oFYG6gGHk2BgP0AuuQCdN9uYeIwYm4BSJjjxx00I6EIjzKsJr0xZjlFU.svg",
    "https://occ.a.nflxso.net/dnmt/api/v6/jXBzyCe8ipOg2XQkxoKMq9wr74g/AAAAAQ3ruAVPmOuNfp9nFhU28YPY_V5TpbC8Njrd9c6Z1QBr_vqKMJSZ3SyXEl7jhi5EV1vTdVdQE_viqqS3uJ9-cCyI9K6IRtvX9Ef3YML84IfU-0JW4fJo5ce9C0F9e_O7o9xVnSNnHrM1OnkexBi9_N9DJ6CKpsm6.svg",
    "https://occ.a.nflxso.net/dnmt/api/v6/jXBzyCe8ipOg2XQkxoKMq9wr74g/AAAAAbYBShwcZCgHAdRTyBC59odq9eDsEHwzLX8-j_cCWCWBfjnExjnm72SEWYd7j2lZMsGzDvPnbJZSoutoV5aPiurvSYCfHKuiQR8jIXYbiJdSt7GXwdR5WBbWnk8wz329nNGd2CQXyLTh4tmWRNW27Kzk.svg",
-   "https://geolocation.onetrust.com/cookieconsentpub/v1/geo/location",
    "https://logs.netflix.com/log/www/cl/2",
    "https://www.netflix.com/log/www/1",
    "https://www.netflix.com/graphql",
@@ -82,6 +83,9 @@
   "pass": "light"
  },
  "globals": {
+  "__APOLLO_CLIENT__": {
+   "present": true
+  },
   "__reactContainer": {
    "present": true
   },
